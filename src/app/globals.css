@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand palette — see BRANDING.md §2 */
+  --color-chestnut: #753627;
+  --color-terracotta: #a64327;
+  --color-charcoal: #2f2a28;
+  --color-warm-white: #f3f2f2;
+  --color-beige: #f1e8de;
+  --color-warm-gray: #d8d2cc;
+  --color-military: #43533d;
+  --color-gold: #c89b4b;
+
+  --font-heading: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
+  --font-body: var(--font-lora), ui-serif, Georgia, serif;
+
+  /* shadcn / base-ui semantic tokens — mapped onto brand, not a second palette */
+  --color-background: var(--color-warm-white);
+  --color-foreground: var(--color-charcoal);
+  --color-card: #ffffff;
+  --color-card-foreground: var(--color-charcoal);
+  --color-popover: #ffffff;
+  --color-popover-foreground: var(--color-charcoal);
+  --color-primary: var(--color-chestnut);
+  --color-primary-foreground: var(--color-warm-white);
+  --color-secondary: var(--color-beige);
+  --color-secondary-foreground: var(--color-charcoal);
+  --color-muted: var(--color-beige);
+  --color-muted-foreground: #5c5552;
+  --color-accent: var(--color-beige);
+  --color-accent-foreground: var(--color-charcoal);
+  --color-destructive: var(--color-terracotta);
+  --color-destructive-foreground: var(--color-warm-white);
+  --color-border: var(--color-warm-gray);
+  --color-input: var(--color-warm-gray);
+  --color-ring: var(--color-gold);
+  --radius-lg: 0.5rem;
+  --radius-md: 0.375rem;
+}
+
+:root {
+  /* Fixed header band — hero / estimate pages pad content below this */
+  --header-offset: calc(4.75rem + env(safe-area-inset-top, 0px));
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background-color: var(--color-warm-white);
+  color: var(--color-charcoal);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  /* Prevent horizontal scroll from full-bleed media / sticky UI */
+  overflow-x: clip;
+}
+
+/* Dynamic viewport: respects mobile browser chrome + landscape rotation */
+@supports (height: 100dvh) {
+  .min-h-svh {
+    min-height: 100dvh;
+  }
+  .h-svh {
+    height: 100dvh;
+  }
+}
+
+/*
+  Hero stage — The minimalist layout stacks naturally, so we don't force a strict
+  100svh anymore, but we ensure it covers at least the screen.
+*/
+.hero-stage {
+  min-height: 100svh;
+}
+
+@supports (height: 100dvh) {
+  .hero-stage {
+    min-height: 100dvh;
+  }
+}
+
+/* Fluid title: vmin tracks the *smaller* viewport axis — short laptops
+   and 100% zoom on 1366×768 shrink type instead of overflowing upward. */
+.hero-title {
+  /* Slightly larger clamp for the minimalist split design */
+  font-size: clamp(2.75rem, 8vw, 6.5rem);
+  /* Room for Poppins / Lora descenders (g, f, y) — never use ≤1.05 on display */
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+  text-rendering: optimizeLegibility;
+  font-kerning: normal;
+}
+
+/*
+  Reveal mask for rising headline lines.
+  Padding keeps g / f / y / italic tails inside the clip during the GSAP rise;
+  negative margin cancels the extra vertical space so rhythm stays tight.
+  After the reveal, JS sets overflow:visible so clipping can never persist.
+*/
+.hero-line-mask {
+  display: block;
+  overflow: hidden;
+  padding-block: 0.18em 0.28em;
+  /* Italic Lora overhangs (f, j) need a hair of horizontal room too */
+  padding-inline: 0.04em 0.1em;
+  margin-block: -0.1em -0.12em;
+  margin-inline: -0.04em -0.06em;
+}
+
+.hero-line-mask[data-mask-open="true"] {
+  overflow: visible;
+}
+
+.hero-lede {
+  font-size: clamp(0.95rem, 0.85rem + 0.35vw, 1.125rem);
+  line-height: 1.65;
+}
+
+/* Compact hero when vertical space is scarce (landscape phones, short
+   laptop windows, split-screen). Content stays fully below the header. */
+@media (max-height: 720px) {
+  .hero-title {
+    font-size: clamp(2.25rem, 6vw, 4.5rem);
+  }
+}
+
+@media (orientation: landscape) and (max-height: 500px) {
+  .hero-title {
+    font-size: clamp(1.85rem, 5vmin + 0.75rem, 3rem);
+  }
+}
+
+/* Safe areas for notched phones / landscape home indicator */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Touch-friendly form controls on coarse pointers (phones/tablets) */
+@media (pointer: coarse) {
+  input,
+  select,
+  textarea,
+  button {
+    min-height: 2.75rem;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+}
+
+::selection {
+  background-color: var(--color-chestnut);
+  color: var(--color-warm-white);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+/* Scroll reveal — toggled by the Reveal component */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 0.6s ease-out,
+    transform 0.6s ease-out;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    transform: none;
+    transition: opacity 0.3s ease-out;
+  }
+}
+
+/* Link underline draw-in for nav / inline links */
+.link-draw {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size 0.25s ease-out;
+  padding-bottom: 2px;
+}
+
+.link-draw:hover,
+.link-draw:focus-visible {
+  background-size: 100% 1px;
+}
