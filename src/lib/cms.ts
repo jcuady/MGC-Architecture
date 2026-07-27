@@ -72,32 +72,11 @@ export const defaultContent = {
     line1: site.tagline[0],
     line2: site.tagline[1],
     lede: site.heroLede,
-    image: "/portfolio/c-house/c-house-01-exterior-view-1.png",
-    primaryCta: "View selected works",
+    // Full-bleed hero background — editable in studio via ImageField
+    image: "/portfolio/the-noir/the-noir-living-view-1.png",
     secondaryCta: "Start a project",
-    estimateCta: "Curious about cost? Get a free estimate",
-    // Social proof strip — portfolio thumbs, not stock headshots
-    proofStat: "8+",
-    proofLabel: "Selected works",
-    proofImages: [
-      {
-        src: "/portfolio/c-house/c-house-01-exterior-view-1.png",
-        alt: "C-House",
-      },
-      {
-        src: "/portfolio/the-noir/the-noir-living-view-1.png",
-        alt: "The Noir",
-      },
-      {
-        src: "/portfolio/the-hearth/the-hearth-dining-view-1.png",
-        alt: "The Hearth",
-      },
-      {
-        src: "/portfolio/tile-co/tile-co-interior-view-1.png",
-        alt: "Tile Co.",
-      },
-    ],
     // Hero type treatment: Poppins carries "purpose", Lora italic carries "life".
+    // Title size is fluid (.hero-title clamp); font/italic still apply.
     styles: {
       eyebrow: {} as TextStyle,
       line1: {} as TextStyle,
@@ -231,7 +210,7 @@ export type SectionKey = keyof SiteContent;
 
 /** Section labels + descriptions shown in the admin content manager. */
 export const sectionMeta: Record<SectionKey, { label: string; description: string }> = {
-  hero: { label: "Hero", description: "Full-screen opening — tagline, lede, image, CTAs, selected-works proof" },
+  hero: { label: "Hero", description: "Full-bleed opening — background image, eyebrow, tagline, lede, and Start a project CTA" },
   studio: { label: "Studio statement", description: "Welcome statement and the three value points" },
   work: { label: "Selected works header", description: "Heading above the project grid" },
   showcaseNoir: { label: "Showcase — The Noir", description: "First full-screen image interlude" },
@@ -246,10 +225,19 @@ export const sectionMeta: Record<SectionKey, { label: string; description: strin
   footer: { label: "Footer", description: "Footer tagline" },
 };
 
+const TEXT_STYLE_KEYS = new Set(["font", "italic", "size"]);
+
+function isTextStyleShell(obj: Record<string, unknown>): boolean {
+  return Object.keys(obj).every((k) => TEXT_STYLE_KEYS.has(k));
+}
+
 /**
  * Merge a stored section over its defaults so newly added fields keep working
  * after the schema evolves. Arrays are replaced wholesale (the editor always
  * saves complete arrays); objects merge recursively.
+ *
+ * Keys removed from the code schema are dropped (so the studio stops showing
+ * dead fields). Empty TextStyle shells still accept font / italic / size.
  */
 export function mergeSection<T>(defaults: T, stored: unknown): T {
   if (
@@ -264,9 +252,12 @@ export function mergeSection<T>(defaults: T, stored: unknown): T {
   }
   const out: Record<string, unknown> = { ...(defaults as Record<string, unknown>) };
   for (const [key, value] of Object.entries(stored as Record<string, unknown>)) {
-    // Additive for keys absent from defaults (e.g. typography overrides saved
-    // into an empty default TextStyle object).
-    out[key] = key in out ? mergeSection(out[key], value) : value;
+    if (key in out) {
+      out[key] = mergeSection(out[key], value);
+    } else if (isTextStyleShell(out) && TEXT_STYLE_KEYS.has(key)) {
+      out[key] = value;
+    }
+    // else: schema no longer has this field — drop it
   }
   return out as T;
 }

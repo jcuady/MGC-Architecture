@@ -74,6 +74,14 @@ const { error: upsertError } = await supabase.from("site_content").upsert({
 });
 check("admin saves CMS content", !upsertError, upsertError?.message);
 
+// Bust ISR so the landing page reflects the upsert immediately
+const token = auth.session?.access_token;
+const rev = await fetch(`${BASE}/api/revalidate`, {
+  method: "POST",
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
+});
+check("revalidate accepts admin bearer token", rev.status === 200, `status ${rev.status}`);
+
 const homeWithEdit = await fetch(`${BASE}/`, { cache: "no-store" });
 const homeHtml = await homeWithEdit.text();
 check(
@@ -87,6 +95,11 @@ const { error: deleteError } = await supabase
   .delete()
   .eq("key", "hero");
 check("admin resets section to original", !deleteError);
+
+await fetch(`${BASE}/api/revalidate`, {
+  method: "POST",
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
+});
 
 const homeReset = await fetch(`${BASE}/`, { cache: "no-store" });
 const resetHtml = await homeReset.text();

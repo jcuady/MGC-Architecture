@@ -103,7 +103,11 @@ export default function SectionEditor({
       setStatus("error");
       return;
     }
-    await fetch("/api/revalidate", { method: "POST" });
+    const rev = await fetch("/api/revalidate", { method: "POST" });
+    if (!rev.ok) {
+      setStatus("error");
+      return;
+    }
     setStatus("saved");
     setDirty(false);
     router.refresh();

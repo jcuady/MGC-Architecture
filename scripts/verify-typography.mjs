@@ -40,11 +40,12 @@ const supabase = createClient(
   env.NEXT_PUBLIC_SUPABASE_URL,
   env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
 );
-const { error: authError } = await supabase.auth.signInWithPassword({
+const { data: auth, error: authError } = await supabase.auth.signInWithPassword({
   email: process.env.STUDIO_EMAIL,
   password: process.env.STUDIO_PASSWORD,
 });
 check("admin signs in", !authError, authError?.message);
+const token = auth.session?.access_token;
 
 const { error: upsertError } = await supabase.from("site_content").upsert({
   key: "hero",
@@ -56,6 +57,11 @@ const { error: upsertError } = await supabase.from("site_content").upsert({
   },
 });
 check("typography override saved", !upsertError, upsertError?.message);
+
+await fetch(`${BASE}/api/revalidate`, {
+  method: "POST",
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
+});
 
 html = await (await fetch(`${BASE}/`, { cache: "no-store" })).text();
 check(
@@ -74,6 +80,10 @@ check(
 );
 
 await supabase.from("site_content").delete().eq("key", "hero");
+await fetch(`${BASE}/api/revalidate`, {
+  method: "POST",
+  headers: token ? { Authorization: `Bearer ${token}` } : {},
+});
 html = await (await fetch(`${BASE}/`, { cache: "no-store" })).text();
 check("reset reverts lede size", !html.includes("font-size:20px"));
 
