@@ -1,0 +1,7 @@
+# Keep Vercel uploads lean — Git already excludes these for builds from GitHub
+node_modules
+.next
+.turbo
+MGC Architecture
+*.log
+.env*.local
