@@ -74,10 +74,12 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
           ))}
           <a
             href="/#contact"
-            className={`shrink-0 px-4 py-2.5 font-heading text-xs font-semibold transition-colors xl:px-5 xl:text-sm ${
+            className={`shrink-0 font-heading text-xs font-semibold transition-colors xl:text-sm ${
               solid
-                ? "bg-chestnut text-warm-white hover:bg-terracotta"
-                : "bg-warm-white text-chestnut hover:bg-beige"
+                ? "bg-chestnut px-4 py-2.5 text-warm-white hover:bg-terracotta xl:px-5"
+                : theme === "light"
+                  ? "text-chestnut hover:text-terracotta"
+                  : "bg-warm-white px-4 py-2.5 text-chestnut hover:bg-beige xl:px-5"
             }`}
           >
             Start a project

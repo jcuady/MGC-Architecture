@@ -22,7 +22,7 @@ export default async function Home() {
 
   return (
     <>
-      <Header theme="light" />
+      <Header />
       <main id="main">
         <Hero data={content.hero} />
         <Studio data={content.studio} />
