@@ -24,3 +24,6 @@
 
 # design source packs (runtime assets live in /public)
 /MGC Architecture/
+
+.vercel
+.env*
