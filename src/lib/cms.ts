@@ -5,31 +5,34 @@
 import type { CSSProperties } from "react";
 import { about, faqs, insights, process, professionalNotice, services, site } from "./content";
 
-/** Portfolio renders paired to each service card, in `services` order. */
+/**
+ * Service panel images — deliberately not Works cover/hero shots
+ * (architect: different pic per category, don't reuse Works covers).
+ */
 const serviceImages = [
   {
-    image: "/portfolio/c-house/c-house-02-exterior-view-2.png",
-    alt: "C-House — modern two-storey residence exterior",
+    image: "/portfolio/c-house/c-house-02-exterior-view-3.png",
+    alt: "C-House — angled exterior of a contemporary residence",
   },
   {
-    image: "/portfolio/the-hearth/the-hearth-kitchen-view-1.png",
-    alt: "The Hearth — renovated warm kitchen with rattan cabinetry",
+    image: "/portfolio/the-hearth/the-hearth-kitchen-view-2.png",
+    alt: "The Hearth — renovated kitchen detailing and finishes",
   },
   {
-    image: "/portfolio/built-in/built-in-proj-01-view.png",
-    alt: "Built-in cabinetry drawn to fit the space exactly",
+    image: "/portfolio/built-in/built-in-proj-02-view.png",
+    alt: "Custom built-in cabinetry fitted to the room",
   },
   {
-    image: "/portfolio/capstone/archi-capstone-floor-plan.png",
-    alt: "Complete floor plan prepared for permit application",
+    image: "/portfolio/capstone/archi-capstone-axonometric-view-1.png",
+    alt: "Axonometric drawing prepared for permit documentation",
   },
   {
-    image: "/portfolio/tile-co/tile-co-interior-view-1.png",
-    alt: "Tile Co. office and showroom — planned within budget",
+    image: "/portfolio/tile-co/tile-co-interior-view-3.png",
+    alt: "Tile Co. interior — commercial space planned to budget",
   },
   {
-    image: "/portfolio/the-noir/the-noir-living-view-1.png",
-    alt: "The Noir — photoreal 3D visualization of a living room",
+    image: "/portfolio/the-noir/the-noir-living-view-4.png",
+    alt: "The Noir — photoreal living-space visualization",
   },
 ];
 
@@ -108,24 +111,21 @@ export const defaultContent = {
     lede: "Whether you're building, renovating, or need assistance with permits and costing, we're here to help. Choose the option below that best fits your project and share a few details to help us better understand your vision.",
     notice: professionalNotice,
     styles: { title: {} as TextStyle, lede: {} as TextStyle },
-    // Each card carries a portfolio render and a destination — the cost card
-    // routes to the estimator, everything else opens the inquiry form.
+    // Split-pane explorer: unique render per service + inquire destination.
+    // Cost estimation routes to /estimate; everything else opens contact.
     items: services.map((service, i) => ({
       ...service,
-      image: serviceImages[i]?.image ?? "/portfolio/c-house/c-house-02-exterior-view-2.png",
+      image: serviceImages[i]?.image ?? "/portfolio/c-house/c-house-02-exterior-view-3.png",
       imageAlt: serviceImages[i]?.alt ?? service.title,
       href: service.title.toLowerCase().includes("cost") ? "/estimate" : "/#contact",
-      ctaLabel: service.title.toLowerCase().includes("cost")
-        ? "Get your estimate"
-        : "Start a project",
+      ctaLabel: "Inquire Now",
     })),
   },
   estimator: {
-    eyebrow: "Cost Guide",
+    eyebrow: "Construction Cost Calculator",
     title: "How much will your home cost to build?",
-    lede: "Answer three quick questions — lot size, floors, and the finish level you have in mind — and get a realistic starting figure for your build.",
+    lede: "Answer three quick questions — lot size, no. of floors, and type of finish you have in mind — and get a realistic starting figure for your house.",
     ctaLabel: "Get your free estimate",
-    note: "Free and no commitment. Takes under a minute.",
     image: "/portfolio/capstone/archi-capstone-exterior-view-1.png",
     styles: { title: {} as TextStyle, lede: {} as TextStyle },
   },
@@ -136,7 +136,12 @@ export const defaultContent = {
     styles: { name: {} as TextStyle, intro: {} as TextStyle },
     intro: about.intro,
     body: about.body,
+    photo: "/about/professional-shot-2.png",
+    photoHover: "/about/professional-shot-1.png",
+    photoAlt: "Mariane Gayle Caballero, Architectural Designer",
+    learnMoreLabel: "Learn More",
     education: about.education,
+    experience: about.experience,
     awards: about.awards,
     skills: about.skills,
     software: about.software,
@@ -156,11 +161,13 @@ export const defaultContent = {
     styles: { title: {} as TextStyle, lede: {} as TextStyle },
     teamMatters: insights.teamMatters,
     mistakes: insights.mistakes,
+    upcoming: insights.upcoming,
+    articles: insights.articles,
   },
   faq: {
     eyebrow: "FAQs",
-    title: "Answers before you ask",
-    lede: "The questions most clients start with — costs, timelines, permits, and what to prepare.",
+    title: "Got questions?",
+    lede: "Find quick answers to common questions about costs, timeline, permits, and what to prepare.",
     styles: { title: {} as TextStyle, lede: {} as TextStyle },
     items: faqs,
   },
@@ -173,10 +180,9 @@ export const defaultContent = {
     styles: { lines: {} as TextStyle },
   },
   contact: {
-    eyebrow: "Let's talk about your project",
-    title: "Planning a project? Share a few details — we'll take it from there.",
-    lede: "Tell us whether you're building, renovating, or need help with permits and costing. The initial consultation is complimentary — expect a call to discuss your project, free of charge.",
-    note: "Helpful to prepare, if available: property details, an estimated budget, and design preferences or inspiration. Don't worry if you don't have everything yet — we can work through it together during the consultation.",
+    eyebrow: "Contact",
+    title: "Planning a project? Let's talk.",
+    lede: "Tell us whether you're building, renovating, or need help with permits and costing. We're here to help — expect a call to discuss your project.",
     email: site.contact.email,
     phone: site.contact.phone,
     facebookLabel: site.contact.facebook.label,
@@ -186,8 +192,8 @@ export const defaultContent = {
     styles: { title: {} as TextStyle, lede: {} as TextStyle },
   },
   footer: {
-    tagline: "Design with Purpose. Build for Life.",
-    styles: { tagline: {} as TextStyle },
+    // Tagline removed from footer UI (architect) — keep empty shell for CMS merge.
+    styles: {} as Record<string, never>,
   },
 };
 
@@ -200,15 +206,15 @@ export const sectionMeta: Record<SectionKey, { label: string; description: strin
   studio: { label: "Studio statement", description: "Split statement — lead (top-left) and trail (bottom-right); Approach/Process/Promise removed" },
   work: { label: "Selected works header", description: "Heading above the project grid" },
   showcaseNoir: { label: "Showcase — The Noir", description: "First full-screen image interlude" },
-  services: { label: "Services", description: "Service cards with images and the professional notice" },
-  estimator: { label: "Estimator invite", description: "Full-screen cost-guide invitation linking to /estimate" },
-  about: { label: "About the designer", description: "Bio, education, awards, skills" },
+  services: { label: "Services", description: "Professional notice + interactive split-pane service explorer" },
+  estimator: { label: "Cost calculator invite", description: "Full-screen construction cost calculator with ₱25k+ count-up and estimate CTA" },
+  about: { label: "About the designer", description: "Short bio + portrait, full bio dialog, education, experience, awards" },
   process: { label: "Process", description: "The three project steps" },
-  insights: { label: "Before you build", description: "Educational cards" },
+  insights: { label: "Before you build + articles", description: "4-slot insights grid and Latest Articles row" },
   faq: { label: "FAQs", description: "Questions and answers" },
   showcaseHearth: { label: "Showcase — The Hearth", description: "Closing full-screen interlude with CTA" },
-  contact: { label: "Contact", description: "Contact copy, channels, and form intro" },
-  footer: { label: "Footer", description: "Footer tagline" },
+  contact: { label: "Contact", description: "Contact copy + simplified discussion-call inquiry form" },
+  footer: { label: "Footer", description: "Compact footer — logo, explore, contact (tagline removed)" },
 };
 
 const TEXT_STYLE_KEYS = new Set(["font", "italic", "size"]);

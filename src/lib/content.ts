@@ -572,6 +572,22 @@ export const about = {
     school: "Pamantasan ng Lungsod ng Maynila (2020–2025)",
     honors: "Graduated Magna Cum Laude (2025)",
   },
+  experience: [
+    {
+      role: "Architectural Designer",
+      org: "RC LLaguno Construction",
+      period: "Selected projects",
+      detail:
+        "Design development, construction documentation, 3D visualization, and site coordination for residential, commercial, and built-in furniture work.",
+    },
+    {
+      role: "Freelance Graphic Designer & Digital Marketer",
+      org: "Independent",
+      period: "Ongoing",
+      detail:
+        "Brand identities, visual content, and digital experiences for businesses — work that sharpens communication alongside design.",
+    },
+  ],
   awards: [
     "Magna Cum Laude, BS Architecture (2025)",
     "Top 1 — College Academic Excellence Awardee (2024)",
@@ -642,6 +658,53 @@ export const insights = {
       {
         title: "Hiring the wrong professionals",
         body: "Choosing qualified professionals from the start ensures your project is properly planned, coordinated, and executed.",
+      },
+    ],
+  },
+  /** Architect: two more topics forthcoming — reserved slots in the new grid. */
+  upcoming: [
+    {
+      title: "Permits & paperwork",
+      teaser: "What to gather before design starts — title, tax docs, and clearances that keep the permit path clear.",
+    },
+    {
+      title: "Budget before design",
+      teaser: "How finish level and scope shape cost — so the first drawings already respect what you can invest.",
+    },
+  ],
+  articles: {
+    eyebrow: "Latest Articles",
+    title: "Stay up to date before you build",
+    seeAllLabel: "See all articles",
+    seeAllHref: "/#faq",
+    items: [
+      {
+        title: "Why the right team matters before you build",
+        readMins: 3,
+        image: "/portfolio/guest-quarter/guest-quarter-view-2.png",
+        imageAlt: "Guest quarter interior — coordinated design and documentation",
+        href: "/#blog",
+      },
+      {
+        title: "5 mistakes to avoid before you break ground",
+        readMins: 4,
+        image: "/portfolio/c-house/c-house-02-living-area-view-2.png",
+        imageAlt: "Residential living space — planning before construction",
+        href: "/#insights",
+      },
+      {
+        title: "How much does a residential project cost?",
+        readMins: 2,
+        image: "/portfolio/the-hearth/the-hearth-dining-view-2.png",
+        imageAlt: "Warm dining interior — finish level and budget",
+        href: "/#faq",
+      },
+      {
+        title: "What to prepare before your first meeting",
+        readMins: 2,
+        image: "/portfolio/saro/saro-view-2.png",
+        imageAlt: "Conceptual architecture study — early project conversation",
+        href: "/#contact",
       },
     ],
   },

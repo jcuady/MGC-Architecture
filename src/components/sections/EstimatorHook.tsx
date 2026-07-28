@@ -6,13 +6,23 @@ import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { textStyle, type SiteContent } from "@/lib/cms";
 
+/** Bare-finish rate shown as the count-up hook (₱/sqm). */
+const RATE_DISPLAY = 25_000;
+
+function formatPeso(n: number) {
+  return new Intl.NumberFormat("en-PH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(n);
+}
+
 /**
- * Full-screen estimator invitation. Deliberately number-free: the hook is the
- * question, the answer lives on /estimate. Parallax media, centered composition
- * inside a thin gold keyline — a formal invitation card at architectural scale.
+ * Architect revision: Construction Cost Calculator invite with
+ * animated ₱25,000.00+ count-up, then CTA below.
  */
 export default function EstimatorHook({ data }: { data: SiteContent["estimator"] }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const amountRef = useRef<HTMLSpanElement>(null);
 
   useGSAP(
     () => {
@@ -25,10 +35,12 @@ export default function EstimatorHook({ data }: { data: SiteContent["estimator"]
         },
         (context) => {
           const { reduceMotion } = context.conditions as { reduceMotion: boolean };
+          const amountEl = amountRef.current;
 
           if (reduceMotion) {
             gsap.set("[data-estimator-rise]", { autoAlpha: 1, y: 0 });
             gsap.set("[data-estimator-media]", { yPercent: 0 });
+            if (amountEl) amountEl.textContent = formatPeso(RATE_DISPLAY);
             return;
           }
 
@@ -53,7 +65,7 @@ export default function EstimatorHook({ data }: { data: SiteContent["estimator"]
             {
               y: 0,
               autoAlpha: 1,
-              duration: 0.9,
+              duration: 0.85,
               stagger: 0.1,
               ease: "power3.out",
               scrollTrigger: {
@@ -63,6 +75,23 @@ export default function EstimatorHook({ data }: { data: SiteContent["estimator"]
               },
             },
           );
+
+          if (amountEl) {
+            const counter = { value: 0 };
+            gsap.to(counter, {
+              value: RATE_DISPLAY,
+              duration: 1.8,
+              ease: "power2.out",
+              scrollTrigger: {
+                trigger: sectionRef.current,
+                start: "top 55%",
+                toggleActions: "play none none none",
+              },
+              onUpdate: () => {
+                amountEl.textContent = formatPeso(counter.value);
+              },
+            });
+          }
         },
       );
     },
@@ -73,7 +102,7 @@ export default function EstimatorHook({ data }: { data: SiteContent["estimator"]
     <section
       id="calculator"
       ref={sectionRef}
-      aria-label="Construction cost estimator"
+      aria-label="Construction cost calculator"
       className="relative flex min-h-[70svh] items-center overflow-hidden bg-charcoal"
     >
       <div
@@ -95,7 +124,7 @@ export default function EstimatorHook({ data }: { data: SiteContent["estimator"]
         <div className="mx-auto max-w-3xl border border-gold/40 px-6 py-12 text-center sm:px-12 sm:py-16">
           <p
             data-estimator-rise
-            className="font-heading text-xs font-semibold uppercase tracking-[0.3em] text-gold"
+            className="font-heading text-xs font-semibold uppercase tracking-[0.22em] text-gold"
           >
             {data.eyebrow}
           </p>
@@ -113,6 +142,25 @@ export default function EstimatorHook({ data }: { data: SiteContent["estimator"]
           >
             {data.lede}
           </p>
+
+          {/* Animated rate count-up — architect: ₱ 25,000.00+ then CTA below */}
+          <div data-estimator-rise className="mt-10">
+            <p className="font-heading text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-warm-white/55">
+              From
+            </p>
+            <p
+              className="mt-2 font-heading text-4xl font-semibold tabular-nums tracking-tight text-warm-white sm:text-5xl lg:text-6xl"
+              aria-label={`From ${formatPeso(RATE_DISPLAY)} pesos per square meter and up`}
+            >
+              <span className="mr-1 text-gold">₱</span>
+              <span ref={amountRef}>0.00</span>
+              <span className="ml-0.5 text-gold">+</span>
+            </p>
+            <p className="mt-2 font-heading text-xs tracking-wide text-warm-white/55">
+              per sqm · bare finish
+            </p>
+          </div>
+
           <div data-estimator-rise className="mt-9">
             <Link
               href="/estimate"
@@ -123,7 +171,6 @@ export default function EstimatorHook({ data }: { data: SiteContent["estimator"]
                 →
               </span>
             </Link>
-            <p className="mt-4 font-heading text-xs text-warm-white/60">{data.note}</p>
           </div>
         </div>
       </div>

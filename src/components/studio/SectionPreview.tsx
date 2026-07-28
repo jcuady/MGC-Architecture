@@ -26,32 +26,26 @@ export const deviceWidths: Record<Device, number> = {
   mobile: 390,
 };
 
-/* Footer's real component fetches on the server, so the preview mirrors just
-   its editable band. */
-function FooterPreview({ data }: { data: SiteContent["footer"] }) {
+/* Footer's real component fetches on the server, so the preview mirrors the
+   compact logo band (tagline removed per architect). */
+function FooterPreview({ data: _data }: { data: SiteContent["footer"] }) {
   return (
-    <div className="relative overflow-hidden bg-chestnut px-8 py-16 text-warm-white">
+    <div className="relative overflow-hidden bg-chestnut px-8 py-8 text-warm-white">
       <Image
         src="/brand/monogram-white.png"
         alt=""
         aria-hidden
         width={400}
         height={400}
-        className="pointer-events-none absolute -left-16 -top-16 w-64 opacity-[0.05]"
+        className="pointer-events-none absolute -bottom-12 -right-10 w-56 opacity-[0.06]"
       />
       <Image
         src="/brand/logo-stacked-white.png"
         alt="MGC Architecture"
         width={160}
         height={160}
-        className="relative h-28 w-28 object-contain"
+        className="relative h-20 w-20 object-contain"
       />
-      <p
-        className="relative mt-6 max-w-sm font-heading text-lg font-medium leading-snug"
-        style={textStyle(data.styles?.tagline)}
-      >
-        {data.tagline}
-      </p>
     </div>
   );
 }

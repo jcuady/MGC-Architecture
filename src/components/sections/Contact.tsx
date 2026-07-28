@@ -7,10 +7,15 @@ function telHref(phone: string) {
   return `tel:+63${digits.startsWith("0") ? digits.slice(1) : digits}`;
 }
 
+/**
+ * Contact — punchier copy, compressed details, simplified discussion-call form.
+ */
 export default function Contact({ data }: { data: SiteContent["contact"] }) {
-  const channels = [
+  const primary = [
     { label: "Email", value: data.email, href: `mailto:${data.email}` },
     { label: "Mobile", value: data.phone, href: telHref(data.phone) },
+  ];
+  const social = [
     { label: "Facebook", value: data.facebookLabel, href: data.facebookHref },
     { label: "Instagram", value: data.instagramHandle, href: data.instagramHref },
   ];
@@ -36,16 +41,13 @@ export default function Contact({ data }: { data: SiteContent["contact"] }) {
               {data.lede}
             </p>
 
+            {/* Primary contact — email & mobile */}
             <ul className="mt-10 divide-y divide-warm-gray/70 border-y border-warm-gray/70">
-              {channels.map((channel) => (
+              {primary.map((channel) => (
                 <li key={channel.label}>
                   <a
                     href={channel.href}
-                    target={channel.href.startsWith("http") ? "_blank" : undefined}
-                    rel={
-                      channel.href.startsWith("http") ? "noopener noreferrer" : undefined
-                    }
-                    className="group flex items-baseline justify-between gap-6 py-5"
+                    className="group flex items-baseline justify-between gap-6 py-4"
                   >
                     <span className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-charcoal/50">
                       {channel.label}
@@ -58,9 +60,23 @@ export default function Contact({ data }: { data: SiteContent["contact"] }) {
               ))}
             </ul>
 
-            <p className="mt-8 border-l-2 border-gold pl-5 text-[0.95rem] leading-relaxed text-charcoal/70">
-              {data.note}
-            </p>
+            {/* Social — compressed below primary details */}
+            <div className="mt-5 flex flex-wrap gap-x-6 gap-y-2">
+              {social.map((channel) => (
+                <a
+                  key={channel.label}
+                  href={channel.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-heading text-sm text-charcoal/60 transition-colors hover:text-chestnut"
+                >
+                  <span className="text-xs uppercase tracking-[0.14em] text-charcoal/40">
+                    {channel.label}
+                  </span>
+                  <span className="ml-2">{channel.value}</span>
+                </a>
+              ))}
+            </div>
           </Reveal>
 
           <Reveal delay={120}>
