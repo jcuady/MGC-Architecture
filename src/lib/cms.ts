@@ -88,20 +88,6 @@ export const defaultContent = {
     statement:
       "We believe the best spaces begin with listening to the people who will use them — this collection showcases selected architectural and interior design works, from concept to completion.",
     styles: { statement: {} as TextStyle },
-    points: [
-      {
-        label: "Approach",
-        text: "We design spaces that are functional, comfortable, and built around your needs.",
-      },
-      {
-        label: "Process",
-        text: "Every project begins with understanding how you live, work, and use your space.",
-      },
-      {
-        label: "Promise",
-        text: "We'll guide you through every step with clear communication and practical solutions.",
-      },
-    ],
   },
   work: {
     eyebrow: "Selected Works",
@@ -211,7 +197,7 @@ export type SectionKey = keyof SiteContent;
 /** Section labels + descriptions shown in the admin content manager. */
 export const sectionMeta: Record<SectionKey, { label: string; description: string }> = {
   hero: { label: "Hero", description: "Full-bleed opening — background image, eyebrow, tagline, lede, and Start a project CTA" },
-  studio: { label: "Studio statement", description: "Welcome statement and the three value points" },
+  studio: { label: "Studio statement", description: "Split statement — lead (top-left) and trail (bottom-right); Approach/Process/Promise removed" },
   work: { label: "Selected works header", description: "Heading above the project grid" },
   showcaseNoir: { label: "Showcase — The Noir", description: "First full-screen image interlude" },
   services: { label: "Services", description: "Service cards with images and the professional notice" },
