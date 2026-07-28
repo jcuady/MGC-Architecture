@@ -75,12 +75,12 @@ export const defaultContent = {
     // Full-bleed hero background — editable in studio via ImageField
     image: "/portfolio/the-noir/the-noir-living-view-1.png",
     secondaryCta: "Start a project",
-    // Hero type treatment: Poppins carries "purpose", Lora italic carries "life".
+    // Both tagline lines share Poppins (heading) — architect revision.
     // Title size is fluid (.hero-title clamp); font/italic still apply.
     styles: {
       eyebrow: {} as TextStyle,
       line1: {} as TextStyle,
-      line2: { font: "body", italic: true } as TextStyle,
+      line2: {} as TextStyle,
       lede: {} as TextStyle,
     },
   },

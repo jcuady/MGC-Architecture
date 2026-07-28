@@ -1,6 +1,6 @@
 // Verifies the CMS typography pipeline end-to-end:
-// - default hero line2 is Lora italic
-// - hero title SIZE is locked to the fluid .hero-title clamp (can't smash header)
+// - default hero line2 matches line1 (heading / Poppins, not Lora italic)
+// - hero title SIZE is locked to the fluid .hero-title clamp
 // - font/italic overrides still apply on hero titles
 // - size overrides still apply on the lede
 // - reset reverts
@@ -24,8 +24,9 @@ function check(name, ok, detail = "") {
 
 let html = await (await fetch(`${BASE}/`, { cache: "no-store" })).text();
 check(
-  "hero line2 renders in Lora italic by default",
-  html.includes("font-family:var(--font-body)") && html.includes("font-style:italic"),
+  "hero line2 defaults to heading (same as line1)",
+  html.includes("Build for Life.") &&
+    !html.includes("font-body italic text-warm-white"),
 );
 check(
   "hero stage uses collision-proof layout",

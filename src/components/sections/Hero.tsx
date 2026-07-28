@@ -133,7 +133,7 @@ export default function Hero({ data }: { data: SiteContent["hero"] }) {
             {data.eyebrow}
           </p>
 
-          <h1 className="hero-title max-w-[15ch] text-balance font-heading font-medium tracking-tight text-warm-white">
+          <h1 className="hero-title mt-1 max-w-[18ch] text-balance font-heading font-medium tracking-tight text-warm-white">
             <span data-hero-mask className="hero-line-mask block">
               <span
                 data-hero-line
@@ -146,14 +146,11 @@ export default function Hero({ data }: { data: SiteContent["hero"] }) {
                 {data.line1}
               </span>
             </span>
-            <span data-hero-mask className="hero-line-mask block">
+            <span data-hero-mask className="hero-line-mask mt-1 block sm:mt-2">
               <span
                 data-hero-line
-                className="block font-body italic text-warm-white/90 will-change-transform"
-                style={textStyle({
-                  font: data.styles?.line2?.font,
-                  italic: data.styles?.line2?.italic,
-                })}
+                className="block font-heading text-warm-white will-change-transform"
+                style={textStyle(data.styles?.line2)}
               >
                 {data.line2}
               </span>
@@ -162,7 +159,7 @@ export default function Hero({ data }: { data: SiteContent["hero"] }) {
 
           <p
             data-hero-fade
-            className="mt-6 max-w-xl text-pretty font-body text-base leading-relaxed text-warm-white/80 sm:mt-8 sm:text-lg"
+            className="hero-lede mt-5 max-w-md text-pretty font-body text-warm-white/75 sm:mt-6"
             style={textStyle(data.styles?.lede)}
           >
             {data.lede}

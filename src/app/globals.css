@@ -89,10 +89,9 @@ body {
 /* Fluid title: vmin tracks the *smaller* viewport axis — short laptops
    and 100% zoom on 1366×768 shrink type instead of overflowing upward. */
 .hero-title {
-  /* Slightly larger clamp for the minimalist split design */
-  font-size: clamp(2.75rem, 8vw, 6.5rem);
-  /* Room for Poppins / Lora descenders (g, f, y) — never use ≤1.05 on display */
-  line-height: 1.14;
+  /* Architect revision: smaller tagline; breathing room between lines */
+  font-size: clamp(1.875rem, 4.5vw, 3.5rem);
+  line-height: 1.2;
   letter-spacing: -0.02em;
   text-rendering: optimizeLegibility;
   font-kerning: normal;
@@ -119,7 +118,7 @@ body {
 }
 
 .hero-lede {
-  font-size: clamp(0.95rem, 0.85rem + 0.35vw, 1.125rem);
+  font-size: clamp(0.8125rem, 0.75rem + 0.25vw, 0.9375rem);
   line-height: 1.65;
 }
 

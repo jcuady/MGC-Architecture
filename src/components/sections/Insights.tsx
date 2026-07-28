@@ -4,7 +4,7 @@ import { textStyle, type SiteContent } from "@/lib/cms";
 
 export default function Insights({ data }: { data: SiteContent["insights"] }) {
   return (
-    <section id="insights" className="scroll-mt-20">
+    <section id="blog" className="scroll-mt-20">
       <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
         <SectionHeader
           eyebrow={data.eyebrow}

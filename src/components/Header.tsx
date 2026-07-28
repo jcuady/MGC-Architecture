@@ -16,7 +16,6 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Solid header once scrolled past the hero top, or when the menu is open.
   const solid = scrolled || open;
 
   return (
@@ -36,10 +35,11 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
         Skip to content
       </a>
 
-      <div className="mx-auto flex h-[4.75rem] max-w-7xl items-center justify-between px-5 sm:px-8">
+      <div className="mx-auto flex h-[4.75rem] max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
+        {/* Proportionate lockup: mark ≈ x-height of wordmark */}
         <Link
           href="/"
-          className="flex items-center gap-3"
+          className="flex shrink-0 items-center gap-2.5"
           aria-label="MGC Architecture — back to top"
           onClick={() => setOpen(false)}
         >
@@ -50,39 +50,40 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
                 : "/brand/monogram-white.png"
             }
             alt=""
-            width={44}
-            height={44}
-            className="h-9 w-9 object-contain sm:h-10 sm:w-10"
+            width={32}
+            height={32}
+            className="h-7 w-7 object-contain sm:h-8 sm:w-8"
             priority
           />
-          <span className="font-heading text-sm font-semibold leading-tight tracking-wide sm:text-base">
-            mgc
-            <br />
-            architecture
+          <span className="font-heading text-[0.8125rem] font-semibold leading-none tracking-[0.04em] sm:text-sm">
+            mgc architecture
           </span>
         </Link>
 
-        <nav aria-label="Primary" className="hidden items-center gap-5 xl:gap-8 lg:flex">
+        <nav
+          aria-label="Primary"
+          className="hidden items-center gap-4 xl:gap-6 lg:flex"
+        >
           {nav.map((item) => (
             <a
-              key={item.href}
+              key={item.href + item.label}
               href={item.href}
-              className="link-draw font-heading text-xs font-medium tracking-wide xl:text-sm"
+              className="link-draw font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] xl:text-xs"
             >
               {item.label}
             </a>
           ))}
           <a
             href="/#contact"
-            className={`shrink-0 font-heading text-xs font-semibold transition-colors xl:text-sm ${
+            className={`shrink-0 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] transition-colors xl:text-xs ${
               solid
-                ? "bg-chestnut px-4 py-2.5 text-warm-white hover:bg-terracotta xl:px-5"
+                ? "bg-chestnut px-4 py-2.5 text-warm-white hover:bg-terracotta"
                 : theme === "light"
                   ? "text-chestnut hover:text-terracotta"
-                  : "bg-warm-white px-4 py-2.5 text-chestnut hover:bg-beige xl:px-5"
+                  : "bg-warm-white px-4 py-2.5 text-chestnut hover:bg-beige"
             }`}
           >
-            Start a project
+            Contact
           </a>
         </nav>
 
@@ -112,7 +113,7 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
         >
           <ul className="flex flex-col">
             {nav.map((item) => (
-              <li key={item.href}>
+              <li key={item.href + item.label}>
                 <a
                   href={item.href}
                   className="block border-b border-beige py-4 font-heading text-lg font-medium text-charcoal"
@@ -125,10 +126,10 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
           </ul>
           <a
             href="/#contact"
-            className="mt-6 block bg-chestnut px-5 py-3.5 text-center font-heading text-sm font-semibold text-warm-white"
+            className="mt-6 block bg-chestnut px-5 py-3.5 text-center font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white"
             onClick={() => setOpen(false)}
           >
-            Start a project
+            Contact
           </a>
         </nav>
       )}

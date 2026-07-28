@@ -23,13 +23,13 @@ export const site = {
 };
 
 export const nav = [
-  { label: "Work", href: "/#work" },
-  { label: "Services", href: "/#services" },
-  { label: "Estimator", href: "/estimate" },
-  { label: "About", href: "/#about" },
+  { label: "Works", href: "/#work" },
   { label: "Process", href: "/#process" },
+  { label: "Inquire", href: "/#contact" },
+  { label: "Cost Calculator", href: "/estimate" },
   { label: "FAQ", href: "/#faq" },
-  { label: "Contact", href: "/#contact" },
+  { label: "About", href: "/#about" },
+  { label: "Blog", href: "/#blog" },
 ];
 
 export type ProjectImage = {
