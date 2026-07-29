@@ -68,6 +68,38 @@ function renderSection(sectionKey: SectionKey, data: never): ReactNode {
       return <Process data={data} />;
     case "insights":
       return <Insights data={data} />;
+    case "inquire": {
+      const d = data as SiteContent["inquire"];
+      return (
+        <div className="bg-beige px-8 py-16">
+          <p className="font-heading text-xs font-semibold uppercase tracking-[0.22em] text-terracotta">
+            {d.eyebrow}
+          </p>
+          <h2
+            className="mt-4 max-w-xl font-heading text-3xl font-semibold text-charcoal"
+            style={textStyle(d.styles?.title)}
+          >
+            {d.title}
+          </h2>
+          <p
+            className="mt-4 max-w-lg font-body text-base leading-relaxed text-charcoal/70"
+            style={textStyle(d.styles?.lede)}
+          >
+            {d.lede}
+          </p>
+          <ol className="mt-8 space-y-2">
+            {Object.values(d.steps).map((label, i) => (
+              <li key={label} className="font-heading text-sm text-charcoal/80">
+                {String(i + 1).padStart(2, "0")} — {label}
+              </li>
+            ))}
+          </ol>
+          <p className="mt-8 inline-flex bg-chestnut px-5 py-3 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-warm-white">
+            {d.submitLabel}
+          </p>
+        </div>
+      );
+    }
     case "faq":
       return <Faq data={data} />;
     case "contact":
@@ -84,7 +116,7 @@ function renderSection(sectionKey: SectionKey, data: never): ReactNode {
           eyebrow={d.eyebrow}
           lines={[d.line1, d.line2]}
           lineStyle={textStyle(d.styles?.lines)}
-          cta={d.ctaLabel ? { label: d.ctaLabel, href: "#contact" } : undefined}
+          cta={d.ctaLabel ? { label: d.ctaLabel, href: "/inquire" } : undefined}
         />
       );
     }

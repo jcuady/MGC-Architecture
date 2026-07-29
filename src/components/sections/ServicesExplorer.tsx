@@ -126,9 +126,9 @@ export default function ServicesExplorer({ items }: { items: ServiceItem[] }) {
             </p>
             <Link
               href={current.href}
-              className="inline-flex min-h-11 shrink-0 items-center border border-warm-white/90 bg-warm-white/10 px-5 py-2.5 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-warm-white backdrop-blur-sm transition-colors hover:bg-warm-white hover:text-charcoal"
+              className="inline-flex min-h-11 shrink-0 cursor-pointer items-center border border-warm-white/90 bg-warm-white/10 px-5 py-2.5 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-warm-white backdrop-blur-sm transition-colors hover:bg-warm-white hover:text-charcoal"
             >
-              Inquire Now
+              {current.ctaLabel}
             </Link>
           </div>
         </div>

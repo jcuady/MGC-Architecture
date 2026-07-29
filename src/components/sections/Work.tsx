@@ -8,23 +8,32 @@ import { textStyle, type SiteContent } from "@/lib/cms";
 /**
  * Editorial grid: the first project is featured full-width; the rest alternate
  * in a two-column rhythm. Covers crossfade to a second render on hover.
+ * heading="none" when the page already has an h1 hero (e.g. /work).
  */
-export default function Work({ data }: { data: SiteContent["work"] }) {
+export default function Work({
+  data,
+  heading = "section",
+}: {
+  data: SiteContent["work"];
+  heading?: "section" | "none";
+}) {
   const [featured, ...rest] = projects;
 
   return (
     <section id="work" className="scroll-mt-20">
       <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
-        <SectionHeader
-          eyebrow={data.eyebrow}
-          title={data.title}
-          lede={data.lede}
-          titleStyle={textStyle(data.styles?.title)}
-          ledeStyle={textStyle(data.styles?.lede)}
-        />
+        {heading === "section" ? (
+          <SectionHeader
+            eyebrow={data.eyebrow}
+            title={data.title}
+            lede={data.lede}
+            titleStyle={textStyle(data.styles?.title)}
+            ledeStyle={textStyle(data.styles?.lede)}
+          />
+        ) : null}
 
         {/* Featured project */}
-        <Reveal className="mt-14">
+        <Reveal className={heading === "section" ? "mt-14" : undefined}>
           <Link href={`/work/${featured.slug}`} className="group block">
             <article>
               <ProjectCover
@@ -73,7 +82,7 @@ export default function Work({ data }: { data: SiteContent["work"] }) {
                         </span>
                       </h3>
                       <span className="shrink-0 font-heading text-xs text-charcoal/50">
-                        {project.images.length} views
+                        {project.year}
                       </span>
                     </div>
                     <p className="mt-1 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-terracotta">

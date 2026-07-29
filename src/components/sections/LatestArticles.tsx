@@ -1,20 +1,48 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { useRef } from "react";
 import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
-import type { SiteContent } from "@/lib/cms";
+import type { BlogPostCard } from "@/lib/blog";
 
-type Articles = SiteContent["insights"]["articles"];
+export type LatestArticlesData = {
+  eyebrow: string;
+  title: string;
+  seeAllLabel: string;
+  seeAllHref: string;
+  items: Array<{
+    title: string;
+    readMins: number;
+    image: string;
+    imageAlt: string;
+    href: string;
+  }>;
+};
 
-const HEADER = "4.75rem";
+const HEADER_PX = 76;
+
+export function buildLatestArticlesData(posts: BlogPostCard[]): LatestArticlesData {
+  return {
+    eyebrow: "Latest Articles",
+    title: "Stay up to date with our latest news.",
+    seeAllLabel: "See all articles",
+    seeAllHref: "/blog",
+    items: posts.slice(0, 6).map((p) => ({
+      title: p.title,
+      readMins: p.read_mins,
+      image: p.cover_image,
+      imageAlt: p.cover_alt,
+      href: `/blog/${p.slug}`,
+    })),
+  };
+}
 
 /**
- * Latest Articles — pinned fake-horizontal scroll (vertical → x).
+ * Latest Articles — pinned fake-horizontal scroll (vertical ? x).
  * Pin the section; animate the track child only; clip inside the viewport, not the pin root.
  */
-export default function LatestArticles({ data }: { data: Articles }) {
+export default function LatestArticles({ data }: { data: LatestArticlesData }) {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLUListElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -53,7 +81,7 @@ export default function LatestArticles({ data }: { data: Articles }) {
             ease: "none",
             scrollTrigger: {
               trigger: section,
-              start: `top top+=${HEADER}`,
+              start: `top top+=${HEADER_PX}px`,
               end: () => `+=${Math.max(getTravel() * 1.1, window.innerHeight * 1.25)}`,
               pin: true,
               pinSpacing: true,
@@ -72,7 +100,6 @@ export default function LatestArticles({ data }: { data: Articles }) {
             if (!img.complete) img.addEventListener("load", onLoad, { once: true });
           });
           window.addEventListener("load", onLoad);
-          // Double rAF after layout so card widths are final before travel calc
           requestAnimationFrame(() => {
             requestAnimationFrame(() => ScrollTrigger.refresh());
           });
@@ -99,7 +126,6 @@ export default function LatestArticles({ data }: { data: Articles }) {
       className="scroll-mt-20 bg-charcoal text-warm-white"
       data-articles-scroll
     >
-      {/* Pinned shell: sized under fixed header; no overflow-x on this node */}
       <div className="relative flex h-auto min-h-[100svh] flex-col justify-center py-16 lg:h-[calc(100svh-4.75rem)] lg:min-h-0 lg:justify-between lg:py-10">
         <div
           aria-hidden
@@ -123,7 +149,6 @@ export default function LatestArticles({ data }: { data: Articles }) {
           </div>
         </div>
 
-        {/* Clip window — horizontal overflow lives here, not on the pin root */}
         <div
           ref={viewportRef}
           className="relative mt-10 min-h-0 w-full flex-1 overflow-x-clip overflow-y-visible lg:mt-0 lg:flex lg:items-center"
@@ -135,7 +160,7 @@ export default function LatestArticles({ data }: { data: Articles }) {
           >
             {data.items.map((item, i) => (
               <li
-                key={item.title}
+                key={item.href + item.title}
                 data-article-card
                 className="w-[min(72vw,17.5rem)] shrink-0 sm:w-[18.5rem] lg:w-[clamp(16rem,22vw,20.5rem)]"
               >
@@ -181,3 +206,5 @@ export default function LatestArticles({ data }: { data: Articles }) {
     </section>
   );
 }
+
+

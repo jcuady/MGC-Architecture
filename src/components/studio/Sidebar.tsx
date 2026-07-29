@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +11,7 @@ const links = [
   { label: "Inquiries & Bookings", href: "/studio/inquiries" },
   { label: "Site Content", href: "/studio/content" },
   { label: "Finish rates", href: "/studio/finishes" },
+  { label: "Blog", href: "/studio/blog" },
 ];
 
 export default function Sidebar({ email }: { email: string }) {
@@ -18,7 +19,6 @@ export default function Sidebar({ email }: { email: string }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
 
-  // Close the drawer on navigation (tablet/phone).
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
@@ -50,9 +50,7 @@ export default function Sidebar({ email }: { email: string }) {
           className="h-9 w-9 object-contain"
         />
         <div>
-          <p className="font-heading text-sm font-semibold leading-tight">
-            mgc architecture
-          </p>
+          <p className="font-heading text-sm font-semibold leading-tight">mgc architecture</p>
           <p className="font-heading text-[0.65rem] font-medium uppercase tracking-[0.25em] text-gold">
             Studio
           </p>
@@ -72,10 +70,7 @@ export default function Sidebar({ email }: { email: string }) {
       <nav aria-label="Admin" className="flex-1 overflow-y-auto px-3 py-4">
         <ul className="space-y-1">
           {links.map((link) => {
-            const active =
-              link.href === "/studio"
-                ? pathname === "/studio"
-                : pathname.startsWith(link.href);
+            const active = link.href === "/studio" ? pathname === "/studio" : pathname.startsWith(link.href);
             return (
               <li key={link.href}>
                 <Link
@@ -103,10 +98,7 @@ export default function Sidebar({ email }: { email: string }) {
         >
           View live site ↗
         </a>
-        <p
-          className="mt-4 truncate font-heading text-xs text-warm-white/50"
-          title={email}
-        >
+        <p className="mt-4 truncate font-heading text-xs text-warm-white/50" title={email}>
           {email}
         </p>
         <button
@@ -122,23 +114,12 @@ export default function Sidebar({ email }: { email: string }) {
 
   return (
     <>
-      {/* Tablet / phone top bar */}
       <div className="sticky top-0 z-40 flex items-center justify-between gap-3 border-b border-warm-gray/70 bg-charcoal px-4 py-3 text-warm-white lg:hidden">
         <div className="flex min-w-0 items-center gap-3">
-          <Image
-            src="/brand/monogram-white.png"
-            alt=""
-            width={32}
-            height={32}
-            className="h-8 w-8 object-contain"
-          />
+          <Image src="/brand/monogram-white.png" alt="" width={32} height={32} className="h-8 w-8 object-contain" />
           <div className="min-w-0">
-            <p className="truncate font-heading text-sm font-semibold">
-              MGC Studio
-            </p>
-            <p className="font-heading text-[0.6rem] uppercase tracking-[0.2em] text-gold">
-              Admin
-            </p>
+            <p className="truncate font-heading text-sm font-semibold">MGC Studio</p>
+            <p className="font-heading text-[0.6rem] uppercase tracking-[0.2em] text-gold">Admin</p>
           </div>
         </div>
         <button
@@ -149,17 +130,12 @@ export default function Sidebar({ email }: { email: string }) {
           aria-label={open ? "Close menu" : "Open menu"}
           onClick={() => setOpen((v) => !v)}
         >
-          <span
-            className={`h-0.5 w-5 bg-current transition-transform ${open ? "translate-y-2 rotate-45" : ""}`}
-          />
+          <span className={`h-0.5 w-5 bg-current transition-transform ${open ? "translate-y-2 rotate-45" : ""}`} />
           <span className={`h-0.5 w-5 bg-current ${open ? "opacity-0" : ""}`} />
-          <span
-            className={`h-0.5 w-5 bg-current transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`}
-          />
+          <span className={`h-0.5 w-5 bg-current transition-transform ${open ? "-translate-y-2 -rotate-45" : ""}`} />
         </button>
       </div>
 
-      {/* Drawer overlay (tablet/phone) */}
       {open && (
         <button
           type="button"
@@ -180,3 +156,4 @@ export default function Sidebar({ email }: { email: string }) {
     </>
   );
 }
+

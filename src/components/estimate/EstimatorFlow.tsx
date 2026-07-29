@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
-import { estimateCost, formatPhp, LOT_COVERAGE, type FinishRate } from "@/lib/calculator";
+import { estimateCost, formatPhp, type FinishRate } from "@/lib/calculator";
 
 const steps = ["Your project", "Finish level", "Your estimate"] as const;
 
@@ -28,7 +28,6 @@ export default function EstimatorFlow({ finishes }: { finishes: FinishRate[] }) 
   const detailsValid =
     Number.isFinite(lot) && lot > 0 && Number.isInteger(floorCount) && floorCount >= 1 && floorCount <= 20;
   const cost = finish && detailsValid ? estimateCost(lot, floorCount, finish.rate_per_sqm) : 0;
-  const floorArea = detailsValid ? lot * LOT_COVERAGE * floorCount : 0;
 
   // Keep screen-reader + keyboard users oriented when the step changes.
   useEffect(() => {
@@ -198,10 +197,6 @@ export default function EstimatorFlow({ finishes }: { finishes: FinishRate[] }) 
             </h2>
             <CountUpAmount amount={cost} />
             <dl className="mt-8 divide-y divide-warm-gray/60 border-y border-warm-gray/60">
-              <BreakdownRow
-                label="Estimated floor area"
-                value={`${floorArea.toLocaleString("en-PH", { maximumFractionDigits: 0 })} sqm (lot × ${LOT_COVERAGE} × ${floorCount} ${floorCount === 1 ? "floor" : "floors"})`}
-              />
               <BreakdownRow label="Finish level" value={finish.name} />
               <BreakdownRow
                 label="Rate applied"
@@ -210,16 +205,15 @@ export default function EstimatorFlow({ finishes }: { finishes: FinishRate[] }) 
             </dl>
             <p className="mt-6 text-sm leading-relaxed text-charcoal/65">
               A rough guide, not a quote — actual cost depends on scope,
-              materials, site conditions, and market rates. The next step is a
-              free consultation where we refine this around your lot and
-              lifestyle.
+              materials, site conditions, and market rates. Next, inquire and
+              we&apos;ll refine this around your lot and lifestyle.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/#contact"
-                className="inline-flex min-h-12 items-center justify-center bg-chestnut px-8 py-3.5 font-heading text-sm font-semibold text-warm-white transition-colors hover:bg-terracotta"
+                href={`/inquire?category=${encodeURIComponent("Cost Estimation & Budget Planning")}`}
+                className="inline-flex min-h-12 cursor-pointer items-center justify-center bg-chestnut px-8 py-3.5 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white transition-colors hover:bg-terracotta"
               >
-                Book a free consultation
+                Inquire
               </Link>
               <button
                 type="button"

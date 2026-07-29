@@ -1,21 +1,23 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { sectionMeta } from "@/lib/cms";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const [inquiriesRes, contentRes, finishesRes] = await Promise.all([
+  const [inquiriesRes, contentRes, finishesRes, blogRes] = await Promise.all([
     supabase
       .from("inquiries")
       .select("id, created_at, name, service, status, preferred_date")
       .order("created_at", { ascending: false }),
     supabase.from("site_content").select("key"),
     supabase.from("finish_rates").select("id, is_active"),
+    supabase.from("blog_posts").select("id, is_published"),
   ]);
 
   const inquiries = inquiriesRes.data ?? [];
   const finishes = finishesRes.data ?? [];
+  const posts = blogRes.data ?? [];
   const stats = [
     {
       label: "New inquiries",
@@ -26,6 +28,11 @@ export default async function DashboardPage() {
       label: "Booked consultations",
       value: inquiries.filter((i) => i.status === "booked").length,
       href: "/studio/inquiries",
+    },
+    {
+      label: "Published blog posts",
+      value: posts.filter((p) => p.is_published).length,
+      href: "/studio/blog",
     },
     {
       label: "Active finish rates",
@@ -48,7 +55,7 @@ export default async function DashboardPage() {
         What&apos;s happening across inquiries and the website.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {stats.map((stat) => (
           <Link
             key={stat.label}
@@ -58,30 +65,22 @@ export default async function DashboardPage() {
             <p className="font-heading text-xs font-semibold uppercase tracking-[0.15em] text-charcoal/55">
               {stat.label}
             </p>
-            <p className="mt-3 font-heading text-3xl font-semibold text-chestnut">
-              {stat.value}
-            </p>
+            <p className="mt-3 font-heading text-3xl font-semibold text-chestnut">{stat.value}</p>
           </Link>
         ))}
       </div>
 
       <section className="mt-10">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 className="font-heading text-lg font-semibold text-charcoal">
-            Recent inquiries
-          </h2>
-          <Link
-            href="/studio/inquiries"
-            className="link-draw font-heading text-sm font-medium text-chestnut"
-          >
+          <h2 className="font-heading text-lg font-semibold text-charcoal">Recent inquiries</h2>
+          <Link href="/studio/inquiries" className="link-draw font-heading text-sm font-medium text-chestnut">
             View all
           </Link>
         </div>
 
         {recent.length === 0 ? (
           <p className="mt-6 border border-dashed border-warm-gray bg-white p-8 text-center text-sm text-charcoal/60">
-            No inquiries yet. New submissions from the website&apos;s contact form will
-            appear here.
+            No inquiries yet. New submissions from the website&apos;s contact form will appear here.
           </p>
         ) : (
           <div className="mt-4 overflow-x-auto border border-warm-gray/70 bg-white">
@@ -98,15 +97,9 @@ export default async function DashboardPage() {
               <tbody className="divide-y divide-warm-gray/50">
                 {recent.map((inquiry) => (
                   <tr key={inquiry.id}>
-                    <td className="px-5 py-3.5 font-heading font-medium text-charcoal">
-                      {inquiry.name}
-                    </td>
-                    <td className="px-5 py-3.5 text-charcoal/75">
-                      {inquiry.service ?? "—"}
-                    </td>
-                    <td className="px-5 py-3.5 text-charcoal/75">
-                      {inquiry.preferred_date ?? "—"}
-                    </td>
+                    <td className="px-5 py-3.5 font-heading font-medium text-charcoal">{inquiry.name}</td>
+                    <td className="px-5 py-3.5 text-charcoal/75">{inquiry.service ?? "—"}</td>
+                    <td className="px-5 py-3.5 text-charcoal/75">{inquiry.preferred_date ?? "—"}</td>
                     <td className="px-5 py-3.5 text-charcoal/75">
                       {new Date(inquiry.created_at).toLocaleDateString("en-PH", {
                         month: "short",
@@ -136,10 +129,9 @@ function StatusBadge({ status }: { status: string }) {
     archived: "bg-warm-gray/40 text-charcoal/60 border-warm-gray",
   };
   return (
-    <span
-      className={`inline-block border px-2.5 py-1 font-heading text-xs font-semibold capitalize ${styles[status] ?? styles.new}`}
-    >
+    <span className={`inline-block border px-2.5 py-1 font-heading text-xs font-semibold capitalize ${styles[status] ?? styles.new}`}>
       {status}
     </span>
   );
 }
+

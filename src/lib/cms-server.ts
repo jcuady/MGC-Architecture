@@ -22,6 +22,16 @@ export const getSiteContent = cache(async (): Promise<SiteContent> => {
         merged[key] = mergeSection(merged[key], row.data) as never;
       }
     }
+
+    // Schema evolve: insights.upcoming used to be { title, teaser }. If the
+    // stored array still lacks items, keep the code defaults for those chapters.
+    const upcoming = merged.insights.upcoming;
+    if (
+      !Array.isArray(upcoming) ||
+      upcoming.some((ch) => !Array.isArray(ch.items) || ch.items.length === 0)
+    ) {
+      merged.insights.upcoming = structuredClone(defaultContent.insights.upcoming);
+    }
   } catch {
     // Supabase unreachable — fall back to the defaults baked into the code.
   }

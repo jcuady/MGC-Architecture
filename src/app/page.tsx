@@ -11,14 +11,33 @@ import Faq from "@/components/sections/Faq";
 import EstimatorHook from "@/components/sections/EstimatorHook";
 import Contact from "@/components/sections/Contact";
 import Footer from "@/components/sections/Footer";
+
+import { getPublishedPostCards } from "@/lib/blog-server";
 import { getSiteContent } from "@/lib/cms-server";
 import { textStyle } from "@/lib/cms";
 
-// ISR: CMS edits appear within a minute; saving in the admin also revalidates.
 export const revalidate = 60;
 
+/**
+ * Section order follows the architect header sequence:
+ * Works -> Process -> Inquire (services + contact CTA) -> Cost Calculator ->
+ * FAQ -> About -> Blog -> Contact.
+ */
 export default async function Home() {
-  const content = await getSiteContent();
+  const [content, posts] = await Promise.all([getSiteContent(), getPublishedPostCards()]);
+  const articles = {
+    eyebrow: "Latest Articles",
+    title: "Stay up to date with our latest news.",
+    seeAllLabel: "See all articles",
+    seeAllHref: "/blog",
+    items: posts.slice(0, 6).map((p) => ({
+      title: p.title,
+      readMins: p.read_mins,
+      image: p.cover_image,
+      imageAlt: p.cover_alt,
+      href: `/blog/${p.slug}`,
+    })),
+  };
 
   return (
     <>
@@ -29,24 +48,24 @@ export default async function Home() {
         <Work data={content.work} />
         <Showcase
           src={content.showcaseNoir.image}
-          alt="The Noir — living room with marble feature wall, timber shelving, and sculptural seating"
+          alt="The Noir — bedroom with dark wood headboard, warm accent lighting, and marble floors"
           eyebrow={content.showcaseNoir.eyebrow}
           lines={[content.showcaseNoir.line1, content.showcaseNoir.line2]}
           lineStyle={textStyle(content.showcaseNoir.styles?.lines)}
         />
+        <Process data={content.process} />
         <Services data={content.services} />
         <EstimatorHook data={content.estimator} />
-        <About data={content.about} />
-        <Process data={content.process} />
-        <Insights data={content.insights} />
         <Faq data={content.faq} />
+        <About data={content.about} />
+        <Insights data={content.insights} articles={articles} />
         <Showcase
           src={content.showcaseHearth.image}
-          alt="The Hearth — warm dining room with backlit shelving and rattan cabinetry"
+          alt="The Hearth - warm dining room with backlit shelving and rattan cabinetry"
           eyebrow={content.showcaseHearth.eyebrow}
           lines={[content.showcaseHearth.line1, content.showcaseHearth.line2]}
           lineStyle={textStyle(content.showcaseHearth.styles?.lines)}
-          cta={{ label: content.showcaseHearth.ctaLabel, href: "#contact" }}
+          cta={{ label: content.showcaseHearth.ctaLabel, href: "/inquire" }}
         />
         <Contact data={content.contact} />
       </main>
@@ -54,3 +73,5 @@ export default async function Home() {
     </>
   );
 }
+
+

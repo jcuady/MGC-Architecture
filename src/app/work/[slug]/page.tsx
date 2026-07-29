@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
 import Reveal from "@/components/Reveal";
+import CapstoneCaseStudy from "@/components/work/CapstoneCaseStudy";
 import { projects } from "@/lib/content";
 
 type Params = { slug: string };
@@ -44,11 +45,23 @@ export default async function ProjectPage({
   const project = projects[index];
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
+  const underRc = /RC LLaguno/i.test(project.role);
+  const pieces = project.pieces ?? [];
+  const capstone = project.capstone;
 
   const renders = project.images.filter((img) => img.kind === "render");
   const drawings = project.images.filter((img) => img.kind !== "render");
-  // The hero render opens the page, so the gallery starts from the second view.
-  const gallery = renders.filter((img) => img.src !== project.hero);
+  // Two-up gallery: lead with the next render + reuse the hero beside it, then the rest.
+  const rest = renders.filter((img) => img.src !== project.hero);
+  const heroImg =
+    renders.find((img) => img.src === project.hero) ?? {
+      src: project.hero,
+      alt: project.heroAlt,
+      kind: "render" as const,
+    };
+  const gallery = rest.length === 0 ? renders : [rest[0], heroImg, ...rest.slice(1)];
+  const showPairedPieces = pieces.length > 0;
+  const showCapstone = Boolean(capstone);
 
   return (
     <>
@@ -70,7 +83,7 @@ export default async function ProjectPage({
             <nav aria-label="Breadcrumb">
               <ol className="flex items-center gap-2 font-heading text-xs font-semibold uppercase tracking-[0.2em] text-warm-white/70">
                 <li>
-                  <Link href="/#work" className="link-draw">
+                  <Link href="/work" className="link-draw">
                     Work
                   </Link>
                 </li>
@@ -149,25 +162,35 @@ export default async function ProjectPage({
                       ))}
                     </dd>
                   </div>
-                  <div className="flex gap-12 border-t border-warm-gray/60 pt-6">
-                    <div>
-                      <dt className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-                        Views
-                      </dt>
-                      <dd className="mt-2 font-heading text-2xl font-semibold text-charcoal">
-                        {renders.length}
-                      </dd>
-                    </div>
-                    {drawings.length > 0 && (
-                      <div>
-                        <dt className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-                          Drawings &amp; Diagrams
-                        </dt>
-                        <dd className="mt-2 font-heading text-2xl font-semibold text-charcoal">
-                          {drawings.length}
-                        </dd>
-                      </div>
-                    )}
+                  <div className="border-t border-warm-gray/60 pt-6">
+                    <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+                      Project credits
+                    </p>
+                    <ul className="mt-4 flex flex-wrap items-center gap-6 sm:gap-8">
+                      <li className="flex items-center gap-2.5">
+                        <Image
+                          src="/brand/monogram-chestnut.png"
+                          alt=""
+                          width={40}
+                          height={40}
+                          className="h-9 w-9 object-contain"
+                        />
+                        <span className="font-heading text-sm font-semibold tracking-[0.04em] text-charcoal">
+                          mgc architecture
+                        </span>
+                      </li>
+                      {underRc ? (
+                        <li>
+                          <Image
+                            src="/brand/rclc-logo.png"
+                            alt="RC LLaguno Construction"
+                            width={200}
+                            height={72}
+                            className="h-12 w-auto object-contain sm:h-14"
+                          />
+                        </li>
+                      ) : null}
+                    </ul>
                   </div>
                 </dl>
               </Reveal>
@@ -175,115 +198,164 @@ export default async function ProjectPage({
           </div>
         </section>
 
-        {/* Gallery — every render, editorial rhythm: full-width, then pairs */}
-        <section aria-label={`${project.name} gallery`}>
-          <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-            <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
-              {gallery.map((img, i) => (
-                <Reveal
-                  key={img.src}
-                  delay={(i % 2) * 90}
-                  className={i % 3 === 0 ? "sm:col-span-2" : ""}
-                >
-                  <figure>
-                    <div
-                      className={`relative overflow-hidden bg-warm-gray ${
-                        i % 3 === 0 ? "aspect-[16/9]" : "aspect-[4/3]"
-                      }`}
-                    >
-                      <Image
-                        src={img.src}
-                        alt={img.alt}
-                        fill
-                        sizes={
-                          i % 3 === 0
-                            ? "(min-width: 1280px) 1216px, 100vw"
-                            : "(min-width: 640px) 50vw, 100vw"
-                        }
-                        className="object-cover transition-transform duration-500 ease-out hover:scale-[1.03]"
-                      />
+        {/* Gallery — Capstone case study, paired pieces, or standard two-up renders */}
+        {showCapstone && capstone ? (
+          <CapstoneCaseStudy data={capstone} />
+        ) : showPairedPieces ? (
+          <section aria-label={`${project.name} pieces`}>
+            <div className="mx-auto max-w-7xl space-y-16 px-5 py-16 sm:px-8 sm:py-20 sm:space-y-20">
+              {pieces.map((piece, i) => (
+                <Reveal key={piece.title} delay={(i % 2) * 60}>
+                  <article>
+                    <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
+                      <figure>
+                        <div className="relative aspect-[4/3] overflow-hidden bg-warm-gray">
+                          <Image
+                            src={piece.picture}
+                            alt={piece.pictureAlt}
+                            fill
+                            sizes="(min-width: 640px) 50vw, 100vw"
+                            className="object-cover"
+                          />
+                        </div>
+                        <figcaption className="mt-3 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-charcoal/45">
+                          Picture
+                        </figcaption>
+                      </figure>
+                      <figure>
+                        <div className="relative aspect-[4/3] overflow-hidden bg-beige">
+                          <Image
+                            src={piece.diagram}
+                            alt={piece.diagramAlt}
+                            fill
+                            sizes="(min-width: 640px) 50vw, 100vw"
+                            className="object-contain p-3 sm:p-5"
+                          />
+                        </div>
+                        <figcaption className="mt-3 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-charcoal/45">
+                          Diagram
+                        </figcaption>
+                      </figure>
                     </div>
-                    <figcaption className="mt-3 font-heading text-xs text-charcoal/55">
-                      {img.alt}
-                    </figcaption>
-                  </figure>
+                    <div className="mt-5 border-t border-warm-gray/60 pt-4">
+                      <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+                        Project {String(i + 1).padStart(2, "0")}
+                      </p>
+                      <h2 className="mt-2 font-heading text-xl font-semibold text-charcoal sm:text-2xl">
+                        {piece.title}
+                      </h2>
+                    </div>
+                  </article>
                 </Reveal>
               ))}
             </div>
-          </div>
-        </section>
-
-        {/* Drawings & diagrams — the process behind the renders */}
-        {drawings.length > 0 && (
-          <section className="bg-beige" aria-label={`${project.name} drawings and diagrams`}>
-            <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
-              <Reveal>
-                <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-                  Process
-                </p>
-                <h2 className="mt-4 font-heading text-2xl font-semibold text-charcoal sm:text-3xl">
-                  Drawings &amp; diagrams
-                </h2>
-                <p className="mt-4 max-w-2xl leading-relaxed text-charcoal/75">
-                  The thinking behind the design — the plans, strategies, and technical
-                  drawings that carry a project from idea to construction.
-                </p>
-              </Reveal>
-              <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-8">
-                {drawings.map((img, i) => (
-                  <Reveal key={img.src} delay={(i % 2) * 90}>
-                    <figure className="bg-warm-white p-4 sm:p-6">
-                      <div className="relative aspect-[4/3]">
-                        <Image
-                          src={img.src}
-                          alt={img.alt}
-                          fill
-                          sizes="(min-width: 640px) 50vw, 100vw"
-                          className="object-contain"
-                        />
-                      </div>
-                      <figcaption className="mt-4 border-t border-warm-gray/60 pt-3 font-heading text-xs text-charcoal/55">
-                        {img.alt}
-                      </figcaption>
-                    </figure>
-                  </Reveal>
-                ))}
-              </div>
-            </div>
           </section>
+        ) : (
+          <>
+            <section aria-label={`${project.name} gallery`}>
+              <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
+                <div className="grid gap-6 sm:grid-cols-2 sm:gap-8">
+                  {gallery.map((img, i) => (
+                    <Reveal key={img.src} delay={(i % 2) * 90}>
+                      <figure>
+                        <div className="relative aspect-[4/3] overflow-hidden bg-warm-gray">
+                          <Image
+                            src={img.src}
+                            alt={img.alt}
+                            fill
+                            sizes="(min-width: 640px) 50vw, 100vw"
+                            className="object-cover transition-transform duration-500 ease-out hover:scale-[1.03]"
+                          />
+                        </div>
+                        <figcaption className="mt-3 font-heading text-xs text-charcoal/55">
+                          {img.alt}
+                        </figcaption>
+                      </figure>
+                    </Reveal>
+                  ))}
+                </div>
+              </div>
+            </section>
+
+            {drawings.length > 0 && (
+              <section className="bg-beige" aria-label={`${project.name} drawings and diagrams`}>
+                <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
+                  <Reveal>
+                    <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+                      Process
+                    </p>
+                    <h2 className="mt-4 font-heading text-2xl font-semibold text-charcoal sm:text-3xl">
+                      Drawings &amp; diagrams
+                    </h2>
+                    <p className="mt-4 max-w-2xl leading-relaxed text-charcoal/75">
+                      The thinking behind the design — the plans, strategies, and technical
+                      drawings that carry a project from idea to construction.
+                    </p>
+                  </Reveal>
+                  <div className="mt-12 grid gap-6 sm:grid-cols-2 sm:gap-8">
+                    {drawings.map((img, i) => (
+                      <Reveal key={img.src} delay={(i % 2) * 90}>
+                        <figure className="bg-warm-white p-4 sm:p-6">
+                          <div className="relative aspect-[4/3]">
+                            <Image
+                              src={img.src}
+                              alt={img.alt}
+                              fill
+                              sizes="(min-width: 640px) 50vw, 100vw"
+                              className="object-contain"
+                            />
+                          </div>
+                          <figcaption className="mt-4 border-t border-warm-gray/60 pt-3 font-heading text-xs text-charcoal/55">
+                            {img.alt}
+                          </figcaption>
+                        </figure>
+                      </Reveal>
+                    ))}
+                  </div>
+                </div>
+              </section>
+            )}
+          </>
         )}
 
-        {/* CTA + prev/next */}
+        {/* CTA */}
         <section className="border-t border-warm-gray/60">
-          <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8 sm:py-20">
+          <div className="mx-auto max-w-7xl px-5 pb-8 pt-16 sm:px-8 sm:pb-10 sm:pt-20">
             <Reveal>
-              <div className="flex flex-wrap items-center justify-between gap-6">
-                <div>
-                  <h2 className="font-heading text-2xl font-semibold text-charcoal sm:text-3xl">
-                    Planning something similar?
-                  </h2>
-                  <p className="mt-2 leading-relaxed text-charcoal/75">
-                    The initial consultation is complimentary.
-                  </p>
-                </div>
+              <div className="max-w-2xl">
+                <h2 className="font-heading text-2xl font-semibold text-charcoal sm:text-3xl">
+                  Planning something similar?
+                </h2>
+                <p className="mt-3 max-w-xl font-body text-base leading-relaxed text-charcoal/75 sm:text-lg">
+                  We&apos;re here to help. Book a free discussion call to talk through
+                  your project.
+                </p>
                 <Link
-                  href="/#contact"
-                  className="bg-chestnut px-7 py-3.5 font-heading text-sm font-semibold text-warm-white transition-colors hover:bg-terracotta"
+                  href="/inquire"
+                  className="mt-6 inline-flex min-h-12 cursor-pointer items-center bg-chestnut px-7 py-3.5 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white transition-colors hover:bg-terracotta"
                 >
                   Start a project
                 </Link>
               </div>
             </Reveal>
+          </div>
+        </section>
 
+        {/* Prev / next — spaced below CTA for breathing room */}
+        <section className="border-t border-transparent">
+          <div className="mx-auto max-w-7xl px-5 pb-16 pt-10 sm:px-8 sm:pb-20 sm:pt-14">
             <nav
               aria-label="More projects"
-              className="mt-14 grid gap-px border border-warm-gray/60 bg-warm-gray/60 sm:grid-cols-2"
+              className="grid gap-px border border-warm-gray/60 bg-warm-gray/60 sm:grid-cols-2"
             >
               <Link
                 href={`/work/${prev.slug}`}
                 className="group bg-warm-white p-6 transition-colors hover:bg-beige sm:p-8"
               >
-                <span className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-charcoal/50">
+                <span className="inline-flex items-center gap-2 font-heading text-xs font-semibold uppercase tracking-[0.2em] text-charcoal/50">
+                  <span aria-hidden className="text-base leading-none text-chestnut">
+                    ←
+                  </span>
                   Previous project
                 </span>
                 <span className="mt-2 block font-heading text-xl font-semibold text-charcoal group-hover:text-chestnut">
@@ -294,8 +366,11 @@ export default async function ProjectPage({
                 href={`/work/${next.slug}`}
                 className="group bg-warm-white p-6 text-right transition-colors hover:bg-beige sm:p-8"
               >
-                <span className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-charcoal/50">
+                <span className="inline-flex items-center justify-end gap-2 font-heading text-xs font-semibold uppercase tracking-[0.2em] text-charcoal/50">
                   Next project
+                  <span aria-hidden className="text-base leading-none text-chestnut">
+                    →
+                  </span>
                 </span>
                 <span className="mt-2 block font-heading text-xl font-semibold text-charcoal group-hover:text-chestnut">
                   {next.name}

@@ -23,13 +23,13 @@ export const site = {
 };
 
 export const nav = [
-  { label: "Works", href: "/#work" },
-  { label: "Process", href: "/#process" },
-  { label: "Inquire", href: "/#contact" },
+  { label: "Works", href: "/work" },
+  { label: "Process", href: "/process" },
+  { label: "Inquire", href: "/inquire" },
   { label: "Cost Calculator", href: "/estimate" },
-  { label: "FAQ", href: "/#faq" },
-  { label: "About", href: "/#about" },
-  { label: "Blog", href: "/#blog" },
+  { label: "FAQ", href: "/faq" },
+  { label: "About", href: "/about" },
+  { label: "Blog", href: "/blog" },
 ];
 
 export type ProjectImage = {
@@ -37,6 +37,30 @@ export type ProjectImage = {
   alt: string;
   /** renders are photoreal views; diagrams/drawings go to the process section */
   kind: "render" | "diagram" | "drawing";
+};
+
+/** Paired picture + diagram rows (Built-In Furnitures and similar). */
+export type ProjectPiece = {
+  title: string;
+  picture: string;
+  pictureAlt: string;
+  diagram: string;
+  diagramAlt: string;
+};
+
+/** Architectural Capstone image/diagram case-study layout (architect wireframe). */
+export type CapstoneCaseStudy = {
+  grid: { src: string; alt: string }[];
+  problem: { title: string; body: string; diagram: string; diagramAlt: string };
+  approach: { title: string; body: string; diagram: string; diagramAlt: string };
+  classroom: { src: string; alt: string };
+  strategy: {
+    title: string;
+    body: string;
+    diagrams: { src: string; alt: string }[];
+  };
+  feature: { src: string; alt: string };
+  closing: { src: string; alt: string }[];
 };
 
 export type Project = {
@@ -53,6 +77,10 @@ export type Project = {
   hero: string;
   heroAlt: string;
   images: ProjectImage[];
+  /** When set, work page shows picture | diagram pairs with titles under each row */
+  pieces?: ProjectPiece[];
+  /** When set, work page uses the Capstone image/diagram case-study layout */
+  capstone?: CapstoneCaseStudy;
 };
 
 export const projects: Project[] = [
@@ -67,8 +95,8 @@ export const projects: Project[] = [
     description:
       "A modern two-storey residence transformed from an existing bungalow — planned around family life, future needs, and a warm contemporary palette.",
     story:
-      "Handled under RC LLaguno Construction, this project followed the design team from the first client meetings through schematic design, drawing development, and building-permit assistance. The proposal transforms an existing bungalow into a modern two-storey residence shaped around the family's changing lifestyle: space for two vehicles, dedicated bedrooms, a home office, and a ground-floor bedroom for an elderly family member. The client's preferred palette of green, grey, brown, and mustard guides a warm contemporary home that feels open without giving up privacy.",
-    scope: ["Architectural Design", "Interior Design", "3D Visualization", "Permit Assistance"],
+      "Handled under RC LLaguno Construction, this project was handled by the design team from the first client meetings through schematic design, drawing development, and building-permit assistance. The proposal transforms an existing bungalow into a modern two-storey residence shaped around the family's changing lifestyle: space for two vehicles, dedicated bedrooms, a home office, and a ground-floor bedroom for an elderly family member. The client's preferred palette of green, grey, brown, and mustard guides a warm contemporary home that feels open without giving up privacy.",
+    scope: ["Architectural Design", "Construction Drawings", "3D Visualization", "Permit Assistance"],
     hero: "/portfolio/c-house/c-house-01-exterior-view-1.png",
     heroAlt:
       "C House — two-storey residence exterior with gabled roof, timber slats, and perimeter fence",
@@ -185,6 +213,11 @@ export const projects: Project[] = [
         kind: "render",
       },
       {
+        src: "/portfolio/the-noir/the-noir-bedroom-view-1.png",
+        alt: "The Noir — bedroom in dark layered tones",
+        kind: "render",
+      },
+      {
         src: "/portfolio/the-noir/the-noir-living-view-2.png",
         alt: "The Noir — living room toward the backlit shelving",
         kind: "render",
@@ -197,21 +230,6 @@ export const projects: Project[] = [
       {
         src: "/portfolio/the-noir/the-noir-living-view-4.png",
         alt: "The Noir — living room detail in stone and walnut",
-        kind: "render",
-      },
-      {
-        src: "/portfolio/the-noir/the-noir-living-view-5.png",
-        alt: "The Noir — living room perspective under warm evening light",
-        kind: "render",
-      },
-      {
-        src: "/portfolio/the-noir/the-noir-bedroom-view-1.png",
-        alt: "The Noir — bedroom in dark layered tones",
-        kind: "render",
-      },
-      {
-        src: "/portfolio/the-noir/the-noir-bedroom-view-2.png",
-        alt: "The Noir — bedroom detail with warm accent lighting",
         kind: "render",
       },
     ],
@@ -238,6 +256,11 @@ export const projects: Project[] = [
         kind: "render",
       },
       {
+        src: "/portfolio/the-hearth/the-hearth-dining-view-1.png",
+        alt: "The Hearth — dining room with backlit shelving and rattan cabinetry",
+        kind: "render",
+      },
+      {
         src: "/portfolio/the-hearth/the-hearth-kitchen-view-2.png",
         alt: "The Hearth — kitchen work surface and open shelving",
         kind: "render",
@@ -245,11 +268,6 @@ export const projects: Project[] = [
       {
         src: "/portfolio/the-hearth/the-hearth-kitchen-view-3.png",
         alt: "The Hearth — kitchen detail with white brick backsplash",
-        kind: "render",
-      },
-      {
-        src: "/portfolio/the-hearth/the-hearth-dining-view-1.png",
-        alt: "The Hearth — dining room with backlit shelving and rattan cabinetry",
         kind: "render",
       },
       {
@@ -286,6 +304,11 @@ export const projects: Project[] = [
         kind: "render",
       },
       {
+        src: "/portfolio/guest-quarter/guest-quarter-view-4.png",
+        alt: "Guest Quarter — bedroom perspective toward the window",
+        kind: "render",
+      },
+      {
         src: "/portfolio/guest-quarter/guest-quarter-view-2.png",
         alt: "Guest Quarter — desk and vanity nook",
         kind: "render",
@@ -293,11 +316,6 @@ export const projects: Project[] = [
       {
         src: "/portfolio/guest-quarter/guest-quarter-view-3.png",
         alt: "Guest Quarter — wardrobe cabinetry fitted to the room width",
-        kind: "render",
-      },
-      {
-        src: "/portfolio/guest-quarter/guest-quarter-view-4.png",
-        alt: "Guest Quarter — bedroom perspective toward the window",
         kind: "render",
       },
     ],
@@ -312,11 +330,79 @@ export const projects: Project[] = [
     description:
       "Longos Central Elementary School reimagined — comfortable, functional classrooms and shared spaces ready for future generations.",
     story:
-      "Longos Central Elementary School was reimagined as a learning environment that better supports students and teachers. The existing campus revealed overcrowded classrooms, poor ventilation, excessive heat, limited daylight, and aging facilities — challenges that became the foundation for a design that puts comfort, well-being, and learning first. Guided by Needs, Design, and Comfort, spaces are flexible, inclusive, and easy to navigate, with stronger connections between buildings, more green space, and vernacular-inspired identity. Thermal comfort was a priority: solar analysis shaped sun-shading density by orientation to cut heat and glare while admitting daylight. Materials balance durability and maintenance — reinforced concrete, fired clay brick, insulated G.I. roofing, acoustic ceilings, vinyl flooring, and fiberglass skylights.",
+      "Longos Central Elementary School was reimagined as a learning environment that better supports both students and teachers. The proposal focuses on creating classrooms and shared spaces that are more comfortable, functional, and ready to meet the needs of future generations.",
     scope: ["Institutional Design", "Climate-Responsive Design", "Design Research", "3D Visualization"],
     hero: "/portfolio/capstone/archi-capstone-exterior-view-1.png",
     heroAlt:
       "Architectural Capstone — two-storey institutional building with brick facade and timber canopy",
+    capstone: {
+      grid: [
+        {
+          src: "/portfolio/capstone/archi-capstone-exterior-view-1.png",
+          alt: "Architectural Capstone — main exterior with brick facade and timber canopy",
+        },
+        {
+          src: "/portfolio/capstone/archi-capstone-exterior-view-2.png",
+          alt: "Architectural Capstone — approach view along the shaded walkway",
+        },
+        {
+          src: "/portfolio/capstone/archi-capstone-exterior-view-3.png",
+          alt: "Architectural Capstone — courtyard elevation with screened verandas",
+        },
+        {
+          src: "/portfolio/capstone/archi-capstone-exterior-view-4.png",
+          alt: "Architectural Capstone — exterior view showing brick mass and shading",
+        },
+      ],
+      problem: {
+        title: "The Problem",
+        body: "A closer look at the existing campus revealed overcrowded classrooms, poor ventilation, excessive heat, limited daylight, and aging facilities that affect everyday learning. These challenges became the foundation for a design that puts student comfort, well-being, and learning first.",
+        diagram: "/portfolio/capstone/archi-capstone-design-problem.png",
+        diagramAlt: "Architectural Capstone — design problem diagram",
+      },
+      approach: {
+        title: "The Approach",
+        body: "With Needs, Design, and Comfort as the guiding principles, every space was planned to be flexible, inclusive, and easy to navigate. The campus layout also strengthens connections between buildings, introduces more green spaces, and incorporates vernacular-inspired elements to give the school a stronger sense of identity.",
+        diagram: "/portfolio/capstone/archi-capstone-design-approach.png",
+        diagramAlt: "Architectural Capstone — design approach diagram",
+      },
+      classroom: {
+        src: "/portfolio/capstone/archi-capstone-interior-view-.png",
+        alt: "Architectural Capstone — inside classroom view with natural ventilation",
+      },
+      strategy: {
+        title: "Design Strategy",
+        body: "One of the key priorities was improving thermal comfort inside the classrooms. Through solar analysis, the placement and density of sun-shading panels were carefully adjusted based on each building's orientation, helping reduce heat and glare while bringing in comfortable natural daylight. Selected materials balance durability, comfort, and ease of maintenance — reinforced concrete, fired clay brick, insulated G.I. roofing, acoustic ceilings, vinyl flooring, and fiberglass skylights.",
+        diagrams: [
+          {
+            src: "/portfolio/capstone/archi-capstone-design-strategy-1.png",
+            alt: "Architectural Capstone — design strategy diagram one",
+          },
+          {
+            src: "/portfolio/capstone/archi-capstone-design-strategy-2.png",
+            alt: "Architectural Capstone — design strategy diagram two",
+          },
+          {
+            src: "/portfolio/capstone/archi-capstone-axonometric-view-1.png",
+            alt: "Architectural Capstone — axonometric diagram and material key",
+          },
+        ],
+      },
+      feature: {
+        src: "/portfolio/capstone/archi-capstone-exterior-view-5.png",
+        alt: "Architectural Capstone — perspective across the landscaped grounds",
+      },
+      closing: [
+        {
+          src: "/portfolio/capstone/archi-capstone-exterior-view-6.png",
+          alt: "Architectural Capstone — evening exterior view",
+        },
+        {
+          src: "/portfolio/capstone/archi-capstone-interior-view-1.png",
+          alt: "Architectural Capstone — interior common area",
+        },
+      ],
+    },
     images: [
       {
         src: "/portfolio/capstone/archi-capstone-exterior-view-1.png",
@@ -430,16 +516,6 @@ export const projects: Project[] = [
         alt: "Saro — pavilion at dusk",
         kind: "render",
       },
-      {
-        src: "/portfolio/saro/saro-illustration-1.png",
-        alt: "Saro — concept illustration",
-        kind: "diagram",
-      },
-      {
-        src: "/portfolio/saro/sasro-diagram-1.png",
-        alt: "Saro — form development diagram",
-        kind: "diagram",
-      },
     ],
   },
   {
@@ -455,36 +531,59 @@ export const projects: Project[] = [
       "Completed under RC LLaguno Construction, these custom built-in furniture projects followed design development, detailed shop drawings, material sourcing, and fabrication coordination through installation. Closets, kitchen cabinets, display shelves, feature walls, and tailored storage were drawn to each client's needs. Close collaboration with fabricators kept every piece accurate while staying functional and visually cohesive.",
     scope: ["Cabinetry Design", "Technical Drawings", "Fabrication Coordination", "3D Visualization"],
     hero: "/portfolio/built-in/built-in-proj-01-view.png",
-    heroAlt: "Built-in furniture project — custom cabinetry render",
+    heroAlt: "Built-in — bedroom vanity table, display shelf, and TV console",
+    pieces: [
+      {
+        title: "Bedroom vanity table, display shelf, TV console",
+        picture: "/portfolio/built-in/built-in-proj-01-view.png",
+        pictureAlt: "Bedroom vanity table, display shelf, and TV console — render",
+        diagram: "/portfolio/built-in/built-in-proj-01-drawing.png",
+        diagramAlt: "Bedroom vanity table, display shelf, and TV console — technical drawing",
+      },
+      {
+        title: "Vinyl display shelf",
+        picture: "/portfolio/built-in/built-in-proj-02-view.png",
+        pictureAlt: "Vinyl display shelf — cabinetry render",
+        diagram: "/portfolio/built-in/built-in-proj-02-drawing.png",
+        diagramAlt: "Vinyl display shelf — technical drawing",
+      },
+      {
+        title: "Altar cabinetry",
+        picture: "/portfolio/built-in/built-in-proj-03-view.png",
+        pictureAlt: "Altar cabinetry — render",
+        diagram: "/portfolio/built-in/built-in-proj-03-plan.png",
+        diagramAlt: "Altar cabinetry — plan drawing",
+      },
+    ],
     images: [
       {
         src: "/portfolio/built-in/built-in-proj-01-view.png",
-        alt: "Built-in project one — cabinetry render",
+        alt: "Bedroom vanity table, display shelf, and TV console — render",
         kind: "render",
       },
       {
         src: "/portfolio/built-in/built-in-proj-01-drawing.png",
-        alt: "Built-in project one — technical drawing with dimensions",
+        alt: "Bedroom vanity table, display shelf, and TV console — technical drawing",
         kind: "drawing",
       },
       {
         src: "/portfolio/built-in/built-in-proj-02-view.png",
-        alt: "Built-in project two — cabinetry render",
+        alt: "Vinyl display shelf — cabinetry render",
         kind: "render",
       },
       {
         src: "/portfolio/built-in/built-in-proj-02-drawing.png",
-        alt: "Built-in project two — technical drawing with dimensions",
+        alt: "Vinyl display shelf — technical drawing",
         kind: "drawing",
       },
       {
         src: "/portfolio/built-in/built-in-proj-03-view.png",
-        alt: "Built-in project three — cabinetry render",
+        alt: "Altar cabinetry — render",
         kind: "render",
       },
       {
         src: "/portfolio/built-in/built-in-proj-03-plan.png",
-        alt: "Built-in project three — plan drawing",
+        alt: "Altar cabinetry — plan drawing",
         kind: "drawing",
       },
     ],
@@ -606,23 +705,19 @@ export const about = {
   software: ["AutoCAD", "SketchUp", "Revit", "Enscape", "Adobe Photoshop", "MS Office"],
 };
 
+/** Landing teaser — full five-phase detail lives on /process (process.md). */
 export const process = {
-  title: "From Idea to Reality",
+  title: "How Your Project Moves Forward",
   intro:
-    "Every project starts with a conversation. A clear process leads to better decisions, fewer surprises, and spaces that are thoughtfully designed from start to finish.",
+    "A simple overview of what to expect from the first planning meeting to project completion.",
+  ctaLabel: "Explore the full process",
+  ctaHref: "/process",
   steps: [
-    {
-      title: "Conversation",
-      body: "We take the time to understand your goals, ideas, budget, and vision before developing a design that suits your needs.",
-    },
-    {
-      title: "Design & Documents",
-      body: "Once the direction is finalized, the design is refined and the necessary drawings and documents are prepared — with you involved in key decisions throughout.",
-    },
-    {
-      title: "Permits & Construction",
-      body: "The project moves toward permits and construction, guided by clear communication and practical solutions at every step.",
-    },
+    { title: "Pre-Design", body: "Goals, site visit, and initial direction — about 1–2 weeks." },
+    { title: "Design Development", body: "Layouts, 3D views, and refinements — about 2–6 weeks." },
+    { title: "Construction Drawings", body: "Construction-ready documents — about 3–6 weeks." },
+    { title: "Permits & Contracts", body: "Permit docs and agreements — about 1–2 months." },
+    { title: "Construction Phase", body: "Build, monitor, and hand over — about 6–12 months." },
   ],
 };
 
@@ -661,50 +756,92 @@ export const insights = {
       },
     ],
   },
-  /** Architect: two more topics forthcoming — reserved slots in the new grid. */
+  /** Fourth and fifth Before You Build chapters — full content (no “coming soon”). */
   upcoming: [
     {
       title: "Permits & paperwork",
-      teaser: "What to gather before design starts — title, tax docs, and clearances that keep the permit path clear.",
+      items: [
+        {
+          title: "Title (TCT or OCT)",
+          body: "Transfer Certificate of Title or Original Certificate of Title — proof of ownership the LGU needs on file.",
+        },
+        {
+          title: "Tax declaration & receipts",
+          body: "Latest Tax Declaration and Real Property Tax Receipt keep assessment records current for permit filing.",
+        },
+        {
+          title: "Lot or survey plan",
+          body: "A clear Lot Plan or Survey Plan helps the design team set setbacks, access, and buildable area correctly.",
+        },
+        {
+          title: "Barangay & HOA clearances",
+          body: "Barangay Clearance, plus HOA Clearance or Certificate when your village or association requires it.",
+        },
+        {
+          title: "Plans from the professionals",
+          body: "Drawings, specifications, and cost estimates are prepared by the project team. Extra requirements can vary by LGU.",
+        },
+      ],
     },
     {
       title: "Budget before design",
-      teaser: "How finish level and scope shape cost — so the first drawings already respect what you can invest.",
+      items: [
+        {
+          title: "Finalize design first",
+          body: "Changes after construction starts mean extra labor, materials, and delays. A settled design protects the budget.",
+        },
+        {
+          title: "Set a realistic budget early",
+          body: "Knowing your range early lets finish level and scope match what you’re comfortable investing — Standard, Premium, or Luxury.",
+        },
+        {
+          title: "Plan for how you live later",
+          body: "Designing with flexibility in mind reduces the need for future renovations or costly extensions.",
+        },
+        {
+          title: "Choose quality over shortcuts",
+          body: "Durable materials and proper workmanship usually mean lower maintenance and better long-term value.",
+        },
+        {
+          title: "Work with the right team",
+          body: "Clear coordination between design and construction prevents misunderstandings, delays, and surprise costs.",
+        },
+      ],
     },
   ],
   articles: {
     eyebrow: "Latest Articles",
     title: "Stay up to date with our latest news.",
     seeAllLabel: "See all articles",
-    seeAllHref: "/#faq",
+    seeAllHref: "/blog",
     items: [
       {
-        title: "Why the right team matters before you build",
+        title: "Before You Build, Read This",
         readMins: 3,
         image: "/portfolio/guest-quarter/guest-quarter-view-2.png",
         imageAlt: "Guest quarter interior — coordinated design and documentation",
-        href: "/#blog",
+        href: "/blog/before-you-build-read-this",
       },
       {
-        title: "5 mistakes to avoid before you break ground",
+        title: "Mistakes to Avoid Before You Build",
         readMins: 4,
         image: "/portfolio/c-house/c-house-02-living-area-view-2.png",
         imageAlt: "Residential living space — planning before construction",
-        href: "/#insights",
+        href: "/blog/mistakes-to-avoid-before-you-build",
       },
       {
-        title: "How much does a residential project cost?",
-        readMins: 2,
+        title: "Budget-Saving Tips Before You Build",
+        readMins: 4,
         image: "/portfolio/the-hearth/the-hearth-dining-view-2.png",
         imageAlt: "Warm dining interior — finish level and budget",
-        href: "/#faq",
+        href: "/blog/budget-saving-tips-before-you-build",
       },
       {
-        title: "What to prepare before your first meeting",
-        readMins: 2,
+        title: "From Idea to Reality",
+        readMins: 3,
         image: "/portfolio/saro/saro-view-2.png",
         imageAlt: "Conceptual architecture study — early project conversation",
-        href: "/#contact",
+        href: "/blog/from-idea-to-reality",
       },
     ],
   },
@@ -736,3 +873,5 @@ export const faqs = [
     a: "If available, it's helpful to prepare property details, an estimated budget, and design preferences or inspiration. Don't worry if you don't have everything yet — these details can also be discussed during our consultation.",
   },
 ];
+
+

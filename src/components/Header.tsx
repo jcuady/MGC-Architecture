@@ -65,16 +65,16 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
           className="hidden items-center gap-4 xl:gap-6 lg:flex"
         >
           {nav.map((item) => (
-            <a
+            <Link
               key={item.href + item.label}
               href={item.href}
               className="link-draw font-heading text-[0.6875rem] font-medium uppercase tracking-[0.12em] xl:text-xs"
             >
               {item.label}
-            </a>
+            </Link>
           ))}
-          <a
-            href="/#contact"
+          <Link
+            href="/contact"
             className={`shrink-0 font-heading text-[0.6875rem] font-semibold uppercase tracking-[0.12em] transition-colors xl:text-xs ${
               solid
                 ? "bg-chestnut px-4 py-2.5 text-warm-white hover:bg-terracotta"
@@ -84,7 +84,7 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
             }`}
           >
             Contact
-          </a>
+          </Link>
         </nav>
 
         <button
@@ -114,23 +114,23 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
           <ul className="flex flex-col">
             {nav.map((item) => (
               <li key={item.href + item.label}>
-                <a
+                <Link
                   href={item.href}
                   className="block border-b border-beige py-4 font-heading text-lg font-medium text-charcoal"
                   onClick={() => setOpen(false)}
                 >
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
-          <a
-            href="/#contact"
+          <Link
+            href="/contact"
             className="mt-6 block bg-chestnut px-5 py-3.5 text-center font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white"
             onClick={() => setOpen(false)}
           >
             Contact
-          </a>
+          </Link>
         </nav>
       )}
     </header>

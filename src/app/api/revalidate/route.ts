@@ -29,6 +29,15 @@ export async function POST(request: Request) {
   }
 
   revalidatePath("/");
+  revalidatePath("/work");
+  revalidatePath("/process");
   revalidatePath("/estimate");
+  revalidatePath("/blog");
+  revalidatePath("/inquire");
+  revalidatePath("/faq");
+  revalidatePath("/about");
+  revalidatePath("/contact");
   return NextResponse.json({ revalidated: true });
 }
+
+

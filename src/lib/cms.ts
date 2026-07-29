@@ -4,6 +4,7 @@
 
 import type { CSSProperties } from "react";
 import { about, faqs, insights, process, professionalNotice, services, site } from "./content";
+import { inquireDefaults } from "./inquire";
 
 /**
  * Service panel images — deliberately not Works cover/hero shots
@@ -102,7 +103,7 @@ export const defaultContent = {
     eyebrow: "The Noir · Residential Interior",
     line1: "Every design decision",
     line2: "has a purpose.",
-    image: "/portfolio/the-noir/the-noir-living-view-3.png",
+    image: "/portfolio/the-noir/the-noir-bedroom-view-1.png",
     styles: { lines: {} as TextStyle },
   },
   services: {
@@ -112,15 +113,18 @@ export const defaultContent = {
     notice: professionalNotice,
     styles: { title: {} as TextStyle, lede: {} as TextStyle },
     // Split-pane explorer: unique render per service + inquire destination.
-    // Cost estimation routes to /estimate; everything else opens contact.
+    // Cost estimation routes to /estimate; everything else opens the inquire wizard.
     items: services.map((service, i) => ({
       ...service,
       image: serviceImages[i]?.image ?? "/portfolio/c-house/c-house-02-exterior-view-3.png",
       imageAlt: serviceImages[i]?.alt ?? service.title,
-      href: service.title.toLowerCase().includes("cost") ? "/estimate" : "/#contact",
+      href: service.title.toLowerCase().includes("cost")
+        ? "/estimate"
+        : `/inquire?category=${encodeURIComponent(service.title)}`,
       ctaLabel: "Inquire Now",
     })),
   },
+  inquire: inquireDefaults,
   estimator: {
     eyebrow: "Construction Cost Calculator",
     title: "How much will your home cost to build?",
@@ -151,6 +155,8 @@ export const defaultContent = {
     title: process.title,
     intro: process.intro,
     image: "/portfolio/capstone/archi-capstone-design-strategy-1.png",
+    ctaLabel: process.ctaLabel,
+    ctaHref: process.ctaHref,
     styles: { title: {} as TextStyle, intro: {} as TextStyle },
     steps: process.steps,
   },
@@ -207,10 +213,14 @@ export const sectionMeta: Record<SectionKey, { label: string; description: strin
   work: { label: "Selected works header", description: "Heading above the project grid" },
   showcaseNoir: { label: "Showcase — The Noir", description: "First full-screen image interlude" },
   services: { label: "Services", description: "Professional notice + interactive split-pane service explorer" },
+  inquire: {
+    label: "Inquire wizard",
+    description: "Dedicated /inquire multi-step form copy, options, consent, and success message",
+  },
   estimator: { label: "Cost calculator invite", description: "Full-screen construction cost calculator with ₱25k+ count-up and estimate CTA" },
   about: { label: "About the designer", description: "Short bio + portrait, full bio dialog, education, experience, awards" },
-  process: { label: "Process", description: "The three project steps" },
-  insights: { label: "Before you build + articles", description: "4-slot insights grid and Latest Articles row" },
+  process: { label: "Process", description: "Landing teaser — five phase titles + CTA to /process" },
+  insights: { label: "Before you build + articles", description: "Four insight chapters + Latest Articles row" },
   faq: { label: "FAQs", description: "Questions and answers" },
   showcaseHearth: { label: "Showcase — The Hearth", description: "Closing full-screen interlude with CTA" },
   contact: { label: "Contact", description: "Contact copy + simplified discussion-call inquiry form" },

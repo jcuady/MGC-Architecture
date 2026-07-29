@@ -22,8 +22,7 @@ type Panel =
       kind: "list";
       title: string;
       items: { title: string; body: string }[];
-    }
-  | { key: string; index: number; kind: "soon"; title: string; teaser: string };
+    };
 
 /**
  * Before You Build — classic ScrollTrigger pin (spacer auto-managed).
@@ -55,11 +54,11 @@ export default function InsightsImmersive({ data }: { data: Insights }) {
         items: data.mistakes.items,
       },
       ...data.upcoming.map((item, i) => ({
-        key: `soon-${i}`,
+        key: `chapter-${3 + i}`,
         index: 3 + i,
-        kind: "soon" as const,
+        kind: "list" as const,
         title: item.title,
-        teaser: item.teaser,
+        items: item.items,
       })),
     ],
     [data],
@@ -242,7 +241,6 @@ function PanelBody({ panel }: { panel: Panel }) {
     <>
       <p className="font-heading text-[0.65rem] font-semibold uppercase tracking-[0.28em] text-terracotta">
         {String(panel.index).padStart(2, "0")}
-        {panel.kind === "soon" ? " · Coming soon" : ""}
       </p>
       <h3 className="mt-4 max-w-xl font-heading text-2xl font-semibold leading-tight text-charcoal sm:text-3xl">
         {panel.title}
@@ -275,12 +273,6 @@ function PanelBody({ panel }: { panel: Panel }) {
             </li>
           ))}
         </ol>
-      ) : null}
-
-      {panel.kind === "soon" ? (
-        <p className="mt-6 max-w-md font-body text-base leading-relaxed text-charcoal/70 sm:text-lg">
-          {panel.teaser}
-        </p>
       ) : null}
     </>
   );

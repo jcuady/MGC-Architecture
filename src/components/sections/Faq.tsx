@@ -3,24 +3,38 @@ import SectionHeader from "../SectionHeader";
 import { textStyle, type SiteContent } from "@/lib/cms";
 
 /** ponytail: native <details> accordion — keyboard/screen-reader accessible with zero JS. */
-export default function Faq({ data }: { data: SiteContent["faq"] }) {
+export default function Faq({
+  data,
+  heading = "section",
+}: {
+  data: SiteContent["faq"];
+  heading?: "section" | "none";
+}) {
   return (
     <section id="faq" className="scroll-mt-20 bg-beige">
       <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28">
-        <div className="grid gap-12 lg:grid-cols-[5fr_7fr] lg:gap-20">
-          <SectionHeader
-            eyebrow={data.eyebrow}
-            title={data.title}
-            lede={data.lede}
-            titleStyle={textStyle(data.styles?.title)}
-            ledeStyle={textStyle(data.styles?.lede)}
-          />
+        <div
+          className={
+            heading === "section"
+              ? "grid gap-12 lg:grid-cols-[5fr_7fr] lg:gap-20"
+              : undefined
+          }
+        >
+          {heading === "section" ? (
+            <SectionHeader
+              eyebrow={data.eyebrow}
+              title={data.title}
+              lede={data.lede}
+              titleStyle={textStyle(data.styles?.title)}
+              ledeStyle={textStyle(data.styles?.lede)}
+            />
+          ) : null}
 
-          <Reveal delay={100}>
-            <div className="divide-y divide-warm-gray/70 border-y border-warm-gray/70">
+          <Reveal delay={heading === "section" ? 100 : 0}>
+            <div className="mx-auto max-w-3xl divide-y divide-warm-gray/70 border-y border-warm-gray/70 lg:mx-0 lg:max-w-none">
               {data.items.map((faq) => (
                 <details key={faq.q} className="group">
-                  <summary className="flex cursor-pointer list-none items-center justify-between gap-6 py-5 font-heading font-medium text-charcoal [&::-webkit-details-marker]:hidden">
+                  <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-6 py-5 font-heading font-medium text-charcoal [&::-webkit-details-marker]:hidden">
                     {faq.q}
                     <span
                       aria-hidden

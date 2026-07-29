@@ -169,7 +169,7 @@ export default function Hero({ data }: { data: SiteContent["hero"] }) {
         {/* Right: CTA */}
         <div data-hero-fade className="flex shrink-0 pb-2">
           <Link
-            href="/#contact"
+            href="/inquire"
             className="inline-flex h-14 items-center justify-center border border-warm-white/40 px-10 font-heading text-xs font-semibold uppercase tracking-[0.15em] text-warm-white backdrop-blur-sm transition-all hover:bg-warm-white hover:text-charcoal sm:h-16 sm:px-12"
           >
             {data.secondaryCta}
