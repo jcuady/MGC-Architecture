@@ -674,7 +674,7 @@ export const insights = {
   ],
   articles: {
     eyebrow: "Latest Articles",
-    title: "Stay up to date before you build",
+    title: "Stay up to date with our latest news.",
     seeAllLabel: "See all articles",
     seeAllHref: "/#faq",
     items: [
