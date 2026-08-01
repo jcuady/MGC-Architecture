@@ -23,12 +23,14 @@ export async function generateMetadata({
   const project = projects.find((p) => p.slug === slug);
   if (!project) return {};
   return {
-    title: `${project.name} — MGC Architecture`,
+    title: `${project.name} — ${project.category}`,
     description: project.description,
+    alternates: { canonical: `/work/${project.slug}` },
     openGraph: {
-      title: `${project.name} — MGC Architecture`,
+      title: `${project.name} | MGC Architecture`,
       description: project.description,
       images: [project.hero],
+      type: "article",
     },
   };
 }

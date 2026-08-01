@@ -10,12 +10,12 @@ import { site } from "@/lib/content";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Blog — Before You Build | MGC Architecture",
+  title: "Blog — Before You Build Insights",
   description:
-    "Short education articles on planning, budgeting, and building with the right team — from MGC Architecture.",
+    "Short education articles on planning, budgeting, and building with the right team — from MGC Architecture in Manila.",
   alternates: { canonical: "/blog" },
   openGraph: {
-    title: "Blog — MGC Architecture",
+    title: "Blog — Before You Build Insights | MGC Architecture",
     description:
       "Read before you build: team, mistakes to avoid, process, and budget tips.",
     type: "website",

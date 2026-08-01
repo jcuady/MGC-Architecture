@@ -10,11 +10,11 @@ import { processPage } from "@/lib/process-page";
 import { site } from "@/lib/content";
 
 export const metadata: Metadata = {
-  title: "Process — How Your Project Moves Forward | MGC Architecture",
+  title: "Process — How Your Architecture Project Moves Forward",
   description: processPage.lede,
   alternates: { canonical: "/process" },
   openGraph: {
-    title: "How Your Project Moves Forward — MGC Architecture",
+    title: "Process — How Your Project Moves Forward | MGC Architecture",
     description: processPage.lede,
     images: [processPage.heroImage],
     type: "website",

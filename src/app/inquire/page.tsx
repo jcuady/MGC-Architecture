@@ -8,12 +8,12 @@ import { textStyle } from "@/lib/cms";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Inquire — Tell Us About Your Project | MGC Architecture",
+  title: "Inquire — Tell Us About Your Architecture Project",
   description:
     "Share a few details about your project so we can better understand what you're planning. Takes about 2–3 minutes.",
   alternates: { canonical: "/inquire" },
   openGraph: {
-    title: "Tell Us About Your Project — MGC Architecture",
+    title: "Inquire — Tell Us About Your Project | MGC Architecture",
     description:
       "Step-by-step project inquiry for architectural and interior design work.",
     type: "website",

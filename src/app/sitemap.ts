@@ -1,32 +1,73 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/blog-server";
 import { projects } from "@/lib/content";
-
-const BASE = "https://mgcarchitectureph.vercel.app";
+import { SITE_URL } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getPublishedPosts();
+  const now = new Date();
 
   return [
-    { url: BASE, changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE}/work`, changeFrequency: "weekly", priority: 0.95 },
-    { url: `${BASE}/process`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE}/estimate`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE}/blog`, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${BASE}/inquire`, changeFrequency: "monthly", priority: 0.9 },
-    { url: `${BASE}/faq`, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${BASE}/about`, changeFrequency: "monthly", priority: 0.85 },
-    { url: `${BASE}/contact`, changeFrequency: "monthly", priority: 0.9 },
+    { url: SITE_URL, lastModified: now, changeFrequency: "weekly", priority: 1 },
+    {
+      url: `${SITE_URL}/work`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.95,
+    },
+    {
+      url: `${SITE_URL}/process`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/estimate`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/blog`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/inquire`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}/faq`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${SITE_URL}/about`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.85,
+    },
+    {
+      url: `${SITE_URL}/contact`,
+      lastModified: now,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     ...posts.map((p) => ({
-      url: `${BASE}/blog/${p.slug}`,
+      url: `${SITE_URL}/blog/${p.slug}`,
+      lastModified: p.published_at ? new Date(p.published_at) : now,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
     ...projects.map((p) => ({
-      url: `${BASE}/work/${p.slug}`,
+      url: `${SITE_URL}/work/${p.slug}`,
+      lastModified: now,
       changeFrequency: "monthly" as const,
       priority: 0.8,
     })),
   ];
 }
-

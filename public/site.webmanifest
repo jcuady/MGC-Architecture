@@ -1,7 +1,21 @@
 {
   "name": "MGC Architecture",
-  "short_name": "MGC Arch",
+  "short_name": "MGC",
+  "description": "Architectural and interior design in Manila — Design with Purpose. Build for Life.",
+  "start_url": "/",
   "icons": [
+    {
+      "src": "/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
     {
       "src": "/web-app-manifest-192x192.png",
       "sizes": "192x192",
@@ -15,7 +29,8 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#6a2c29",
-  "background_color": "#6a2c29",
-  "display": "standalone"
+  "theme_color": "#753627",
+  "background_color": "#753627",
+  "display": "standalone",
+  "lang": "en-PH"
 }

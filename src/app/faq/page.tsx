@@ -3,18 +3,20 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
 import Faq from "@/components/sections/Faq";
+import JsonLd from "@/components/JsonLd";
 import { getSiteContent } from "@/lib/cms-server";
 import { textStyle } from "@/lib/cms";
+import { faqPageJsonLd } from "@/lib/seo";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "FAQ — Common Questions | MGC Architecture",
+  title: "FAQ — Costs, Timeline, Permits & First Meeting",
   description:
-    "Quick answers about costs, timeline, permits, property documents, and what to prepare before your first meeting.",
+    "Quick answers about architecture project costs, timeline, permits, property documents, and what to prepare before your first meeting with MGC Architecture.",
   alternates: { canonical: "/faq" },
   openGraph: {
-    title: "FAQ — MGC Architecture",
+    title: "FAQ — Costs, Timeline & Permits | MGC Architecture",
     description:
       "Costs, timeline, permits, and what to bring to your first consultation.",
     type: "website",
@@ -24,11 +26,15 @@ export const metadata: Metadata = {
 export default async function FaqPage() {
   const content = await getSiteContent();
   const { faq } = content;
+  const jsonLd = faqPageJsonLd(
+    faq.items.map((item) => ({ question: item.q, answer: item.a })),
+  );
 
   return (
     <>
       <Header theme="light" />
       <main id="main">
+        <JsonLd data={jsonLd} />
         <section className="border-b border-warm-gray/60 bg-warm-white">
           <div className="mx-auto max-w-7xl px-5 pb-14 pt-28 sm:px-8 sm:pb-16 sm:pt-32">
             <p className="font-heading text-xs font-semibold uppercase tracking-[0.22em] text-terracotta">

@@ -4,8 +4,10 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
+import JsonLd from "@/components/JsonLd";
 import { blogParagraphs, defaultBlogPosts } from "@/lib/blog";
 import { getPostBySlug, getPublishedPosts } from "@/lib/blog-server";
+import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/seo";
 
 export const revalidate = 60;
 
@@ -21,16 +23,17 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
-  if (!post) return { title: "Article — MGC Architecture" };
+  if (!post) return { title: "Article" };
   return {
-    title: `${post.title} — MGC Architecture`,
+    title: post.title,
     description: post.excerpt,
     alternates: { canonical: `/blog/${post.slug}` },
     openGraph: {
-      title: post.title,
+      title: `${post.title} | ${SITE_NAME}`,
       description: post.excerpt,
       images: post.cover_image ? [post.cover_image] : undefined,
       type: "article",
+      publishedTime: post.published_at,
     },
   };
 }
@@ -43,11 +46,34 @@ export default async function BlogPostPage({ params }: Props) {
   const paragraphs = blogParagraphs(post.body);
   const all = await getPublishedPosts();
   const others = all.filter((p) => p.slug !== post.slug).slice(0, 3);
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title.slice(0, 110),
+    description: post.excerpt,
+    image: post.cover_image ? [absoluteUrl(post.cover_image)] : undefined,
+    datePublished: post.published_at,
+    author: {
+      "@type": "Person",
+      name: "Mariane Gayle Caballero",
+      url: `${SITE_URL}/about`,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/brand/monogram-chestnut.png"),
+      },
+    },
+    mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
+  };
 
   return (
     <>
       <Header theme="light" />
       <main id="main">
+        <JsonLd data={articleLd} />
         <article>
           <header className="bg-beige">
             <div className="mx-auto max-w-3xl px-5 pb-12 pt-28 sm:px-8 sm:pb-16 sm:pt-32">

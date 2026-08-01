@@ -8,12 +8,12 @@ import { getSiteContent } from "@/lib/cms-server";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "About — Mariane Gayle Caballero | MGC Architecture",
+  title: "About — Mariane Gayle Caballero, Architectural Designer",
   description:
-    "Architectural designer in Manila creating thoughtful, functional, and timeless spaces — from concept to construction.",
+    "Meet Mariane Gayle Caballero — architectural designer in Manila creating thoughtful, functional, and timeless spaces from concept to construction.",
   alternates: { canonical: "/about" },
   openGraph: {
-    title: "About the Designer — MGC Architecture",
+    title: "About — Mariane Gayle Caballero | MGC Architecture",
     description:
       "Meet Mariane Gayle Caballero: Magna Cum Laude Architecture graduate designing spaces with purpose.",
     type: "website",

@@ -8,12 +8,12 @@ import { textStyle } from "@/lib/cms";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Contact — Planning a Project? | MGC Architecture",
+  title: "Contact — Start Your Architecture Project in Manila",
   description:
-    "Tell us whether you're building, renovating, or need help with permits and costing. Free initial discussion call.",
+    "Planning to build or renovate in Manila? Email, call, or book a free discussion about architectural design, interiors, permits, and costing.",
   alternates: { canonical: "/contact" },
   openGraph: {
-    title: "Contact — MGC Architecture",
+    title: "Contact — Start Your Architecture Project | MGC Architecture",
     description:
       "Email, call, or book a free discussion about your architectural or interior project.",
     type: "website",

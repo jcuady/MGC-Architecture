@@ -1,5 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins, Lora } from "next/font/google";
+import JsonLd from "@/components/JsonLd";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  DEFAULT_TITLE,
+  SEO_KEYWORDS,
+  SITE_NAME,
+  SITE_URL,
+  organizationJsonLd,
+} from "@/lib/seo";
 import "./globals.css";
 
 const poppins = Poppins({
@@ -27,26 +37,53 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  // Update to the custom domain once one is connected.
-  metadataBase: new URL("https://mgcarchitectureph.vercel.app"),
-  title: "MGC Architecture — Design with Purpose. Build for Life.",
-  description:
-    "Portfolio of MGC Architecture — architectural and interior design works by Mariane Gayle Caballero. Every space designed with purpose and built for life. Manila, Philippines.",
-  keywords: [
-    "architecture",
-    "interior design",
-    "architectural designer",
-    "Philippines",
-    "residential design",
-    "renovation",
-    "3D visualization",
-  ],
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: DEFAULT_TITLE,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: DEFAULT_DESCRIPTION,
+  keywords: [...SEO_KEYWORDS],
+  applicationName: SITE_NAME,
+  authors: [{ name: "Mariane Gayle Caballero", url: SITE_URL }],
+  creator: "Mariane Gayle Caballero",
+  publisher: SITE_NAME,
+  category: "architecture",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "MGC Architecture — Design with Purpose. Build for Life.",
-    description:
-      "Selected architectural and interior design works, from concept to completion.",
-    images: ["/portfolio/c-house/c-house-01-exterior-view-1.png"],
     type: "website",
+    locale: "en_PH",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [
+      {
+        url: DEFAULT_OG_IMAGE,
+        width: 1200,
+        height: 630,
+        alt: "MGC Architecture — selected residential design work",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: DEFAULT_TITLE,
+    description: DEFAULT_DESCRIPTION,
+    images: [DEFAULT_OG_IMAGE],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
   },
   icons: {
     icon: [
@@ -54,7 +91,7 @@ export const metadata: Metadata = {
       { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon-96x96.png", type: "image/png", sizes: "96x96" },
     ],
-    apple: "/apple-touch-icon.png",
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
   },
   manifest: "/site.webmanifest",
 };
@@ -63,8 +100,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${poppins.variable} ${lora.variable}`}>
-      <body>{children}</body>
+    <html lang="en-PH" className={`${poppins.variable} ${lora.variable}`}>
+      <body>
+        <JsonLd data={organizationJsonLd()} />
+        {children}
+      </body>
     </html>
   );
 }

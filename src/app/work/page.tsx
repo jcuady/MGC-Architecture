@@ -9,12 +9,12 @@ import { textStyle } from "@/lib/cms";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Works — Selected Projects | MGC Architecture",
+  title: "Works — Selected Architectural Projects",
   description:
-    "Architectural and interior design works — each one shaped by the ideas, process, and thoughtful decisions behind it.",
+    "Architectural and interior design works in Manila — residential, renovation, and institutional projects from concept to construction.",
   alternates: { canonical: "/work" },
   openGraph: {
-    title: "Selected Works — MGC Architecture",
+    title: "Works — Selected Architectural Projects | MGC Architecture",
     description:
       "Explore residential, commercial, and institutional projects from concept to construction.",
     type: "website",

@@ -11,7 +11,7 @@ import { site } from "@/lib/content";
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Construction Cost Estimator — MGC Architecture",
+  title: "Construction Cost Estimator for Homes in the Philippines",
   description:
     "Estimate the cost of building your home in the Philippines. Answer three quick questions — lot size, floors, and finish level — and get a realistic starting figure, free.",
   keywords: [
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   ],
   alternates: { canonical: "/estimate" },
   openGraph: {
-    title: "How much will your home cost to build? — MGC Architecture",
+    title: "Construction Cost Estimator | MGC Architecture",
     description:
       "A free residential construction cost estimate in under a minute, from the studio's own rate guide.",
     images: ["/portfolio/capstone/archi-capstone-exterior-view-1.png"],
