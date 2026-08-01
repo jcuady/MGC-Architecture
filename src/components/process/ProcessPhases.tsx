@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger, useGSAP } from "@/lib/gsap";
+import { gsap, ScrollTrigger, ensureScrollToPlugin, useGSAP } from "@/lib/gsap";
 import { phaseIndexFromProgress } from "@/lib/process-chapters";
 import {
   type ProcessPhase,
@@ -37,11 +37,13 @@ export default function ProcessPhases({ phases }: { phases: ProcessPhase[] }) {
       }
       // Land mid-chapter so snap + floor() agree on the intended phase
       const target = st.start + ((clamped + 0.5) / n) * (st.end - st.start);
-      gsap.to(window, {
-        scrollTo: { y: target, autoKill: true },
-        duration: 0.75,
-        ease: "power2.inOut",
-        overwrite: true,
+      void ensureScrollToPlugin().then(() => {
+        gsap.to(window, {
+          scrollTo: { y: target, autoKill: true },
+          duration: 0.75,
+          ease: "power2.inOut",
+          overwrite: true,
+        });
       });
     },
     [n],

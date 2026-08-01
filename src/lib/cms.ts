@@ -77,7 +77,7 @@ export const defaultContent = {
     line2: site.tagline[1],
     lede: site.heroLede,
     // Full-bleed hero background — editable in studio via ImageField
-    image: "/portfolio/the-noir/the-noir-living-view-1.png",
+    image: "/portfolio/the-noir/the-noir-living-view-1.jpg",
     secondaryCta: "Start a project",
     // Both tagline lines share Poppins (heading) — architect revision.
     // Title size is fluid (.hero-title clamp); font/italic still apply.
@@ -103,7 +103,7 @@ export const defaultContent = {
     eyebrow: "The Noir · Residential Interior",
     line1: "Every design decision",
     line2: "has a purpose.",
-    image: "/portfolio/the-noir/the-noir-bedroom-view-1.png",
+    image: "/portfolio/the-noir/the-noir-bedroom-view-1.jpg",
     styles: { lines: {} as TextStyle },
   },
   services: {

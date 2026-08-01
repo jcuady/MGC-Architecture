@@ -89,7 +89,14 @@ export default function Showcase({ src, alt, eyebrow, lines, lineStyle, cta }: S
         data-showcase-media
         className="absolute inset-x-0 -top-[10%] h-[120%] will-change-transform"
       >
-        <Image src={src} alt={alt} fill sizes="100vw" className="object-cover" />
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          quality={65}
+          sizes="100vw"
+          className="object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-t from-[#2f2a28]/85 via-[#2f2a28]/20 to-[#2f2a28]/25" />
       </div>
 

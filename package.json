@@ -11,6 +11,7 @@
     "test:insights": "node scripts/verify-insights-chapters.mjs",
     "test:insights:pin": "node scripts/verify-insights-pin.mjs",
     "test:seo": "node scripts/verify-seo.mjs",
+    "test:lcp": "node scripts/verify-mobile-lcp.mjs",
     "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {
@@ -36,5 +37,11 @@
     "playwright": "^1.62.0",
     "tailwindcss": "^4.1.11",
     "typescript": "^5.8.3"
-  }
+  },
+  "browserslist": [
+    "chrome >= 92",
+    "edge >= 92",
+    "firefox >= 90",
+    "safari >= 15"
+  ]
 }
