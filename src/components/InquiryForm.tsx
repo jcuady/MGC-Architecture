@@ -1,12 +1,28 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
+import FormConsentLabel from "@/components/FormConsentLabel";
 import { createClient } from "@/lib/supabase/client";
+import {
+  FORM_LIMITS,
+  isBrowserOnline,
+  submitErrorMessage,
+  validateConsent,
+  validateEmail,
+  validateMessage,
+  validateName,
+  validatePhone,
+} from "@/lib/form-validation";
 
 const inputClass =
   "w-full border border-warm-gray bg-white px-4 py-3 font-heading text-sm text-charcoal placeholder:text-charcoal/40 focus:border-chestnut focus:outline-none";
 
+const inputErrorClass = `${inputClass} border-terracotta`;
+
 type Status = "idle" | "submitting" | "success" | "error";
+type FieldErrors = Partial<
+  Record<"name" | "email" | "phone" | "message" | "contact_details" | "consent", string>
+>;
 
 function todayISO() {
   const d = new Date();
@@ -17,53 +33,113 @@ function todayISO() {
 }
 
 /**
- * Simplified callback form — contact info + preferred date (calendar) + message.
- * Architect: drop Project Details fields; free discussion call framing.
+ * Simplified callback form — contact info + preferred date + message + legal consent.
  */
 export default function InquiryForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [contactMethod, setContactMethod] = useState("Email");
+  const [consent, setConsent] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [online, setOnline] = useState(true);
+
+  useEffect(() => {
+    const sync = () => setOnline(isBrowserOnline());
+    sync();
+    window.addEventListener("online", sync);
+    window.addEventListener("offline", sync);
+    return () => {
+      window.removeEventListener("online", sync);
+      window.removeEventListener("offline", sync);
+    };
+  }, []);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = event.currentTarget;
     const fields = new FormData(form);
-    setStatus("submitting");
 
-    const supabase = createClient();
-
+    const name = String(fields.get("name") ?? "");
+    const email = String(fields.get("email") ?? "");
+    const phone = String(fields.get("phone") ?? "");
     const method = String(fields.get("contact_method") ?? "");
     const contactDetails = String(fields.get("contact_details") ?? "").trim();
-    const baseMessage = String(fields.get("message") ?? "").trim();
+    const baseMessage = String(fields.get("message") ?? "");
+
+    const errors: FieldErrors = {};
+    const nameErr = validateName(name);
+    if (nameErr) errors.name = nameErr;
+    const emailErr = validateEmail(email);
+    if (emailErr) errors.email = emailErr;
+    const phoneRequired = method === "Call/Text";
+    const phoneErr = validatePhone(phone, { required: phoneRequired });
+    if (phoneErr) errors.phone = phoneErr;
+    if ((method === "Messenger" || method === "Viber") && !contactDetails) {
+      errors.contact_details =
+        method === "Messenger"
+          ? "Messenger profile link is required."
+          : "Viber number is required.";
+    } else if (contactDetails.length > FORM_LIMITS.contactDetails) {
+      errors.contact_details = "Details are too long.";
+    }
+    const messageErr = validateMessage(baseMessage);
+    if (messageErr) errors.message = messageErr;
+    const consentErr = validateConsent(consent);
+    if (consentErr) errors.consent = consentErr;
+
+    setFieldErrors(errors);
+    if (Object.keys(errors).length) {
+      setFormError("Please fix the highlighted fields.");
+      return;
+    }
+
+    if (!isBrowserOnline()) {
+      setStatus("error");
+      setFormError(submitErrorMessage());
+      return;
+    }
+
+    setStatus("submitting");
+    setFormError(null);
 
     const compiledMessage = [
       `[Contact Method: ${method}]`,
       contactDetails ? `[Details: ${contactDetails}]` : null,
+      "[Consent: Privacy Policy & Terms accepted]",
       "",
-      baseMessage,
+      baseMessage.trim(),
     ]
       .filter((line) => line !== null)
       .join("\n")
       .trim();
 
-    const { error } = await supabase.from("inquiries").insert({
-      name: String(fields.get("name") ?? "").trim(),
-      email: String(fields.get("email") ?? "").trim(),
-      phone: String(fields.get("phone") ?? "").trim() || null,
-      service: null,
-      location: null,
-      budget: null,
-      preferred_date: String(fields.get("preferred_date") ?? "") || null,
-      message: compiledMessage,
-    });
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.from("inquiries").insert({
+        name: name.trim(),
+        email: email.trim(),
+        phone: phone.trim() || null,
+        service: null,
+        location: null,
+        budget: null,
+        preferred_date: String(fields.get("preferred_date") ?? "") || null,
+        message: compiledMessage,
+      });
 
-    if (error) {
+      if (error) {
+        setStatus("error");
+        setFormError(submitErrorMessage(error));
+        return;
+      }
+      form.reset();
+      setContactMethod("Email");
+      setConsent(false);
+      setFieldErrors({});
+      setStatus("success");
+    } catch (e) {
       setStatus("error");
-      return;
+      setFormError(submitErrorMessage(e as { message?: string }));
     }
-    form.reset();
-    setContactMethod("Email");
-    setStatus("success");
   }
 
   if (status === "success") {
@@ -100,10 +176,19 @@ export default function InquiryForm() {
       onSubmit={onSubmit}
       className="bg-beige p-6 sm:p-8"
       aria-label="Discussion call inquiry form"
+      noValidate
     >
       <h3 className="font-heading text-lg font-semibold text-charcoal">
         Discussion call for free
       </h3>
+      {!online ? (
+        <p
+          role="status"
+          className="mt-4 border-l-2 border-terracotta bg-white px-4 py-3 text-sm text-charcoal"
+        >
+          You&apos;re offline. You can fill the form now — submit once you&apos;re back online.
+        </p>
+      ) : null}
       <p className="mt-4 font-heading text-xs font-semibold uppercase tracking-[0.16em] text-terracotta">
         Contact info
       </p>
@@ -116,7 +201,17 @@ export default function InquiryForm() {
           >
             Name *
           </label>
-          <input id="inq-name" name="name" required autoComplete="name" className={inputClass} />
+          <input
+            id="inq-name"
+            name="name"
+            autoComplete="name"
+            maxLength={FORM_LIMITS.name}
+            aria-invalid={Boolean(fieldErrors.name)}
+            className={fieldErrors.name ? inputErrorClass : inputClass}
+          />
+          {fieldErrors.name ? (
+            <p className="mt-1 text-xs text-terracotta">{fieldErrors.name}</p>
+          ) : null}
         </div>
         <div>
           <label
@@ -129,10 +224,14 @@ export default function InquiryForm() {
             id="inq-email"
             name="email"
             type="email"
-            required
             autoComplete="email"
-            className={inputClass}
+            maxLength={FORM_LIMITS.email}
+            aria-invalid={Boolean(fieldErrors.email)}
+            className={fieldErrors.email ? inputErrorClass : inputClass}
           />
+          {fieldErrors.email ? (
+            <p className="mt-1 text-xs text-terracotta">{fieldErrors.email}</p>
+          ) : null}
         </div>
         <div>
           <label
@@ -140,8 +239,20 @@ export default function InquiryForm() {
             className="mb-1.5 block font-heading text-xs font-semibold uppercase tracking-[0.12em] text-charcoal/70"
           >
             Phone / Mobile Number
+            {contactMethod === "Call/Text" ? " *" : ""}
           </label>
-          <input id="inq-phone" name="phone" type="tel" autoComplete="tel" className={inputClass} />
+          <input
+            id="inq-phone"
+            name="phone"
+            type="tel"
+            autoComplete="tel"
+            maxLength={FORM_LIMITS.phone}
+            aria-invalid={Boolean(fieldErrors.phone)}
+            className={fieldErrors.phone ? inputErrorClass : inputClass}
+          />
+          {fieldErrors.phone ? (
+            <p className="mt-1 text-xs text-terracotta">{fieldErrors.phone}</p>
+          ) : null}
         </div>
         <div>
           <label
@@ -176,15 +287,19 @@ export default function InquiryForm() {
               htmlFor="inq-contact-details"
               className="mb-1.5 block font-heading text-xs font-semibold uppercase tracking-[0.12em] text-charcoal/70"
             >
-              Messenger / Viber details
+              Messenger / Viber details *
             </label>
             <input
               id="inq-contact-details"
               name="contact_details"
-              required
-              className={inputClass}
+              maxLength={FORM_LIMITS.contactDetails}
+              aria-invalid={Boolean(fieldErrors.contact_details)}
+              className={fieldErrors.contact_details ? inputErrorClass : inputClass}
               placeholder="Link or number"
             />
+            {fieldErrors.contact_details ? (
+              <p className="mt-1 text-xs text-terracotta">{fieldErrors.contact_details}</p>
+            ) : null}
           </div>
         ) : null}
 
@@ -214,30 +329,42 @@ export default function InquiryForm() {
           <textarea
             id="inq-message"
             name="message"
-            required
             rows={4}
+            maxLength={FORM_LIMITS.message}
+            aria-invalid={Boolean(fieldErrors.message)}
             placeholder="Building, renovating, or something else — share whatever details you have."
-            className={inputClass}
+            className={fieldErrors.message ? inputErrorClass : inputClass}
+          />
+          {fieldErrors.message ? (
+            <p className="mt-1 text-xs text-terracotta">{fieldErrors.message}</p>
+          ) : null}
+        </div>
+
+        <div className="sm:col-span-2">
+          <FormConsentLabel
+            id="inq-consent"
+            checked={consent}
+            onChange={setConsent}
+            error={fieldErrors.consent}
           />
         </div>
       </div>
 
-      {status === "error" && (
+      {(status === "error" || formError) && (
         <p
           role="alert"
           className="mt-4 border-l-2 border-terracotta bg-white px-4 py-3 text-sm text-charcoal"
         >
-          Your inquiry didn&apos;t go through. Check your connection and try again, or
-          email us directly.
+          {formError ?? submitErrorMessage()}
         </p>
       )}
 
       <button
         type="submit"
-        disabled={status === "submitting"}
-        className="mt-6 w-full bg-chestnut px-7 py-3.5 font-heading text-sm font-semibold text-warm-white transition-colors hover:bg-chestnut/90 disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+        disabled={status === "submitting" || !online}
+        className="mt-6 w-full bg-chestnut px-7 py-3.5 font-heading text-sm font-semibold text-warm-white transition-colors hover:bg-chestnut/90 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
       >
-        {status === "submitting" ? "Sending…" : "Send inquiry"}
+        {status === "submitting" ? "Sending…" : !online ? "Offline — reconnect to send" : "Send inquiry"}
       </button>
     </form>
   );

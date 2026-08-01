@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Poppins, Lora } from "next/font/google";
 import JsonLd from "@/components/JsonLd";
+import CookieConsent from "@/components/CookieConsent";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_OG_IMAGE,
@@ -107,6 +108,7 @@ export default function RootLayout({
       <body>
         <JsonLd data={organizationJsonLd()} />
         {children}
+        <CookieConsent />
       </body>
     </html>
   );

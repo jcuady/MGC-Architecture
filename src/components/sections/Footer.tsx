@@ -115,7 +115,20 @@ export default async function Footer() {
           <p className="font-heading text-xs text-warm-white/60">
             © {new Date().getFullYear()} MGC Architecture. All rights reserved.
           </p>
-          <p className="font-heading text-xs text-warm-white/60">Manila, Philippines</p>
+          <nav
+            aria-label="Legal"
+            className="flex flex-wrap gap-x-4 gap-y-1 font-heading text-xs text-warm-white/60"
+          >
+            <a href="/privacy" className="link-draw hover:text-warm-white">
+              Privacy
+            </a>
+            <a href="/terms" className="link-draw hover:text-warm-white">
+              Terms
+            </a>
+            <a href="/cookies" className="link-draw hover:text-warm-white">
+              Cookies
+            </a>
+          </nav>
         </div>
       </div>
     </footer>

@@ -12,6 +12,8 @@
     "test:insights:pin": "node scripts/verify-insights-pin.mjs",
     "test:seo": "node scripts/verify-seo.mjs",
     "test:lcp": "node scripts/verify-mobile-lcp.mjs",
+    "test:forms": "node scripts/verify-form-validation.mjs",
+    "test:trust": "node scripts/verify-customer-trust.mjs",
     "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {

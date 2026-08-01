@@ -6,6 +6,7 @@ import {
   Children,
   cloneElement,
   isValidElement,
+  useEffect,
   useId,
   useMemo,
   useState,
@@ -13,6 +14,7 @@ import {
   type ReactElement,
   type ReactNode,
 } from "react";
+import FormConsentLabel from "@/components/FormConsentLabel";
 import { createClient } from "@/lib/supabase/client";
 import {
   compileInquireMessage,
@@ -22,6 +24,17 @@ import {
   type InquireContent,
 } from "@/lib/inquire";
 import { textStyle } from "@/lib/cms";
+import {
+  FORM_LIMITS,
+  isBrowserOnline,
+  submitErrorMessage,
+  validateEmail,
+  validateName,
+  validatePhone,
+  validateUploadFile,
+} from "@/lib/form-validation";
+
+const DRAFT_KEY = "mgc-inquire-draft-v1";
 
 type ServiceOption = { title: string; scope: string[] };
 
@@ -40,21 +53,26 @@ const STEP_KEYS = [
 
 type StepKey = (typeof STEP_KEYS)[number];
 
-async function uploadFiles(files: FileList | null): Promise<string[]> {
-  if (!files?.length) return [];
+async function uploadFiles(files: FileList | null): Promise<{ urls: string[]; error?: string }> {
+  if (!files?.length) return { urls: [] };
+  if (!isBrowserOnline()) {
+    return { urls: [], error: "You're offline — reconnect before uploading files." };
+  }
   const supabase = createClient();
   const urls: string[] = [];
-  for (const file of Array.from(files).slice(0, 6)) {
+  for (const file of Array.from(files).slice(0, FORM_LIMITS.uploadMaxFiles)) {
+    const typeErr = validateUploadFile(file);
+    if (typeErr) return { urls: [], error: typeErr };
     const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
     const path = `inquiries/${Date.now()}-${safeName}`;
     const { error } = await supabase.storage.from("site").upload(path, file, {
       upsert: true,
     });
-    if (error) continue;
+    if (error) return { urls: [], error: `Couldn't upload ${file.name}. Try a smaller file.` };
     const { data } = supabase.storage.from("site").getPublicUrl(path);
     urls.push(data.publicUrl);
   }
-  return urls;
+  return { urls };
 }
 
 /**
@@ -78,6 +96,43 @@ export default function InquireWizard({
   const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+  const [online, setOnline] = useState(true);
+
+  useEffect(() => {
+    const sync = () => setOnline(isBrowserOnline());
+    sync();
+    window.addEventListener("online", sync);
+    window.addEventListener("offline", sync);
+    try {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as InquireAnswers;
+        setAnswers((prev) => ({
+          ...prev,
+          ...parsed,
+          projectType: initialCategory || parsed.projectType || prev.projectType,
+          propertyPhotos: [],
+          inspirationUploads: [],
+        }));
+      }
+    } catch {
+      /* ignore bad draft */
+    }
+    return () => {
+      window.removeEventListener("online", sync);
+      window.removeEventListener("offline", sync);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- restore draft once on mount
+  }, []);
+
+  useEffect(() => {
+    try {
+      const draft = { ...answers, propertyPhotos: [], inspirationUploads: [] };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    } catch {
+      /* private mode */
+    }
+  }, [answers]);
 
   const scopes = useMemo(() => {
     const match = services.find((s) => s.title === answers.projectType);
@@ -91,9 +146,14 @@ export default function InquireWizard({
   function validateStep(index: number): string | null {
     const a = answers;
     switch (STEP_KEYS[index]) {
-      case "aboutYou":
-        if (!a.fullName.trim()) return "Full name is required.";
-        if (!a.email.trim()) return "Email is required.";
+      case "aboutYou": {
+        const nameErr = validateName(a.fullName);
+        if (nameErr) return nameErr;
+        const emailErr = validateEmail(a.email);
+        if (emailErr) return emailErr;
+        const phoneRequired = a.contactMethod === "Call" || a.contactMethod === "Text";
+        const phoneErr = validatePhone(a.mobile, { required: phoneRequired });
+        if (phoneErr) return phoneErr;
         if (
           (a.contactMethod === "Messenger" || a.contactMethod === "Viber") &&
           !a.contactDetails.trim()
@@ -103,6 +163,7 @@ export default function InquireWizard({
             : "Viber number is required.";
         }
         return null;
+      }
       case "planning":
         if (!a.projectType) return "Select a project type.";
         if (scopes.length && !a.subCategory) return "Select a sub-category.";
@@ -120,9 +181,14 @@ export default function InquireWizard({
       case "inspiration":
         return null;
       case "details":
+        if (a.projectNotes.length > FORM_LIMITS.notes) {
+          return `Notes must be under ${FORM_LIMITS.notes} characters.`;
+        }
         return null;
       case "review":
-        if (!a.consent) return "Please agree to be contacted before submitting.";
+        if (!a.consent) {
+          return "Please agree to the Privacy Policy and Terms before submitting.";
+        }
         return null;
       default:
         return null;
@@ -150,24 +216,21 @@ export default function InquireWizard({
       setErrorMsg(err);
       return;
     }
+    if (!isBrowserOnline()) {
+      setStatus("error");
+      setErrorMsg(submitErrorMessage());
+      return;
+    }
     setStatus("submitting");
     setErrorMsg(null);
-    const supabase = createClient();
-    const payload = { ...answers, submittedAt: new Date().toISOString() };
-    const { error } = await supabase.from("inquiries").insert({
-      name: answers.fullName.trim(),
-      email: answers.email.trim(),
-      phone: answers.mobile.trim() || null,
-      service: inquireServiceLabel(answers),
-      location: answers.propertyLocation.trim() || null,
-      budget: answers.estimatedBudget || null,
-      preferred_date: null,
-      message: compileInquireMessage(answers),
-      payload,
-    });
-    if (error) {
-      // payload column may be missing before migration — retry without it
-      const retry = await supabase.from("inquiries").insert({
+    try {
+      const supabase = createClient();
+      const payload = {
+        ...answers,
+        consentAccepted: true,
+        submittedAt: new Date().toISOString(),
+      };
+      const { error } = await supabase.from("inquiries").insert({
         name: answers.fullName.trim(),
         email: answers.email.trim(),
         phone: answers.mobile.trim() || null,
@@ -176,14 +239,39 @@ export default function InquireWizard({
         budget: answers.estimatedBudget || null,
         preferred_date: null,
         message: compileInquireMessage(answers),
+        payload,
       });
-      if (retry.error) {
-        setStatus("error");
-        setErrorMsg("Couldn't send your details. Check your connection and try again.");
-        return;
+      if (error) {
+        const retry = await supabase.from("inquiries").insert({
+          name: answers.fullName.trim(),
+          email: answers.email.trim(),
+          phone: answers.mobile.trim() || null,
+          service: inquireServiceLabel(answers),
+          location: answers.propertyLocation.trim() || null,
+          budget: answers.estimatedBudget || null,
+          preferred_date: null,
+          message: compileInquireMessage({
+            ...answers,
+            projectNotes:
+              `${answers.projectNotes}\n\n[Consent: Privacy Policy & Terms accepted]`.trim(),
+          }),
+        });
+        if (retry.error) {
+          setStatus("error");
+          setErrorMsg(submitErrorMessage(retry.error));
+          return;
+        }
       }
+      try {
+        localStorage.removeItem(DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
+      setStatus("success");
+    } catch (e) {
+      setStatus("error");
+      setErrorMsg(submitErrorMessage(e as { message?: string }));
     }
-    setStatus("success");
   }
 
   if (status === "success") {
@@ -415,10 +503,14 @@ export default function InquireWizard({
                     className="block w-full font-heading text-sm text-charcoal"
                     onChange={(e) => {
                       startTransition(async () => {
-                        const urls = await uploadFiles(e.target.files);
-                        if (urls.length) {
+                        const result = await uploadFiles(e.target.files);
+                        if (result.error) {
+                          setErrorMsg(result.error);
+                          return;
+                        }
+                        if (result.urls.length) {
                           patch({
-                            propertyPhotos: [...answers.propertyPhotos, ...urls],
+                            propertyPhotos: [...answers.propertyPhotos, ...result.urls],
                           });
                         }
                       });
@@ -460,10 +552,17 @@ export default function InquireWizard({
                 className="block w-full font-heading text-sm text-charcoal"
                 onChange={(e) => {
                   startTransition(async () => {
-                    const urls = await uploadFiles(e.target.files);
-                    if (urls.length) {
+                    const result = await uploadFiles(e.target.files);
+                    if (result.error) {
+                      setErrorMsg(result.error);
+                      return;
+                    }
+                    if (result.urls.length) {
                       patch({
-                        inspirationUploads: [...answers.inspirationUploads, ...urls],
+                        inspirationUploads: [
+                          ...answers.inspirationUploads,
+                          ...result.urls,
+                        ],
                       });
                     }
                   });
@@ -527,18 +626,24 @@ export default function InquireWizard({
             <ReviewBlock title={content.steps.details}>
               <p className="whitespace-pre-wrap">{answers.projectNotes}</p>
             </ReviewBlock>
-            <label className="flex items-start gap-3">
-              <input
-                type="checkbox"
-                checked={answers.consent}
-                onChange={(e) => patch({ consent: e.target.checked })}
-                className="mt-1 h-4 w-4 accent-chestnut"
-              />
-              <span className="font-body text-sm text-charcoal/80">{content.consentLabel}</span>
-            </label>
+            <FormConsentLabel
+              id="inquire-consent"
+              checked={answers.consent}
+              onChange={(consent) => patch({ consent })}
+            />
           </div>
         ) : null}
       </div>
+
+      {!online ? (
+        <p
+          role="status"
+          className="mt-6 border-l-2 border-terracotta bg-beige px-4 py-3 text-sm text-charcoal"
+        >
+          You&apos;re offline. Progress is saved on this device — reconnect to upload files or
+          submit.
+        </p>
+      ) : null}
 
       {errorMsg ? (
         <p role="alert" className="mt-6 border-l-2 border-terracotta bg-beige px-4 py-3 text-sm text-charcoal">
@@ -568,10 +673,14 @@ export default function InquireWizard({
           <button
             type="button"
             onClick={() => void onSubmit()}
-            disabled={status === "submitting" || pending}
-            className="inline-flex min-h-11 cursor-pointer items-center bg-chestnut px-6 py-2.5 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-warm-white hover:bg-terracotta disabled:cursor-wait disabled:opacity-70"
+            disabled={status === "submitting" || pending || !online}
+            className="inline-flex min-h-11 cursor-pointer items-center bg-chestnut px-6 py-2.5 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-warm-white hover:bg-terracotta disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {status === "submitting" ? "Sending…" : content.submitLabel}
+            {status === "submitting"
+              ? "Sending…"
+              : !online
+                ? "Offline — reconnect to send"
+                : content.submitLabel}
           </button>
         )}
       </div>
