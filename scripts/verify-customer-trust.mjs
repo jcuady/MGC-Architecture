@@ -71,6 +71,57 @@ ok(
   "404 branded copy",
   (await page.getByRole("heading", { name: /isn’t here|isn't here/i }).count()) >= 1,
 );
+ok(
+  "404 chestnut brand band",
+  (await page.locator("main section.bg-chestnut").count()) >= 1,
+);
+ok(
+  "404 gold eyebrow",
+  (await page.locator("main .text-gold").count()) >= 1,
+);
+
+await page.goto(`${BASE}/403`, { waitUntil: "domcontentloaded" });
+ok(
+  "403 chestnut brand band",
+  (await page.locator("main section.bg-chestnut").count()) >= 1,
+);
+ok(
+  "403 studio login CTA",
+  (await page.getByRole("link", { name: /studio login/i }).count()) >= 1,
+);
+
+await page.goto(`${BASE}/privacy`, { waitUntil: "domcontentloaded" });
+ok(
+  "privacy FAQ-style terracotta eyebrow",
+  (await page.locator("main .text-terracotta").count()) >= 1,
+);
+ok(
+  "privacy document (no chestnut hero)",
+  (await page.locator("main > section.bg-chestnut").count()) === 0,
+);
+ok(
+  "privacy has footer",
+  (await page.locator("footer").count()) >= 1,
+);
+ok(
+  "privacy Poppins heading + Lora body classes present",
+  (await page.locator("main .font-heading").count()) >= 1 &&
+    (await page.locator("main .font-body, main .system-prose").count()) >= 1,
+);
+
+await page.goto(`${BASE}/`, { waitUntil: "domcontentloaded" });
+await page.evaluate(() => localStorage.removeItem("mgc-cookie-consent-v1"));
+await page.reload({ waitUntil: "domcontentloaded" });
+const cookieBar = page.locator('[aria-label="Cookie notice"]');
+await cookieBar.waitFor({ state: "visible", timeout: 8000 });
+ok(
+  "cookie bar chestnut surface",
+  await cookieBar.evaluate((el) => el.classList.contains("bg-chestnut")),
+);
+ok(
+  "cookie bar gold label",
+  (await cookieBar.locator(".text-gold").count()) >= 1,
+);
 
 await browser.close();
 

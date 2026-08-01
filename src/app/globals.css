@@ -209,3 +209,43 @@ h6 {
 .link-draw:focus-visible {
   background-size: 100% 1px;
 }
+
+/* Legal / system document body — Poppins headings + Lora body, brand accents */
+.system-prose > * + * {
+  margin-top: 1.25rem;
+}
+.system-prose h2 {
+  margin-top: 2.5rem;
+  font-family: var(--font-heading);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--color-charcoal);
+}
+.system-prose ul {
+  list-style: disc;
+  padding-left: 1.25rem;
+}
+.system-prose li + li {
+  margin-top: 0.5rem;
+}
+.system-prose a {
+  color: var(--color-chestnut);
+  text-underline-offset: 3px;
+}
+.system-prose a:hover {
+  text-decoration: underline;
+  color: var(--color-terracotta);
+}
+.system-prose strong {
+  font-weight: 600;
+  color: var(--color-charcoal);
+}
+.system-prose .meta {
+  font-family: var(--font-heading);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-charcoal) 55%, transparent);
+}

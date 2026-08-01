@@ -8,30 +8,44 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Next.js forbidden() surface — also linked as /403 via rewrite-free branded page. */
+/** Next.js forbidden() surface — also used by /403. */
 export default function Forbidden() {
   return (
-    <SystemPage eyebrow="403" title="You don’t have access." theme="dark">
-      <p>
-        This area is restricted. If you were trying to open the studio, sign in with an
-        authorized account. For project help, use the public contact or inquire forms —
-        those work without signing in.
-      </p>
-      <ul className="mt-6 space-y-2 font-heading text-sm font-semibold text-gold">
-        <li>
-          <Link href="/studio/login" className="hover:underline">
+    <SystemPage
+      variant="brand"
+      eyebrow="403"
+      title="You don’t have access."
+      lede="This area is for the studio only. Public pages — contact, inquire, and the portfolio — stay open to everyone."
+      actions={
+        <>
+          <Link
+            href="/studio/login"
+            className="inline-flex min-h-11 items-center bg-warm-white px-6 py-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-chestnut transition-colors hover:bg-beige focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+          >
             Studio login
           </Link>
+          <Link
+            href="/contact"
+            className="inline-flex min-h-11 items-center border border-warm-white/40 px-6 py-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white transition-colors hover:bg-warm-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+          >
+            Contact us
+          </Link>
+        </>
+      }
+    >
+      <p>
+        If you landed here by mistake, head home or send an inquiry — no account needed for
+        project conversations.
+      </p>
+      <ul>
+        <li>
+          <Link href="/">Home</Link>
         </li>
         <li>
-          <Link href="/contact" className="hover:underline">
-            Contact
-          </Link>
+          <Link href="/inquire">Inquire</Link>
         </li>
         <li>
-          <Link href="/" className="hover:underline">
-            Home
-          </Link>
+          <Link href="/work">Works</Link>
         </li>
       </ul>
     </SystemPage>

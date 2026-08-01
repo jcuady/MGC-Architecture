@@ -10,30 +10,41 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <SystemPage eyebrow="404" title="This page isn’t here." theme="light">
-      <p>
-        The link may be outdated, or the page was moved. Try one of these instead:
-      </p>
-      <ul className="mt-6 space-y-2 font-heading text-sm font-semibold text-chestnut">
-        <li>
-          <Link href="/" className="hover:underline">
-            Home
+    <SystemPage
+      variant="brand"
+      eyebrow="404"
+      title="This page isn’t here."
+      lede="The link may be outdated, or the page was moved. You’re still in the right place for MGC Architecture."
+      actions={
+        <>
+          <Link
+            href="/"
+            className="inline-flex min-h-11 items-center bg-warm-white px-6 py-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-chestnut transition-colors hover:bg-beige focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+          >
+            Back to home
           </Link>
-        </li>
-        <li>
-          <Link href="/work" className="hover:underline">
-            Works
-          </Link>
-        </li>
-        <li>
-          <Link href="/contact" className="hover:underline">
+          <Link
+            href="/contact"
+            className="inline-flex min-h-11 items-center border border-warm-white/40 px-6 py-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white transition-colors hover:bg-warm-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
+          >
             Contact
           </Link>
+        </>
+      }
+    >
+      <p>Useful places to continue:</p>
+      <ul>
+        <li>
+          <Link href="/work">Works — selected projects</Link>
         </li>
         <li>
-          <Link href="/inquire" className="hover:underline">
-            Inquire
-          </Link>
+          <Link href="/process">Process — how a project moves forward</Link>
+        </li>
+        <li>
+          <Link href="/inquire">Inquire — tell us about your project</Link>
+        </li>
+        <li>
+          <Link href="/estimate">Cost calculator</Link>
         </li>
       </ul>
     </SystemPage>
