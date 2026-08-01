@@ -1,9 +1,16 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
 export const size = { width: 180, height: 180 };
 export const contentType = "image/png";
 
-export default function AppleIcon() {
+export default async function AppleIcon() {
+  const mono = await readFile(
+    join(process.cwd(), "public/brand/monogram-white-transparent.png"),
+  );
+  const src = `data:image/png;base64,${mono.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -14,16 +21,16 @@ export default function AppleIcon() {
           alignItems: "center",
           justifyContent: "center",
           background: "#753627",
-          borderRadius: "50%",
-          color: "#F3F2F2",
-          fontSize: 72,
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontStyle: "italic",
-          letterSpacing: "-0.04em",
-          lineHeight: 1,
         }}
       >
-        mgc
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={src}
+          width={130}
+          height={130}
+          style={{ objectFit: "contain" }}
+          alt=""
+        />
       </div>
     ),
     { ...size },

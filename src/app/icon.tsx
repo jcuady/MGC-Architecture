@@ -1,10 +1,17 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
 
-/** Circular chestnut mark — SERP-visible like competitor favicons. */
 export const size = { width: 32, height: 32 };
 export const contentType = "image/png";
 
-export default function Icon() {
+/** Dynamic fallback icon — chestnut square + brand monogram. */
+export default async function Icon() {
+  const mono = await readFile(
+    join(process.cwd(), "public/brand/monogram-white-transparent.png"),
+  );
+  const src = `data:image/png;base64,${mono.toString("base64")}`;
+
   return new ImageResponse(
     (
       <div
@@ -15,16 +22,10 @@ export default function Icon() {
           alignItems: "center",
           justifyContent: "center",
           background: "#753627",
-          borderRadius: "50%",
-          color: "#F3F2F2",
-          fontSize: 13,
-          fontFamily: "Georgia, 'Times New Roman', serif",
-          fontStyle: "italic",
-          letterSpacing: "-0.04em",
-          lineHeight: 1,
         }}
       >
-        mgc
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={src} width={23} height={23} style={{ objectFit: "contain" }} alt="" />
       </div>
     ),
     { ...size },

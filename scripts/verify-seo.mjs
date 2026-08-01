@@ -78,7 +78,25 @@ ok("no vercel.app in sitemap", !sitemap.text.includes("vercel.app"));
 const fav = await fetch(`${BASE}/favicon.svg`);
 ok("favicon.svg 200", fav.status === 200);
 const favBody = await fav.text();
-ok("favicon chestnut circle", favBody.includes("#753627") && favBody.includes("mgc"));
+ok(
+  "favicon chestnut brand",
+  favBody.includes("#753627") &&
+    (favBody.includes("mgc") || favBody.includes("image") || favBody.includes("base64")),
+);
+
+const fav48 = await fetch(`${BASE}/favicon-48x48.png`);
+ok("favicon-48x48 200 (Google min)", fav48.status === 200);
+
+const ico = await fetch(`${BASE}/favicon.ico`);
+ok("favicon.ico 200", ico.status === 200);
+const icoBuf = Buffer.from(await ico.arrayBuffer());
+const isIco = icoBuf[0] === 0 && icoBuf[1] === 0 && icoBuf[2] === 1;
+const isPng = icoBuf[0] === 0x89 && icoBuf[1] === 0x50;
+ok(
+  "favicon.ico is ICO or PNG",
+  isIco || isPng,
+  isIco ? "PNG-in-ICO" : isPng ? "raw PNG" : `magic=${icoBuf.slice(0, 4).toString("hex")}`,
+);
 
 const apple = await fetch(`${BASE}/apple-touch-icon.png`);
 ok("apple-touch-icon 200", apple.status === 200);
