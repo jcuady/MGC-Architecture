@@ -53,8 +53,14 @@ Contact (`/contact`) and Inquire (`/inquire`) POST to `/api/inquiries`, which:
 1. Saves the row in Supabase `inquiries` (visible in Studio)
 2. Emails **mgcarchitectureph@gmail.com** with a branded chestnut/beige HTML template
 
-**Preferred:** set `RESEND_API_KEY` (+ optional `INQUIRY_FROM_EMAIL`) on Vercel — see `.env.example`.  
-**Fallback:** FormSubmit (no key). Open the studio Gmail once and click **Activate Form**.
+**Required on Vercel:** `RESEND_API_KEY`, and From on the verified domain:
+
+```bash
+INQUIRY_FROM_EMAIL=MGC Architecture <inquiries@mgcarchitecture.com>
+INQUIRY_NOTIFY_EMAIL=mgcarchitectureph@gmail.com
+```
+
+Do **not** use `onboarding@resend.dev` after the domain is verified — those sends fail in Resend.
 
 ```bash
 npm run test:inquiry-email   # branding + API wiring (server on :3847)

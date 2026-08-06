@@ -37,6 +37,17 @@ ok(
   "default notify address is studio Gmail",
   notifySrc.includes('"mgcarchitectureph@gmail.com"'),
 );
+ok(
+  "default From uses verified domain",
+  notifySrc.includes("inquiries@mgcarchitecture.com"),
+);
+ok(
+  "default From is not onboarding@resend.dev",
+  notifySrc.includes("INQUIRY_FROM_DEFAULT") &&
+    /INQUIRY_FROM_DEFAULT\s*=\s*\n?\s*"MGC Architecture <inquiries@mgcarchitecture\.com>"/.test(
+      notifySrc,
+    ),
+);
 ok("brand chestnut in HTML email", notifySrc.includes("#753627"));
 ok("brand gold accent in HTML email", notifySrc.includes("#C89B4B"));
 ok("brand beige surface in HTML email", notifySrc.includes("#F1E8DE"));

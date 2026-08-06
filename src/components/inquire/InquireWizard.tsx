@@ -241,6 +241,26 @@ export default function InquireWizard({
         ...(answers.hasProperty
           ? [{ label: "Has property", value: answers.hasProperty }]
           : []),
+        ...(answers.lotArea.trim()
+          ? [{ label: "Lot area (sqm)", value: answers.lotArea.trim() }]
+          : []),
+        ...(answers.floorArea.trim()
+          ? [{ label: "Existing floor area (sqm)", value: answers.floorArea.trim() }]
+          : []),
+        ...(answers.moodboardLinks.trim()
+          ? [{ label: "Mood board links", value: answers.moodboardLinks.trim() }]
+          : []),
+        ...(answers.propertyPhotos.length
+          ? [{ label: "Property photos", value: answers.propertyPhotos.join(", ") }]
+          : []),
+        ...(answers.inspirationUploads.length
+          ? [
+              {
+                label: "Inspiration uploads",
+                value: answers.inspirationUploads.join(", "),
+              },
+            ]
+          : []),
         { label: "Consent", value: "Privacy Policy & Terms accepted" },
       ];
       const res = await fetch("/api/inquiries", {
