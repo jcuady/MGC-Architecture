@@ -224,25 +224,30 @@ export default function InquireWizard({
     setStatus("submitting");
     setErrorMsg(null);
     try {
-      const supabase = createClient();
-      const payload = {
-        ...answers,
-        consentAccepted: true,
-        submittedAt: new Date().toISOString(),
-      };
-      const { error } = await supabase.from("inquiries").insert({
-        name: answers.fullName.trim(),
-        email: answers.email.trim(),
-        phone: answers.mobile.trim() || null,
-        service: inquireServiceLabel(answers),
-        location: answers.propertyLocation.trim() || null,
-        budget: answers.estimatedBudget || null,
-        preferred_date: null,
-        message: compileInquireMessage(answers),
-        payload,
-      });
-      if (error) {
-        const retry = await supabase.from("inquiries").insert({
+      const extras = [
+        { label: "Contact method", value: answers.contactMethod },
+        ...(answers.contactDetails.trim()
+          ? [{ label: "Contact details", value: answers.contactDetails.trim() }]
+          : []),
+        ...(answers.projectType
+          ? [{ label: "Project type", value: answers.projectType }]
+          : []),
+        ...(answers.subCategory
+          ? [{ label: "Sub-category", value: answers.subCategory }]
+          : []),
+        ...(answers.projectStatus
+          ? [{ label: "Project status", value: answers.projectStatus }]
+          : []),
+        ...(answers.hasProperty
+          ? [{ label: "Has property", value: answers.hasProperty }]
+          : []),
+        { label: "Consent", value: "Privacy Policy & Terms accepted" },
+      ];
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "inquire",
           name: answers.fullName.trim(),
           email: answers.email.trim(),
           phone: answers.mobile.trim() || null,
@@ -250,17 +255,21 @@ export default function InquireWizard({
           location: answers.propertyLocation.trim() || null,
           budget: answers.estimatedBudget || null,
           preferred_date: null,
-          message: compileInquireMessage({
+          message: compileInquireMessage(answers),
+          consent: true,
+          payload: {
             ...answers,
-            projectNotes:
-              `${answers.projectNotes}\n\n[Consent: Privacy Policy & Terms accepted]`.trim(),
-          }),
-        });
-        if (retry.error) {
-          setStatus("error");
-          setErrorMsg(submitErrorMessage(retry.error));
-          return;
-        }
+            consentAccepted: true,
+            submittedAt: new Date().toISOString(),
+          },
+          extras,
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        setStatus("error");
+        setErrorMsg(data.error || submitErrorMessage());
+        return;
       }
       try {
         localStorage.removeItem(DRAFT_KEY);

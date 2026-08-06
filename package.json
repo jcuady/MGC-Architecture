@@ -14,6 +14,7 @@
     "test:lcp": "node scripts/verify-mobile-lcp.mjs",
     "test:forms": "node scripts/verify-form-validation.mjs",
     "test:trust": "node scripts/verify-customer-trust.mjs",
+    "test:inquiry-email": "node scripts/verify-inquiry-email.mjs",
     "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {

@@ -48,7 +48,8 @@ export default function PrivacyPage() {
       <p>
         We use trusted processors (hosting and database providers such as Vercel and Supabase)
         solely to operate this site and store inquiry submissions. They process data under our
-        instructions.
+        instructions. New inquiries are also emailed to our studio inbox (
+        {site.contact.email}) so we can respond promptly.
       </p>
       <h2>Retention</h2>
       <p>

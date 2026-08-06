@@ -2,7 +2,6 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import FormConsentLabel from "@/components/FormConsentLabel";
-import { createClient } from "@/lib/supabase/client";
 import {
   FORM_LIMITS,
   isBrowserOnline,
@@ -114,21 +113,32 @@ export default function InquiryForm() {
       .trim();
 
     try {
-      const supabase = createClient();
-      const { error } = await supabase.from("inquiries").insert({
-        name: name.trim(),
-        email: email.trim(),
-        phone: phone.trim() || null,
-        service: null,
-        location: null,
-        budget: null,
-        preferred_date: String(fields.get("preferred_date") ?? "") || null,
-        message: compiledMessage,
+      const extras = [
+        { label: "Contact method", value: method },
+        ...(contactDetails
+          ? [{ label: "Contact details", value: contactDetails }]
+          : []),
+        { label: "Consent", value: "Privacy Policy & Terms accepted" },
+      ];
+      const res = await fetch("/api/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: "contact",
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim() || null,
+          preferred_date: String(fields.get("preferred_date") ?? "") || null,
+          message: compiledMessage,
+          consent: true,
+          extras,
+          company: String(fields.get("company") ?? ""),
+        }),
       });
-
-      if (error) {
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
         setStatus("error");
-        setFormError(submitErrorMessage(error));
+        setFormError(data.error || submitErrorMessage());
         return;
       }
       form.reset();
@@ -174,7 +184,7 @@ export default function InquiryForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="bg-beige p-6 sm:p-8"
+      className="relative bg-beige p-6 sm:p-8"
       aria-label="Discussion call inquiry form"
       noValidate
     >
@@ -192,6 +202,12 @@ export default function InquiryForm() {
       <p className="mt-4 font-heading text-xs font-semibold uppercase tracking-[0.16em] text-terracotta">
         Contact info
       </p>
+
+      {/* Honeypot — leave empty */}
+      <div className="absolute -left-[9999px] h-0 w-0 overflow-hidden" aria-hidden="true">
+        <label htmlFor="inq-company">Company</label>
+        <input id="inq-company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div>

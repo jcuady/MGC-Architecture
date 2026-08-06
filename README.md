@@ -46,6 +46,20 @@ Copy `.env.example` to `.env.local` (already done locally). Publishable values o
 - Schema: `supabase/migrations/0001_init.sql` (inquiries, site_content, storage bucket + all RLS policies)
 - Ops helper: `node scripts/sb-query.mjs <file.sql|sql>` (needs `SB_TOKEN` env var — a Supabase personal access token)
 
+## Inquiry email
+
+Contact (`/contact`) and Inquire (`/inquire`) POST to `/api/inquiries`, which:
+
+1. Saves the row in Supabase `inquiries` (visible in Studio)
+2. Emails **mgcarchitectureph@gmail.com** with a branded chestnut/beige HTML template
+
+**Preferred:** set `RESEND_API_KEY` (+ optional `INQUIRY_FROM_EMAIL`) on Vercel — see `.env.example`.  
+**Fallback:** FormSubmit (no key). Open the studio Gmail once and click **Activate Form**.
+
+```bash
+npm run test:inquiry-email   # branding + API wiring (server on :3847)
+```
+
 ## Verification checks
 
 Two runnable end-to-end checks (dev server must be running; defaults to `http://localhost:3847`):
