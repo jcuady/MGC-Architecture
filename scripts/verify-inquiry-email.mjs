@@ -80,6 +80,14 @@ ok(
   body.ok === true,
 );
 
+if (process.env.RESEND_API_KEY || process.env.REQUIRE_RESEND === "1") {
+  ok(
+    "email provider is Resend",
+    body.provider === "resend" && body.emailed === true,
+    `provider=${body.provider} emailed=${body.emailed}`,
+  );
+}
+
 if (failed > 0) {
   console.error(`\n${failed} check(s) failed`);
   process.exit(1);
