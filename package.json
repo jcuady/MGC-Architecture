@@ -16,6 +16,9 @@
     "test:trust": "node scripts/verify-customer-trust.mjs",
     "test:inquiry-email": "node scripts/verify-inquiry-email.mjs",
     "test:about": "node scripts/verify-about-routing.mjs",
+    "test:annotated": "node scripts/verify-annotated-fixes.mjs",
+    "test:annotated:runtime": "node scripts/verify-runtime-annotated.mjs",
+    "test:annotated:prod": "node scripts/verify-prod-annotated.mjs",
     "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {

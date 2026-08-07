@@ -56,18 +56,17 @@ Under ₱500,000
 Above ₱5 Million
 I'm not sure yet
 I'd like a cost estimate first
-5. Inspiration & References
+5. Inspiration & Details
 Upload any of the following (optional):
 Inspiration photos
 Existing plans or sketches
 Site photos
 Pinterest or mood board links
-7. Other Details
 Tell us a little about your project.
 Placeholder:
 Briefly describe what you're planning, your goals, or anything you'd like us to
 know before we get in touch.
-8. Review & Submit
+6. Review & Submit
 Summary of answers
 ☐ I agree to be contacted regarding my project inquiry.
 Button:

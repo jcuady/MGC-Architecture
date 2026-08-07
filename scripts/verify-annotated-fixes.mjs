@@ -73,7 +73,7 @@ ok("Process CTA Explore the full process", content.includes("Explore the full pr
 ok(
   "Process step copy matches overview",
   content.includes("Understanding project goals. Site assessment") &&
-    content.includes("time: \"1–2 Weeks\""),
+    content.includes('time: "1-2 Weeks"'),
 );
 
 if (failed) {

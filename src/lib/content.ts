@@ -714,27 +714,27 @@ export const process = {
   steps: [
     {
       title: "Pre-Design",
-      time: "1–2 Weeks",
+      time: "1-2 Weeks",
       body: "Understanding project goals. Site assessment. Defining the design direction.",
     },
     {
       title: "Design Development",
-      time: "2–6 Weeks",
+      time: "2-6 Weeks",
       body: "Creating floor plans and perspectives. Material selection. Rough estimate.",
     },
     {
       title: "Construction Drawings",
-      time: "3–6 Weeks",
+      time: "3-6 Weeks",
       body: "Construction-ready plans. Actual estimate. Build documents.",
     },
     {
       title: "Permits & Contracts",
-      time: "1–2 Months",
+      time: "1-2 Months",
       body: "Permit application. Document processing. Contract agreement.",
     },
     {
       title: "Construction Phase",
-      time: "6–12 Months",
+      time: "6-12 Months",
       body: "Construction. Site supervision and updates. Project completion.",
     },
   ],
