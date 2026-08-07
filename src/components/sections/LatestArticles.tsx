@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import Image from "next/image";
 import Link from "next/link";
@@ -13,6 +13,7 @@ export type LatestArticlesData = {
   seeAllHref: string;
   items: Array<{
     title: string;
+    excerpt?: string;
     readMins: number;
     image: string;
     imageAlt: string;
@@ -30,6 +31,7 @@ export function buildLatestArticlesData(posts: BlogPostCard[]): LatestArticlesDa
     seeAllHref: "/blog",
     items: posts.slice(0, 6).map((p) => ({
       title: p.title,
+      excerpt: p.excerpt,
       readMins: p.read_mins,
       image: p.cover_image,
       imageAlt: p.cover_alt,
@@ -185,6 +187,11 @@ export default function LatestArticles({ data }: { data: LatestArticlesData }) {
                   <h3 className="mt-4 font-heading text-base font-semibold leading-snug text-warm-white transition-colors duration-200 group-hover:text-gold sm:text-lg">
                     {item.title}
                   </h3>
+                  {item.excerpt ? (
+                    <p className="mt-2 line-clamp-2 font-body text-sm leading-relaxed text-warm-white/55">
+                      {item.excerpt}
+                    </p>
+                  ) : null}
                   <p className="mt-1.5 font-heading text-xs tracking-wide text-warm-white/45">
                     Read · {item.readMins} min
                   </p>

@@ -28,8 +28,8 @@ export const nav = [
   { label: "Inquire", href: "/inquire" },
   { label: "Cost Calculator", href: "/estimate" },
   { label: "FAQ", href: "/faq" },
-  { label: "About", href: "/about" },
   { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
 ];
 
 export type ProjectImage = {
@@ -630,18 +630,17 @@ export const services: Service[] = [
     title: "Design Documentation & Permit Assistance",
     blurb: "Complete drawings and support for building permit applications.",
     scope: [
-      "Complete drawings & documents for permits",
-      "Permit application assistance",
-      "Updates to existing drawings",
+      "Need complete drawings & documents for permits",
+      "Need assistance for permit application",
+      "Need to update existing drawing for permit compliance",
     ],
   },
   {
     title: "Cost Estimation & Budget Planning",
     blurb: "A realistic picture of cost before you commit to building.",
     scope: [
-      "Residential & commercial estimates",
-      "Finish-level cost guides",
-      "Budget planning before design",
+      "Residential estimates",
+      "Commercial estimates",
     ],
   },
   {
@@ -713,11 +712,31 @@ export const process = {
   ctaLabel: "Explore the full process",
   ctaHref: "/process",
   steps: [
-    { title: "Pre-Design", body: "Goals, site visit, and initial direction — about 1–2 weeks." },
-    { title: "Design Development", body: "Layouts, 3D views, and refinements — about 2–6 weeks." },
-    { title: "Construction Drawings", body: "Construction-ready documents — about 3–6 weeks." },
-    { title: "Permits & Contracts", body: "Permit docs and agreements — about 1–2 months." },
-    { title: "Construction Phase", body: "Build, monitor, and hand over — about 6–12 months." },
+    {
+      title: "Pre-Design",
+      time: "1–2 Weeks",
+      body: "Understanding project goals. Site assessment. Defining the design direction.",
+    },
+    {
+      title: "Design Development",
+      time: "2–6 Weeks",
+      body: "Creating floor plans and perspectives. Material selection. Rough estimate.",
+    },
+    {
+      title: "Construction Drawings",
+      time: "3–6 Weeks",
+      body: "Construction-ready plans. Actual estimate. Build documents.",
+    },
+    {
+      title: "Permits & Contracts",
+      time: "1–2 Months",
+      body: "Permit application. Document processing. Contract agreement.",
+    },
+    {
+      title: "Construction Phase",
+      time: "6–12 Months",
+      body: "Construction. Site supervision and updates. Project completion.",
+    },
   ],
 };
 

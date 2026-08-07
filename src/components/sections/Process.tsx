@@ -9,7 +9,7 @@ import { textStyle, type SiteContent } from "@/lib/cms";
 
 /**
  * Landing teaser for Process — short overview + CTA to /process.
- * Full five-phase detail and finish levels live on the dedicated page.
+ * Full five-phase detail lives on the dedicated page; finish levels live on /estimate.
  */
 export default function Process({ data }: { data: SiteContent["process"] }) {
   const sectionRef = useRef<HTMLElement>(null);
@@ -123,6 +123,11 @@ export default function Process({ data }: { data: SiteContent["process"] }) {
                 <h3 className="mt-3 font-heading text-lg font-semibold text-warm-white sm:text-xl">
                   {step.title}
                 </h3>
+                {"time" in step && step.time ? (
+                  <p className="mt-2 font-heading text-xs font-semibold uppercase tracking-[0.14em] text-warm-white/55">
+                    {step.time}
+                  </p>
+                ) : null}
                 <p className="mt-2 text-sm leading-relaxed text-warm-white/65">{step.body}</p>
               </li>
             ))}

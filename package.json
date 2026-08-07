@@ -15,6 +15,7 @@
     "test:forms": "node scripts/verify-form-validation.mjs",
     "test:trust": "node scripts/verify-customer-trust.mjs",
     "test:inquiry-email": "node scripts/verify-inquiry-email.mjs",
+    "test:about": "node scripts/verify-about-routing.mjs",
     "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {

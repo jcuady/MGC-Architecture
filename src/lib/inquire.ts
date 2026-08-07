@@ -17,8 +17,7 @@ export const inquireDefaults = {
     planning: "What Are You Planning?",
     property: "About the Property",
     budget: "Project Budget",
-    inspiration: "Inspiration & References",
-    details: "Other Details",
+    inspiration: "Inspiration & Details",
     review: "Review & Submit",
   },
   fields: {

@@ -5,8 +5,10 @@ import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
 import Reveal from "@/components/Reveal";
 import EstimatorFlow from "@/components/estimate/EstimatorFlow";
+import FinishLevels from "@/components/process/FinishLevels";
 import { getActiveFinishRates } from "@/lib/calculator-server";
 import { site } from "@/lib/content";
+import { processPage } from "@/lib/process-page";
 
 export const revalidate = 60;
 
@@ -112,6 +114,8 @@ export default async function EstimatePage() {
             <EstimatorFlow finishes={finishes} />
           </div>
         </section>
+
+        <FinishLevels levels={[...processPage.finishes.levels]} showCta={false} />
 
         {/* Trust strip */}
         <section className="border-t border-warm-gray/60 bg-beige">

@@ -4,7 +4,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
 import ProcessHero from "@/components/process/ProcessHero";
 import ProcessPhases from "@/components/process/ProcessPhases";
-import FinishLevels from "@/components/process/FinishLevels";
 import Reveal from "@/components/Reveal";
 import { processPage } from "@/lib/process-page";
 import { site } from "@/lib/content";
@@ -55,8 +54,6 @@ export default function ProcessPage() {
         <div id="phases" className="scroll-mt-20">
           <ProcessPhases phases={[...processPage.phases]} />
         </div>
-
-        <FinishLevels levels={[...processPage.finishes.levels]} />
 
         <section className="bg-chestnut">
           <div className="mx-auto flex max-w-7xl flex-col gap-8 px-5 py-16 sm:px-8 sm:py-20 lg:flex-row lg:items-end lg:justify-between">

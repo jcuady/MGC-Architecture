@@ -24,6 +24,7 @@ import {
   type InquireContent,
 } from "@/lib/inquire";
 import { textStyle } from "@/lib/cms";
+import { professionalNotice } from "@/lib/content";
 import {
   FORM_LIMITS,
   isBrowserOnline,
@@ -47,7 +48,6 @@ const STEP_KEYS = [
   "property",
   "budget",
   "inspiration",
-  "details",
   "review",
 ] as const;
 
@@ -171,16 +171,11 @@ export default function InquireWizard({
         return null;
       case "property":
         if (!a.hasProperty) return "Tell us if you already have a property.";
-        if (a.hasProperty === "Yes" && !a.propertyLocation.trim()) {
-          return "Property location is required when you already have a property.";
-        }
         return null;
       case "budget":
         if (!a.estimatedBudget) return "Select an estimated budget.";
         return null;
       case "inspiration":
-        return null;
-      case "details":
         if (a.projectNotes.length > FORM_LIMITS.notes) {
           return `Notes must be under ${FORM_LIMITS.notes} characters.`;
         }
@@ -485,6 +480,9 @@ export default function InquireWizard({
                 onChange={(projectStatus) => patch({ projectStatus })}
               />
             </Field>
+            <p className="border-l-2 border-chestnut/40 pl-4 font-body text-sm leading-relaxed text-charcoal/65">
+              {professionalNotice}
+            </p>
           </div>
         ) : null}
 
@@ -497,58 +495,53 @@ export default function InquireWizard({
                 onChange={(hasProperty) => patch({ hasProperty })}
               />
             </Field>
-            {answers.hasProperty === "Yes" ? (
-              <>
-                <Field label={content.fields.propertyLocation} required className="sm:col-span-2">
-                  <input
-                    className={inputClass}
-                    value={answers.propertyLocation}
-                    onChange={(e) => patch({ propertyLocation: e.target.value })}
-                  />
-                </Field>
-                <Field label={`${content.fields.lotArea} (optional)`}>
-                  <input
-                    type="number"
-                    min={0}
-                    className={inputClass}
-                    value={answers.lotArea}
-                    onChange={(e) => patch({ lotArea: e.target.value })}
-                  />
-                </Field>
-                <Field label={`${content.fields.floorArea} (optional)`}>
-                  <input
-                    type="number"
-                    min={0}
-                    className={inputClass}
-                    value={answers.floorArea}
-                    onChange={(e) => patch({ floorArea: e.target.value })}
-                  />
-                </Field>
-                <Field label={content.fields.propertyPhotos} className="sm:col-span-2">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    multiple
-                    className="block w-full font-heading text-sm text-charcoal"
-                    onChange={(e) => {
-                      startTransition(async () => {
-                        const result = await uploadFiles(e.target.files);
-                        if (result.error) {
-                          setErrorMsg(result.error);
-                          return;
-                        }
-                        if (result.urls.length) {
-                          patch({
-                            propertyPhotos: [...answers.propertyPhotos, ...result.urls],
-                          });
-                        }
+            <Field label={`${content.fields.propertyLocation} (optional)`} className="sm:col-span-2">
+              <input
+                className={inputClass}
+                value={answers.propertyLocation}
+                onChange={(e) => patch({ propertyLocation: e.target.value })}
+                placeholder="City / Municipality"
+              />
+            </Field>
+            <Field label={`${content.fields.lotArea} (optional)`}>
+              <input
+                type="number"
+                min={0}
+                className={inputClass}
+                value={answers.lotArea}
+                onChange={(e) => patch({ lotArea: e.target.value })}
+              />
+            </Field>
+            <Field label={`${content.fields.floorArea} (optional)`}>
+              <input
+                type="number"
+                min={0}
+                className={inputClass}
+                value={answers.floorArea}
+                onChange={(e) => patch({ floorArea: e.target.value })}
+              />
+            </Field>
+            <Field label={content.fields.propertyPhotos} className="sm:col-span-2">
+              <FileDropZone
+                accept="image/*"
+                pending={pending}
+                onFiles={(files) => {
+                  startTransition(async () => {
+                    const result = await uploadFiles(files);
+                    if (result.error) {
+                      setErrorMsg(result.error);
+                      return;
+                    }
+                    if (result.urls.length) {
+                      patch({
+                        propertyPhotos: [...answers.propertyPhotos, ...result.urls],
                       });
-                    }}
-                  />
-                  <ThumbList urls={answers.propertyPhotos} />
-                </Field>
-              </>
-            ) : null}
+                    }
+                  });
+                }}
+              />
+              <ThumbList urls={answers.propertyPhotos} />
+            </Field>
           </div>
         ) : null}
 
@@ -574,14 +567,12 @@ export default function InquireWizard({
         {stepKey === "inspiration" ? (
           <div className="grid gap-5">
             <Field label={content.fields.inspirationUploads}>
-              <input
-                type="file"
+              <FileDropZone
                 accept="image/*,.pdf"
-                multiple
-                className="block w-full font-heading text-sm text-charcoal"
-                onChange={(e) => {
+                pending={pending}
+                onFiles={(files) => {
                   startTransition(async () => {
-                    const result = await uploadFiles(e.target.files);
+                    const result = await uploadFiles(files);
                     if (result.error) {
                       setErrorMsg(result.error);
                       return;
@@ -608,19 +599,16 @@ export default function InquireWizard({
                 placeholder="Paste one link per line"
               />
             </Field>
+            <Field label={content.fields.projectNotes}>
+              <textarea
+                rows={6}
+                className={`${inputClass} resize-y font-body`}
+                value={answers.projectNotes}
+                onChange={(e) => patch({ projectNotes: e.target.value })}
+                placeholder={content.fields.projectNotesPlaceholder}
+              />
+            </Field>
           </div>
-        ) : null}
-
-        {stepKey === "details" ? (
-          <Field label={content.fields.projectNotes}>
-            <textarea
-              rows={6}
-              className={`${inputClass} resize-y font-body`}
-              value={answers.projectNotes}
-              onChange={(e) => patch({ projectNotes: e.target.value })}
-              placeholder={content.fields.projectNotesPlaceholder}
-            />
-          </Field>
         ) : null}
 
         {stepKey === "review" ? (
@@ -641,19 +629,28 @@ export default function InquireWizard({
             </ReviewBlock>
             <ReviewBlock title={content.steps.property}>
               <p>{answers.hasProperty}</p>
-              {answers.hasProperty === "Yes" ? (
-                <>
-                  <p>{answers.propertyLocation}</p>
-                  {answers.lotArea ? <p>Lot: {answers.lotArea} sqm</p> : null}
-                  {answers.floorArea ? <p>Floor: {answers.floorArea} sqm</p> : null}
-                </>
+              {answers.propertyLocation ? <p>{answers.propertyLocation}</p> : null}
+              {answers.lotArea ? <p>Lot: {answers.lotArea} sqm</p> : null}
+              {answers.floorArea ? <p>Floor: {answers.floorArea} sqm</p> : null}
+              {answers.propertyPhotos.length ? (
+                <p>{answers.propertyPhotos.length} photo(s) attached</p>
               ) : null}
             </ReviewBlock>
             <ReviewBlock title={content.steps.budget}>
               <p>{answers.estimatedBudget}</p>
             </ReviewBlock>
-            <ReviewBlock title={content.steps.details}>
-              <p className="whitespace-pre-wrap">{answers.projectNotes}</p>
+            <ReviewBlock title={content.steps.inspiration}>
+              {answers.inspirationUploads.length ? (
+                <p>{answers.inspirationUploads.length} file(s) attached</p>
+              ) : null}
+              {answers.moodboardLinks ? (
+                <p className="whitespace-pre-wrap">{answers.moodboardLinks}</p>
+              ) : null}
+              {answers.projectNotes ? (
+                <p className="whitespace-pre-wrap">{answers.projectNotes}</p>
+              ) : (
+                <p className="text-charcoal/50">No additional notes</p>
+              )}
             </ReviewBlock>
             <FormConsentLabel
               id="inquire-consent"
@@ -818,5 +815,44 @@ function ThumbList({ urls }: { urls: string[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+
+function FileDropZone({
+  accept,
+  pending,
+  onFiles,
+}: {
+  accept: string;
+  pending: boolean;
+  onFiles: (files: FileList | null) => void;
+}) {
+  const id = useId();
+  return (
+    <label
+      htmlFor={id}
+      className={`flex min-h-[7.5rem] cursor-pointer flex-col items-center justify-center gap-2 border-2 border-dashed border-warm-gray bg-beige/40 px-4 py-6 text-center transition-colors hover:border-chestnut hover:bg-beige/70 focus-within:border-chestnut ${
+        pending ? "opacity-60" : ""
+      }`}
+    >
+      <span className="font-heading text-xs font-semibold uppercase tracking-[0.14em] text-chestnut">
+        {pending ? "Uploading…" : "Choose files"}
+      </span>
+      <span className="font-body text-sm text-charcoal/60">
+        Drop images here or click to browse
+      </span>
+      <input
+        id={id}
+        type="file"
+        accept={accept}
+        multiple
+        disabled={pending}
+        className="sr-only"
+        onChange={(e) => {
+          onFiles(e.target.files);
+          e.target.value = "";
+        }}
+      />
+    </label>
   );
 }

@@ -50,12 +50,12 @@ export default function Header({ theme = "dark" }: { theme?: "light" | "dark" })
                 : "/brand/monogram-white.png"
             }
             alt=""
-            width={32}
-            height={32}
-            className="h-7 w-7 object-contain sm:h-8 sm:w-8"
+            width={40}
+            height={40}
+            className="h-9 w-9 object-contain sm:h-10 sm:w-10"
             priority
           />
-          <span className="font-heading text-[0.8125rem] font-semibold leading-none tracking-[0.04em] sm:text-sm">
+          <span className="font-heading text-sm font-semibold leading-none tracking-[0.04em] sm:text-[0.9375rem]">
             mgc architecture
           </span>
         </Link>

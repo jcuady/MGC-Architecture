@@ -4,7 +4,13 @@ import Reveal from "@/components/Reveal";
 import type { FinishLevel } from "@/lib/process-page";
 import { processPage } from "@/lib/process-page";
 
-export default function FinishLevels({ levels }: { levels: FinishLevel[] }) {
+export default function FinishLevels({
+  levels,
+  showCta = true,
+}: {
+  levels: FinishLevel[];
+  showCta?: boolean;
+}) {
   const { finishes } = processPage;
 
   return (
@@ -54,14 +60,16 @@ export default function FinishLevels({ levels }: { levels: FinishLevel[] }) {
           ))}
         </ul>
 
-        <Reveal className="mt-14">
-          <Link
-            href={finishes.ctaHref}
-            className="inline-flex min-h-11 cursor-pointer items-center bg-chestnut px-6 py-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white transition-colors hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chestnut"
-          >
-            {finishes.ctaLabel}
-          </Link>
-        </Reveal>
+        {showCta ? (
+          <Reveal className="mt-14">
+            <Link
+              href={finishes.ctaHref}
+              className="inline-flex min-h-11 cursor-pointer items-center bg-chestnut px-6 py-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-warm-white transition-colors hover:bg-terracotta focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-chestnut"
+            >
+              {finishes.ctaLabel}
+            </Link>
+          </Reveal>
+        ) : null}
       </div>
     </section>
   );

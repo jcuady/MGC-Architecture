@@ -313,7 +313,7 @@ function ListBlock({
 }) {
   return (
     <div>
-      <h3 className="font-heading text-[0.7rem] font-semibold uppercase tracking-[0.2em] text-terracotta">
+      <h3 className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta sm:text-sm">
         {title}
       </h3>
       <ul className="mt-4 space-y-0">
@@ -321,7 +321,7 @@ function ListBlock({
           <li
             key={item}
             data-phase-row={animateRows ? "" : undefined}
-            className="border-t border-warm-gray/60 py-2.5 font-body text-sm leading-relaxed text-charcoal/80"
+            className="border-t border-warm-gray/60 py-3 font-body text-base leading-relaxed text-charcoal/80 sm:text-[1.0625rem]"
           >
             {item}
           </li>

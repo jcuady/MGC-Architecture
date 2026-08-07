@@ -153,12 +153,6 @@ export default async function BlogPostPage({ params }: Props) {
                 >
                   All articles
                 </Link>
-                <Link
-                  href="/contact"
-                  className="inline-flex min-h-11 cursor-pointer items-center bg-chestnut px-5 py-2.5 font-heading text-xs font-semibold uppercase tracking-[0.12em] text-warm-white transition-colors hover:bg-terracotta"
-                >
-                  Start a project
-                </Link>
               </div>
             </div>
           </div>
@@ -183,6 +177,11 @@ export default async function BlogPostPage({ params }: Props) {
                       <h3 className="mt-2 font-heading text-lg font-semibold text-charcoal group-hover:text-chestnut">
                         {p.title}
                       </h3>
+                      {p.excerpt ? (
+                        <p className="mt-2 line-clamp-3 font-body text-sm leading-relaxed text-charcoal/65">
+                          {p.excerpt}
+                        </p>
+                      ) : null}
                     </Link>
                   </li>
                 ))}

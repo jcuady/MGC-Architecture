@@ -32,6 +32,7 @@ export default async function Home() {
     seeAllHref: "/blog",
     items: posts.slice(0, 6).map((p) => ({
       title: p.title,
+      excerpt: p.excerpt,
       readMins: p.read_mins,
       image: p.cover_image,
       imageAlt: p.cover_alt,
