@@ -31,7 +31,18 @@ const aboutHtml = await aboutRes.text();
 check("about page headline", aboutHtml.includes("designer behind MGC Architecture"));
 check("about page body copy", aboutHtml.includes("Magna Cum Laude"));
 check("about page portrait", aboutHtml.includes("professional-shot") || aboutHtml.includes("/about/"));
-check("about page inquire CTA", aboutHtml.includes('href="/inquire"'));
+check("about page See Works CTA", aboutHtml.includes("See Works") && aboutHtml.includes('href="/work"'));
+check("about page justified bio", aboutHtml.includes("text-justify"));
+check("about page credentials section", aboutHtml.includes("data-about-credentials") || aboutHtml.includes("Professional Experience"));
+check("about credentials education", aboutHtml.includes("Education") && aboutHtml.includes("Pamantasan"));
+check(
+  "about credentials awards",
+  aboutHtml.includes("Awards") &&
+    (aboutHtml.includes("Dean's Lister") ||
+      aboutHtml.includes("Dean&#x27;s Lister") ||
+      aboutHtml.includes("Dean&apos;s Lister") ||
+      aboutHtml.includes("Lister")),
+);
 
 console.log(failures === 0 ? "\nABOUT ROUTING OK" : `\n${failures} FAILED`);
 process.exit(failures === 0 ? 0 : 1);

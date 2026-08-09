@@ -24,12 +24,12 @@ const serviceImages = [
     alt: "Custom built-in cabinetry fitted to the room",
   },
   {
-    image: "/portfolio/capstone/archi-capstone-axonometric-view-1.png",
-    alt: "Axonometric drawing prepared for permit documentation",
+    image: "/services/documents-permits-services.png",
+    alt: "MGC Architecture documentation portfolio - drawings, zoning summary, and permit papers",
   },
   {
-    image: "/portfolio/tile-co/tile-co-interior-view-3.png",
-    alt: "Tile Co. interior — commercial space planned to budget",
+    image: "/services/cost-estimares-services.png",
+    alt: "Cost estimation at the desk - calculator over architectural floor plans",
   },
   {
     image: "/portfolio/the-noir/the-noir-living-view-4.png",
@@ -107,7 +107,7 @@ export const defaultContent = {
     styles: { lines: {} as TextStyle },
   },
   services: {
-    eyebrow: "Services",
+    eyebrow: "Inquire",
     title: "Planning a project?",
     lede: "Whether you're building, renovating, or need assistance with permits and costing, we're here to help. Choose the option below that best fits your project and share a few details to help us better understand your vision.",
     notice: professionalNotice,
@@ -214,7 +214,7 @@ export const sectionMeta: Record<SectionKey, { label: string; description: strin
   studio: { label: "Studio statement", description: "Split statement — lead (top-left) and trail (bottom-right); Approach/Process/Promise removed" },
   work: { label: "Selected works header", description: "Heading above the project grid" },
   showcaseNoir: { label: "Showcase — The Noir", description: "First full-screen image interlude" },
-  services: { label: "Services", description: "Professional notice + interactive split-pane service explorer" },
+  services: { label: "Inquire", description: "Homepage inquire section — split-pane service explorer into /inquire or /estimate" },
   inquire: {
     label: "Inquire wizard",
     description: "Dedicated /inquire multi-step form copy, options, consent, and success message",
@@ -222,7 +222,7 @@ export const sectionMeta: Record<SectionKey, { label: string; description: strin
   estimator: { label: "Cost calculator invite", description: "Full-screen construction cost calculator with ₱25k+ count-up and estimate CTA" },
   about: { label: "About the designer", description: "Homepage teaser (portrait + short bio) + full /about page copy" },
   process: { label: "Process", description: "Landing teaser — five phase titles + CTA to /process" },
-  insights: { label: "Before you build + articles", description: "Four insight chapters + Latest Articles row" },
+  insights: { label: "Latest articles", description: "Homepage Latest Articles row (Before You Build immersive removed)" },
   faq: { label: "FAQs", description: "Questions and answers" },
   showcaseHearth: { label: "Showcase — The Hearth", description: "Closing full-screen interlude with CTA" },
   contact: { label: "Contact", description: "Contact copy + simplified discussion-call inquiry form" },

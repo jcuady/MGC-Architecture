@@ -105,8 +105,8 @@ Bare Finish: A basic bare home with concrete flooring, unpainted concrete walls,
 windows, and an exposed ceiling.
 Standard Finish: A clean and practical home with tiled flooring, painted walls, standard
 aluminum-framed windows, and a simple flat ceiling.
-Luxury Finish: A refined home with large-format tiles or engineered wood flooring,
+Premium Finish: A refined home with large-format tiles or engineered wood flooring,
 decorative wall cladding, full-height glass windows, and detailed ceilings.
-Iconic Finish: A premium customized home with natural stone or solid wood flooring,
+Luxury Finish: A luxury home with natural stone or solid wood flooring,
 imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.
 Photos to be displayed per finish: 01 Type of Finish

@@ -599,7 +599,8 @@ export type Service = {
 export const services: Service[] = [
   {
     title: "Architectural Design",
-    blurb: "New builds designed around how you live and work.",
+    blurb:
+      "Designing and planning residential, commercial, and interior spaces.",
     scope: [
       "Residential Design",
       "Commercial Design",
@@ -609,7 +610,8 @@ export const services: Service[] = [
   },
   {
     title: "Renovation & Remodeling",
-    blurb: "Reworking existing spaces so they fit your life today.",
+    blurb:
+      "Renovating, remodeling, and improving existing residential and commercial spaces.",
     scope: [
       "Home Renovations",
       "Commercial Space Renovations",
@@ -618,7 +620,8 @@ export const services: Service[] = [
   },
   {
     title: "Cabinetry & Built-In Furniture",
-    blurb: "Storage and furniture drawn to fit your space exactly.",
+    blurb:
+      "Designing, fabricating, and installing custom cabinets and built-in furniture.",
     scope: [
       "Kitchen Cabinets",
       "Wardrobe Cabinets",
@@ -628,7 +631,8 @@ export const services: Service[] = [
   },
   {
     title: "Design Documentation & Permit Assistance",
-    blurb: "Complete drawings and support for building permit applications.",
+    blurb:
+      "Preparing construction drawings and assisting with building permit requirements.",
     scope: [
       "Need complete drawings & documents for permits",
       "Need assistance for permit application",
@@ -637,7 +641,8 @@ export const services: Service[] = [
   },
   {
     title: "Cost Estimation & Budget Planning",
-    blurb: "A realistic picture of cost before you commit to building.",
+    blurb:
+      "Preparing project cost estimates, quantity takeoffs, and budget plans.",
     scope: [
       "Residential estimates",
       "Commercial estimates",
@@ -645,7 +650,8 @@ export const services: Service[] = [
   },
   {
     title: "3D Visualization",
-    blurb: "See your space before construction begins.",
+    blurb:
+      "Creating photorealistic 3D views and walkthroughs of proposed designs.",
     scope: [
       "Exterior 3D views",
       "Interior 3D views",
@@ -837,30 +843,30 @@ export const insights = {
       {
         title: "Before You Build, Read This",
         readMins: 3,
-        image: "/portfolio/guest-quarter/guest-quarter-view-2.png",
-        imageAlt: "Guest quarter interior — coordinated design and documentation",
+        image: "/blog/blog-01-before-you-build.png",
+        imageAlt: "Home office workspace - planning before you build",
         href: "/blog/before-you-build-read-this",
       },
       {
         title: "Mistakes to Avoid Before You Build",
         readMins: 4,
-        image: "/portfolio/c-house/c-house-02-living-area-view-2.png",
-        imageAlt: "Residential living space — planning before construction",
+        image: "/blog/blog-02-mistakes-to-avoid.jpg",
+        imageAlt: "Stair and shelving interior - mistakes to avoid before building",
         href: "/blog/mistakes-to-avoid-before-you-build",
-      },
-      {
-        title: "Budget-Saving Tips Before You Build",
-        readMins: 4,
-        image: "/portfolio/the-hearth/the-hearth-dining-view-2.png",
-        imageAlt: "Warm dining interior — finish level and budget",
-        href: "/blog/budget-saving-tips-before-you-build",
       },
       {
         title: "From Idea to Reality",
         readMins: 3,
-        image: "/portfolio/saro/saro-view-2.png",
-        imageAlt: "Conceptual architecture study — early project conversation",
+        image: "/blog/blog-03-from-ideas-to-reality.png",
+        imageAlt: "Wooden pavilion structure - from idea to reality",
         href: "/blog/from-idea-to-reality",
+      },
+      {
+        title: "Budget-Saving Tips Before You Build",
+        readMins: 4,
+        image: "/blog/blog-04-budget.jpg",
+        imageAlt: "Dining room with shelving - budget-saving tips before you build",
+        href: "/blog/budget-saving-tips-before-you-build",
       },
     ],
   },

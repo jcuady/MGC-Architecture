@@ -125,83 +125,89 @@ export default function LatestArticles({ data }: { data: LatestArticlesData }) {
       id="blog"
       ref={sectionRef}
       aria-label="Latest articles"
-      className="scroll-mt-20 bg-charcoal text-warm-white"
+      className="scroll-mt-20 overflow-x-clip bg-charcoal text-warm-white"
       data-articles-scroll
     >
-      <div className="relative flex h-auto min-h-[100svh] flex-col justify-center py-16 lg:h-[calc(100svh-4.75rem)] lg:min-h-0 lg:justify-between lg:py-10">
+      {/*
+        Grid rows keep the heading in an auto-sized row so the pinned viewport
+        height cannot clip the title. Safe zones = max-w-7xl + padding-inline.
+      */}
+      <div className="relative grid min-h-[100svh] grid-rows-[auto_minmax(0,1fr)_auto] gap-y-8 py-16 sm:gap-y-10 lg:h-[calc(100svh-4.75rem)] lg:min-h-0 lg:gap-y-6 lg:py-8">
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_70%_15%,rgba(196,149,106,0.1),transparent_50%)]"
         />
 
-        <div className="relative mx-auto w-full max-w-7xl shrink-0 px-5 sm:px-8">
+        <header className="relative mx-auto w-full max-w-7xl overflow-visible px-5 sm:px-8 lg:px-10">
           <p className="font-heading text-xs font-semibold uppercase tracking-[0.22em] text-gold">
             {data.eyebrow}
           </p>
-          <div className="mt-3 flex flex-wrap items-end justify-between gap-4 sm:mt-4">
-            <h2 className="max-w-xl font-heading text-3xl font-semibold leading-tight sm:text-4xl">
+          <div className="mt-3 flex flex-wrap items-end justify-between gap-x-6 gap-y-4 sm:mt-4">
+            <h2 className="max-w-[22ch] overflow-visible text-balance font-heading text-[clamp(1.75rem,4vw,2.5rem)] font-semibold leading-[1.2] tracking-tight sm:max-w-2xl">
               {data.title}
             </h2>
             <Link
               href={data.seeAllHref}
-              className="hidden min-h-11 cursor-pointer items-center font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold underline-offset-4 transition-colors duration-200 hover:text-warm-white hover:underline lg:inline-flex"
+              className="hidden min-h-11 shrink-0 cursor-pointer items-center font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold underline-offset-4 transition-colors duration-200 hover:text-warm-white hover:underline lg:inline-flex"
             >
               {data.seeAllLabel}
             </Link>
           </div>
-        </div>
+        </header>
 
-        <div
-          ref={viewportRef}
-          className="relative mt-10 min-h-0 w-full flex-1 overflow-x-clip overflow-y-visible lg:mt-0 lg:flex lg:items-center"
-          data-articles-viewport
-        >
-          <ul
-            ref={trackRef}
-            className="flex w-max gap-5 px-5 will-change-transform sm:gap-6 sm:px-8 lg:gap-7 lg:px-10"
+        <div className="relative mx-auto min-h-0 w-full max-w-7xl px-5 sm:px-8 lg:px-10">
+          <div
+            ref={viewportRef}
+            className="relative h-full min-h-0 w-full overflow-x-clip overflow-y-visible lg:flex lg:items-center"
+            data-articles-viewport
           >
-            {data.items.map((item, i) => (
-              <li
-                key={item.href + item.title}
-                data-article-card
-                className="w-[min(72vw,17.5rem)] shrink-0 sm:w-[18.5rem] lg:w-[clamp(16rem,22vw,20.5rem)]"
-              >
-                <Link
-                  href={item.href}
-                  className="group block cursor-pointer outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
+            <ul
+              ref={trackRef}
+              className="flex w-max gap-5 will-change-transform sm:gap-6 lg:gap-7"
+            >
+              {data.items.map((item, i) => (
+                <li
+                  key={item.href + item.title}
+                  data-article-card
+                  className="w-[min(72vw,17.5rem)] shrink-0 sm:w-[18.5rem] lg:w-[clamp(16rem,22vw,20.5rem)]"
                 >
-                  <div className="relative aspect-[3/4] max-h-[min(52svh,26rem)] overflow-hidden bg-charcoal/80 lg:max-h-[min(56svh,28rem)]">
-                    <Image
-                      src={item.image}
-                      alt={item.imageAlt}
-                      fill
-                      sizes="(min-width: 1024px) 22vw, 72vw"
-                      className="object-cover transition-transform duration-700 ease-out [@media(hover:hover)]:group-hover:scale-[1.035]"
-                      priority={i === 0}
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 via-transparent to-transparent" />
-                    <span className="absolute left-4 top-4 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-warm-white/75">
-                      {String(i + 1).padStart(2, "0")}
-                    </span>
-                  </div>
-                  <h3 className="mt-4 font-heading text-base font-semibold leading-snug text-warm-white transition-colors duration-200 group-hover:text-gold sm:text-lg">
-                    {item.title}
-                  </h3>
-                  {item.excerpt ? (
-                    <p className="mt-2 line-clamp-2 font-body text-sm leading-relaxed text-warm-white/55">
-                      {item.excerpt}
+                  <Link
+                    href={item.href}
+                    className="group block cursor-pointer outline-offset-4 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold"
+                  >
+                    <div className="relative aspect-[3/4] max-h-[min(48svh,24rem)] overflow-hidden bg-charcoal/80 lg:max-h-[min(50svh,26rem)]">
+                      <Image
+                        src={item.image}
+                        alt={item.imageAlt}
+                        fill
+                        sizes="(min-width: 1024px) 22vw, 72vw"
+                        className="object-cover transition-transform duration-700 ease-out [@media(hover:hover)]:group-hover:scale-[1.035]"
+                        priority={i === 0}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/55 via-transparent to-transparent" />
+                      <span className="absolute left-4 top-4 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-warm-white/75">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+                    <h3 className="mt-4 font-heading text-base font-semibold leading-snug text-warm-white transition-colors duration-200 group-hover:text-gold sm:text-lg">
+                      {item.title}
+                    </h3>
+                    {item.excerpt ? (
+                      <p className="mt-2 line-clamp-2 font-body text-sm leading-relaxed text-warm-white/55">
+                        {item.excerpt}
+                      </p>
+                    ) : null}
+                    <p className="mt-1.5 font-heading text-xs tracking-wide text-warm-white/45">
+                      Read · {item.readMins} min
                     </p>
-                  ) : null}
-                  <p className="mt-1.5 font-heading text-xs tracking-wide text-warm-white/45">
-                    Read · {item.readMins} min
-                  </p>
-                </Link>
-              </li>
-            ))}
-          </ul>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <div className="relative mx-auto mt-10 w-full max-w-7xl shrink-0 px-5 sm:px-8 lg:hidden">
+        <div className="relative mx-auto w-full max-w-7xl px-5 sm:px-8 lg:hidden lg:px-10">
           <Link
             href={data.seeAllHref}
             className="inline-flex min-h-11 cursor-pointer items-center font-heading text-xs font-semibold uppercase tracking-[0.2em] text-gold underline-offset-4 hover:underline"

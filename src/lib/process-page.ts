@@ -138,7 +138,8 @@ export const processPage = {
         description:
           "A basic bare home with concrete flooring, unpainted concrete walls, minimal windows, and an exposed ceiling.",
         image: "/finishes/type-of-finish-bare.png",
-        imageAlt: "Bare finish interior — concrete floors, unpainted walls, exposed ceiling",
+        imageAlt:
+          "Bare finish home — concrete flooring, unpainted walls, exposed ceiling",
       },
       {
         slug: "standard",
@@ -146,24 +147,26 @@ export const processPage = {
         description:
           "A clean and practical home with tiled flooring, painted walls, standard aluminum-framed windows, and a simple flat ceiling.",
         image: "/finishes/type-of-finish-standard.png",
-        imageAlt: "Standard finish interior — tiled floors, painted walls, flat ceiling",
+        imageAlt:
+          "Standard finish home — tiled floors, painted walls, aluminum windows",
+      },
+      {
+        slug: "premium",
+        name: "Premium Finish",
+        description:
+          "A refined home with large-format tiles or engineered wood flooring, decorative wall cladding, full-height glass windows, and detailed ceilings.",
+        image: "/finishes/type-of-finish-premium.png",
+        imageAlt:
+          "Premium finish home — large-format flooring, wall cladding, glass windows",
       },
       {
         slug: "luxury",
         name: "Luxury Finish",
         description:
-          "A refined home with large-format tiles or engineered wood flooring, decorative wall cladding, full-height glass windows, and detailed ceilings.",
+          "A luxury home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
         image: "/finishes/type-of-finish-luxury.png",
-        imageAlt: "Luxury finish interior — wood flooring, cladding, detailed ceiling",
-      },
-      {
-        slug: "iconic",
-        name: "Iconic Finish",
-        description:
-          "A premium customized home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
-        // Studio asset folder labels this photo “premium”; process.md names the tier Iconic.
-        image: "/finishes/type-of-finish-premium.png",
-        imageAlt: "Iconic finish interior — stone or wood floors, premium wall finishes",
+        imageAlt:
+          "Luxury finish home — stone or wood floors, imported finishes, custom ceiling",
       },
     ] satisfies FinishLevel[],
   },

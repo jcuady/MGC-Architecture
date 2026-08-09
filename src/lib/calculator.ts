@@ -44,6 +44,33 @@ export function formatPhp(amount: number): string {
   }).format(amount);
 }
 
+/** Studio finish-guide photos keyed by slug (estimator + /estimate gallery). */
+export const finishGuideMedia: Record<
+  string,
+  { image: string; imageAlt: string }
+> = {
+  bare: {
+    image: "/finishes/type-of-finish-bare.png",
+    imageAlt:
+      "Bare finish home — concrete flooring, unpainted walls, exposed ceiling",
+  },
+  standard: {
+    image: "/finishes/type-of-finish-standard.png",
+    imageAlt:
+      "Standard finish home — tiled floors, painted walls, aluminum windows",
+  },
+  premium: {
+    image: "/finishes/type-of-finish-premium.png",
+    imageAlt:
+      "Premium finish home — large-format flooring, wall cladding, glass windows",
+  },
+  luxury: {
+    image: "/finishes/type-of-finish-luxury.png",
+    imageAlt:
+      "Luxury finish home — stone or wood floors, imported finishes, custom ceiling",
+  },
+};
+
 /** Offline / empty-DB fallback so the public page never renders blank. */
 export const defaultFinishRates: FinishRate[] = [
   {
@@ -51,7 +78,7 @@ export const defaultFinishRates: FinishRate[] = [
     name: "Bare Finish",
     slug: "bare",
     description:
-      "Structure complete — walls, roof, and utilities in place, ready for your own finishing touches.",
+      "A basic bare home with concrete flooring, unpainted concrete walls, minimal windows, and an exposed ceiling.",
     rate_per_sqm: 25000,
     sort_order: 10,
     is_active: true,
@@ -61,7 +88,7 @@ export const defaultFinishRates: FinishRate[] = [
     name: "Standard Finish",
     slug: "standard",
     description:
-      "Move-in ready with dependable standard materials and clean, simple finishes.",
+      "A clean and practical home with tiled flooring, painted walls, standard aluminum-framed windows, and a simple flat ceiling.",
     rate_per_sqm: 35000,
     sort_order: 20,
     is_active: true,
@@ -71,7 +98,7 @@ export const defaultFinishRates: FinishRate[] = [
     name: "Premium Finish",
     slug: "premium",
     description:
-      "Upgraded materials, custom details, and refined fixtures throughout the home.",
+      "A refined home with large-format tiles or engineered wood flooring, decorative wall cladding, full-height glass windows, and detailed ceilings.",
     rate_per_sqm: 45000,
     sort_order: 30,
     is_active: true,
@@ -81,7 +108,7 @@ export const defaultFinishRates: FinishRate[] = [
     name: "Luxury Finish",
     slug: "luxury",
     description:
-      "High-end materials, bespoke cabinetry, and designer finishes in every room.",
+      "A luxury home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
     rate_per_sqm: 80000,
     sort_order: 40,
     is_active: true,

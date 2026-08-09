@@ -15,7 +15,15 @@ function check(name, ok, detail = "") {
 
 check("work detail has no Views counter", !page.includes(">Views<") && !page.includes("Views\n"));
 check("work detail shows project credits", page.includes("Project credits"));
-check("MGC monogram in credits", page.includes("/brand/monogram-chestnut.png"));
+check("MGC monogram gated by showMgcCredit", page.includes("showMgcCredit") && page.includes("/brand/monogram-chestnut.png"));
+check(
+  "MGC hidden on RC-only slugs",
+  page.includes('"c-house"') &&
+    page.includes('"tile-co"') &&
+    page.includes('"guest-quarter"') &&
+    page.includes('"built-in"') &&
+    page.includes("showMgcCredit"),
+);
 check("RC logo only when underRc", page.includes("underRc") && page.includes("/brand/rclc-logo.png"));
 check("RC logo asset exists", existsSync(join(root, "public/brand/rclc-logo.png")));
 const cHouse = content.slice(content.indexOf('slug: "c-house"'), content.indexOf('slug: "tile-co"'));

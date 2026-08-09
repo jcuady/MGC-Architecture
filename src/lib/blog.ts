@@ -49,8 +49,8 @@ export const defaultBlogPosts: BlogPost[] = [
 An Architect plans and designs your space based on your needs, lifestyle, budget, and local building regulations. An Engineer ensures the structure and building systems are safe and reliable. A Contractor brings the plans to life by managing the construction and coordinating the work on site.
 
 Working with the right team from the very beginning helps prevent costly mistakes, reduces unnecessary delays, and gives you confidence that your project is built on a strong foundation.`,
-    cover_image: "/portfolio/guest-quarter/guest-quarter-view-2.png",
-    cover_alt: "Guest quarter interior — coordinated design and documentation",
+    cover_image: "/blog/blog-01-before-you-build.png",
+    cover_alt: "Home office workspace - planning before you build",
     read_mins: 3,
     sort_order: 10,
     is_published: true,
@@ -80,8 +80,8 @@ Mistake #5: Hiring the wrong professionals
 Choosing qualified professionals from the start helps ensure your project is properly planned, coordinated, and executed.
 
 Good planning is one of the best investments you can make before building. The more prepared you are before construction starts, the smoother your project is likely to be.`,
-    cover_image: "/portfolio/c-house/c-house-02-living-area-view-2.png",
-    cover_alt: "Residential living space — planning before construction",
+    cover_image: "/blog/blog-02-mistakes-to-avoid.jpg",
+    cover_alt: "Stair and shelving interior - mistakes to avoid before building",
     read_mins: 4,
     sort_order: 20,
     is_published: true,
@@ -98,8 +98,8 @@ Good planning is one of the best investments you can make before building. The m
 Once the direction is finalized, the design is refined, the necessary drawings and documents are prepared, and the project moves toward permits and construction. Throughout the process, you'll be involved in key decisions to ensure the final design reflects what matters most to you.
 
 A clear process leads to better decisions, fewer surprises, and spaces that are thoughtfully designed from start to finish.`,
-    cover_image: "/portfolio/saro/saro-view-2.png",
-    cover_alt: "Conceptual architecture study — early project conversation",
+    cover_image: "/blog/blog-03-from-ideas-to-reality.png",
+    cover_alt: "Wooden pavilion structure - from idea to reality",
     read_mins: 3,
     sort_order: 30,
     is_published: true,
@@ -129,8 +129,8 @@ Work with the right team.
 Clear communication and proper coordination between everyone involved can help prevent misunderstandings, delays, and unnecessary expenses throughout the project.
 
 Good planning doesn't always mean spending less—it means spending wisely. Making informed decisions early can help your project run more smoothly and make every peso count.`,
-    cover_image: "/portfolio/the-hearth/the-hearth-dining-view-2.png",
-    cover_alt: "Warm dining interior — finish level and budget",
+    cover_image: "/blog/blog-04-budget.jpg",
+    cover_alt: "Dining room with shelving - budget-saving tips before you build",
     read_mins: 4,
     sort_order: 40,
     is_published: true,

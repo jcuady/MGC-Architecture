@@ -37,21 +37,40 @@ for (const title of phases) {
   check(`src contains ${title}`, pageSrc.includes(title));
 }
 
-const finishes = ["Bare Finish", "Standard Finish", "Luxury Finish", "Iconic Finish"];
+// Finish levels live on /estimate (moved off /process).
+const estimateHtml = await (await fetch(`${BASE}/estimate`, { cache: "no-store" })).text();
+const calcSrc = readFileSync(join(root, "src/lib/calculator.ts"), "utf8");
+const estimatorSrc = readFileSync(join(root, "src/components/estimate/EstimatorFlow.tsx"), "utf8");
+const finishes = ["Bare Finish", "Standard Finish", "Premium Finish", "Luxury Finish"];
 for (const name of finishes) {
-  check(`finish present: ${name}`, html.includes(name));
+  check(`estimate finish present: ${name}`, estimateHtml.includes(name));
   check(`md finish: ${name}`, md.includes(name));
+  check(`process-page finish: ${name}`, pageSrc.includes(name));
 }
+check("estimator shows finish photos", estimatorSrc.includes("finishGuideMedia") && estimatorSrc.includes("Image"));
+check(
+  "bare finish description",
+  calcSrc.includes("concrete flooring, unpainted concrete walls"),
+);
+check(
+  "luxury finish description",
+  calcSrc.includes("A luxury home with natural stone or solid wood flooring"),
+);
+check(
+  "estimator card image below copy",
+  estimatorSrc.includes("mt-auto aspect-[16/10]") &&
+    estimatorSrc.indexOf("{f.description}") < estimatorSrc.indexOf("aspect-[16/10]"),
+);
 
 const photos = [
   "type-of-finish-bare.png",
   "type-of-finish-standard.png",
-  "type-of-finish-luxury.png",
   "type-of-finish-premium.png",
+  "type-of-finish-luxury.png",
 ];
 for (const file of photos) {
   check(`public photo ${file}`, existsSync(join(root, "public/finishes", file)));
-  check(`html references ${file}`, html.includes(`/finishes/${file}`));
+  check(`estimate references ${file}`, estimateHtml.includes(`/finishes/${file}`));
 }
 
 check("What We’ll Do", html.includes("What We’ll Do") || html.includes("What We\u2019ll Do"));

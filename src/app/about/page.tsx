@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
+import AboutCredentials from "@/components/about/AboutCredentials";
 import { getSiteContent } from "@/lib/cms-server";
 import { textStyle } from "@/lib/cms";
 
@@ -22,8 +23,9 @@ export const metadata: Metadata = {
 };
 
 /**
- * Full About page — Learn More destination from homepage teaser.
- * Composition: headline + bio left, portrait right (matches brand mock).
+ * Full About page — intro + credentials.
+ * Intro: headline + justified bio left, portrait right.
+ * Credentials: education, experience, awards, skills (dedicated band).
  */
 export default async function AboutPage() {
   const content = await getSiteContent();
@@ -37,7 +39,7 @@ export default async function AboutPage() {
         <section className="pt-[4.75rem]">
           <div className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-16 lg:py-20">
             <div className="grid items-start gap-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:gap-14 xl:gap-16">
-              <div className="min-w-0 order-2 lg:order-1">
+              <div className="order-2 min-w-0 lg:order-1">
                 <h1
                   className="font-heading text-3xl font-semibold leading-[1.15] text-warm-white sm:text-4xl lg:text-[2.75rem]"
                   style={textStyle(data.styles?.name)}
@@ -49,7 +51,7 @@ export default async function AboutPage() {
                   {data.body.map((paragraph) => (
                     <p
                       key={paragraph.slice(0, 40)}
-                      className="max-w-xl font-body text-base leading-relaxed text-warm-white/90 sm:text-lg"
+                      className="max-w-xl text-justify font-body text-base leading-relaxed text-warm-white/90 sm:text-lg"
                     >
                       {paragraph}
                     </p>
@@ -57,10 +59,10 @@ export default async function AboutPage() {
                 </div>
                 <div className="mt-10 flex flex-wrap gap-3">
                   <Link
-                    href="/inquire"
+                    href="/work"
                     className="inline-flex min-h-11 items-center bg-warm-white px-6 py-3 font-heading text-sm font-semibold uppercase tracking-[0.12em] text-chestnut transition-colors hover:bg-beige focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold"
                   >
-                    Start a project
+                    See Works
                   </Link>
                   <Link
                     href="/#about"
@@ -71,7 +73,7 @@ export default async function AboutPage() {
                 </div>
               </div>
 
-              <div className="group relative order-1 mx-auto aspect-square w-full max-w-md overflow-hidden bg-charcoal/25 lg:order-2 lg:mx-0 lg:max-w-none lg:sticky lg:top-[5.5rem]">
+              <div className="group relative order-1 mx-auto aspect-square w-full max-w-md overflow-hidden bg-charcoal/25 lg:order-2 lg:mx-0 lg:sticky lg:top-[5.5rem] lg:max-w-none">
                 <Image
                   src={data.photo}
                   alt={data.photoAlt}
@@ -98,6 +100,8 @@ export default async function AboutPage() {
             </div>
           </div>
         </section>
+
+        <AboutCredentials data={data} />
       </main>
       <Footer />
     </>

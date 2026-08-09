@@ -48,6 +48,10 @@ export default async function ProjectPage({
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
   const underRc = /RC LLaguno/i.test(project.role);
+  // RC-only credit strip: C House, Tile Co., Guest Quarter, Built-in Furnitures
+  const showMgcCredit = !["c-house", "tile-co", "guest-quarter", "built-in"].includes(
+    project.slug,
+  );
   const pieces = project.pieces ?? [];
   const capstone = project.capstone;
 
@@ -169,18 +173,20 @@ export default async function ProjectPage({
                       Project credits
                     </p>
                     <ul className="mt-4 flex flex-wrap items-center gap-6 sm:gap-8">
-                      <li className="flex items-center gap-2.5">
-                        <Image
-                          src="/brand/monogram-chestnut.png"
-                          alt=""
-                          width={40}
-                          height={40}
-                          className="h-9 w-9 object-contain"
-                        />
-                        <span className="font-heading text-sm font-semibold tracking-[0.04em] text-charcoal">
-                          mgc architecture
-                        </span>
-                      </li>
+                      {showMgcCredit ? (
+                        <li className="flex items-center gap-2.5">
+                          <Image
+                            src="/brand/monogram-chestnut.png"
+                            alt=""
+                            width={40}
+                            height={40}
+                            className="h-9 w-9 object-contain"
+                          />
+                          <span className="font-heading text-sm font-semibold tracking-[0.04em] text-charcoal">
+                            mgc architecture
+                          </span>
+                        </li>
+                      ) : null}
                       {underRc ? (
                         <li>
                           <Image

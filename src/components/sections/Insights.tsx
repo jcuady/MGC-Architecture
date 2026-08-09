@@ -1,9 +1,9 @@
-import InsightsImmersive from "./InsightsImmersive";
 import LatestArticles, { type LatestArticlesData } from "./LatestArticles";
 import type { SiteContent } from "@/lib/cms";
 
 /**
- * Insights block - immersive Before You Build scrub scene + horizontal articles.
+ * Blog / insights strip — Latest Articles only.
+ * Before You Build immersive scrub removed (perf + pin duplication).
  */
 export default function Insights({
   data,
@@ -27,10 +27,5 @@ export default function Insights({
       })),
     };
 
-  return (
-    <>
-      <InsightsImmersive data={data} />
-      <LatestArticles data={articleData} />
-    </>
-  );
+  return <LatestArticles data={articleData} />;
 }

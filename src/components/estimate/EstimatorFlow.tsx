@@ -1,9 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
-import { estimateCost, formatPhp, type FinishRate } from "@/lib/calculator";
+import {
+  estimateCost,
+  finishGuideMedia,
+  formatPhp,
+  type FinishRate,
+} from "@/lib/calculator";
 
 const steps = ["Your project", "Finish level", "Your estimate"] as const;
 
@@ -154,16 +160,17 @@ export default function EstimatorFlow({ finishes }: { finishes: FinishRate[] }) 
             <div className="mt-8 grid gap-4 sm:grid-cols-2">
               {finishes.map((f) => {
                 const selected = finishId === f.id;
+                const media = finishGuideMedia[f.slug];
                 return (
                   <label
                     key={f.id}
-                    className={`flex cursor-pointer flex-col gap-2 border p-5 transition-colors duration-200 ${
+                    className={`group flex h-full cursor-pointer flex-col gap-3 border p-5 transition-colors duration-200 ${
                       selected
                         ? "border-chestnut bg-beige/60"
                         : "border-warm-gray bg-white hover:border-chestnut/50"
                     }`}
                   >
-                    <span className="flex items-center justify-between gap-3">
+                    <span className="flex items-start justify-between gap-3">
                       <span className="font-heading text-base font-semibold text-charcoal">
                         {f.name}
                       </span>
@@ -173,12 +180,23 @@ export default function EstimatorFlow({ finishes }: { finishes: FinishRate[] }) 
                         value={f.id}
                         checked={selected}
                         onChange={() => setFinishId(f.id)}
-                        className="h-4 w-4 accent-[#753627]"
+                        className="mt-1 h-4 w-4 shrink-0 accent-[#753627]"
                       />
                     </span>
                     <span className="text-sm leading-relaxed text-charcoal/70">
                       {f.description}
                     </span>
+                    {media ? (
+                      <span className="relative mt-auto aspect-[16/10] w-full overflow-hidden bg-beige">
+                        <Image
+                          src={media.image}
+                          alt={media.imageAlt}
+                          fill
+                          sizes="(min-width: 640px) 28vw, 92vw"
+                          className="object-cover transition-transform duration-500 ease-out [@media(hover:hover)]:group-hover:scale-[1.03]"
+                        />
+                      </span>
+                    ) : null}
                   </label>
                 );
               })}

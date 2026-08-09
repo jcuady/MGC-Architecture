@@ -56,6 +56,18 @@ ok("Blog slug: More to read shows excerpt", blogSlug.includes("p.excerpt"));
 
 const latest = read("src/components/sections/LatestArticles.tsx");
 ok("LatestArticles: excerpt under title", latest.includes("item.excerpt"));
+ok("LatestArticles: heading overflow-visible + fluid type", latest.includes("overflow-visible") && latest.includes("clamp(1.75rem"));
+ok("LatestArticles: safe-zone max-w-7xl wrapper on track", latest.includes("max-w-7xl") && latest.includes("lg:px-10"));
+
+const blogDefaults = read("src/lib/blog.ts");
+ok("Blog covers: blog-01", blogDefaults.includes("/blog/blog-01-before-you-build.png"));
+ok("Blog covers: blog-02", blogDefaults.includes("/blog/blog-02-mistakes-to-avoid.jpg"));
+ok("Blog covers: blog-03", blogDefaults.includes("/blog/blog-03-from-ideas-to-reality.png"));
+ok("Blog covers: blog-04", blogDefaults.includes("/blog/blog-04-budget.jpg"));
+ok("Blog asset blog-01 on disk", existsSync(join(root, "public/blog/blog-01-before-you-build.png")));
+ok("Blog asset blog-02 on disk", existsSync(join(root, "public/blog/blog-02-mistakes-to-avoid.jpg")));
+ok("Blog asset blog-03 on disk", existsSync(join(root, "public/blog/blog-03-from-ideas-to-reality.png")));
+ok("Blog asset blog-04 on disk", existsSync(join(root, "public/blog/blog-04-budget.jpg")));
 
 const processPage = read("src/app/process/page.tsx");
 const estimatePage = read("src/app/estimate/page.tsx");
@@ -66,6 +78,9 @@ const about = read("src/components/sections/About.tsx");
 ok("About homepage is teaser (Learn More → /about)", about.includes('href="/about"') && about.includes("learnMoreLabel"));
 ok("About homepage has no Education/Awards credentials UI", !about.includes("Education") && !about.includes("Awards") && !about.includes("data-about-credentials"));
 ok("AboutSticky deleted", !existsSync(join(root, "src/components/sections/AboutSticky.tsx")));
+ok("About page has credentials component", existsSync(join(root, "src/components/about/AboutCredentials.tsx")));
+const aboutPage = read("src/app/about/page.tsx");
+ok("About page See Works + justified", aboutPage.includes("See Works") && aboutPage.includes("text-justify") && aboutPage.includes("AboutCredentials"));
 
 const processSection = read("src/components/sections/Process.tsx");
 ok("Process teaser shows step time", processSection.includes("step.time"));

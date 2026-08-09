@@ -2,15 +2,14 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useId, useState, type KeyboardEvent } from "react";
+import { Fragment, useId, useState, type KeyboardEvent } from "react";
 import type { SiteContent } from "@/lib/cms";
 
 type ServiceItem = SiteContent["services"]["items"][number];
 
 /**
- * Split-pane services explorer — left list drives right panel
- * (sub-categories, image, inquire CTA). Architect: active row
- * flips background; unique image per category.
+ * Services explorer — desktop split-pane; mobile accordion with the
+ * image panel nested under the active category (not after the full list).
  */
 export default function ServicesExplorer({ items }: { items: ServiceItem[] }) {
   const [active, setActive] = useState(0);
@@ -19,7 +18,11 @@ export default function ServicesExplorer({ items }: { items: ServiceItem[] }) {
   if (!current) return null;
 
   const tabId = (i: number) => `${baseId}-tab-${i}`;
-  const panelId = `${baseId}-panel`;
+  const panelId = (i: number) => `${baseId}-panel-${i}`;
+
+  function select(i: number) {
+    setActive(i);
+  }
 
   function onListKeyDown(e: KeyboardEvent) {
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "Home" && e.key !== "End") {
@@ -32,107 +35,171 @@ export default function ServicesExplorer({ items }: { items: ServiceItem[] }) {
     if (e.key === "ArrowUp") next = active <= 0 ? last : active - 1;
     if (e.key === "Home") next = 0;
     if (e.key === "End") next = last;
-    setActive(next);
+    select(next);
     document.getElementById(tabId(next))?.focus();
   }
 
   return (
-    <div className="grid gap-0 border border-warm-gray/70 bg-warm-white lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
-      {/* Left: service categories */}
-      <div
-        role="tablist"
-        aria-label="Service categories"
-        aria-orientation="vertical"
-        onKeyDown={onListKeyDown}
-        className="flex flex-col border-b border-warm-gray/70 lg:border-b-0 lg:border-r"
-      >
+    <div className="border border-warm-gray/70 bg-warm-white">
+      {/* Mobile: accordion — panel sits under its category */}
+      <div className="flex flex-col lg:hidden">
         {items.map((service, i) => {
           const selected = i === active;
+          const headingId = `${baseId}-mobile-h-${i}`;
+          const regionId = `${baseId}-mobile-p-${i}`;
           return (
-            <button
-              key={service.title}
-              type="button"
-              role="tab"
-              id={tabId(i)}
-              aria-selected={selected}
-              aria-controls={panelId}
-              tabIndex={selected ? 0 : -1}
-              onClick={() => setActive(i)}
-              className={`group flex min-h-14 items-start justify-between gap-4 border-b border-warm-gray/50 px-5 py-5 text-left transition-colors duration-200 last:border-b-0 sm:px-7 sm:py-6 ${
-                selected
-                  ? "bg-charcoal text-warm-white"
-                  : "bg-transparent text-charcoal hover:bg-beige"
-              }`}
-            >
-              <span className="min-w-0">
-                <span className="block font-heading text-sm font-semibold uppercase tracking-[0.12em] sm:text-[0.95rem]">
-                  {service.title}
-                </span>
-                <span
-                  className={`mt-1.5 block text-sm leading-snug ${
-                    selected ? "text-warm-white/70" : "text-charcoal/60"
-                  }`}
-                >
-                  {service.blurb}
-                </span>
-              </span>
-              <span
-                aria-hidden
-                className={`mt-0.5 shrink-0 font-heading text-lg leading-none transition-transform duration-200 ${
-                  selected ? "text-gold" : "text-charcoal/35 group-hover:text-chestnut"
-                } ${selected ? "translate-x-0.5 -translate-y-0.5" : ""}`}
+            <Fragment key={service.title}>
+              <button
+                type="button"
+                id={headingId}
+                aria-expanded={selected}
+                aria-controls={regionId}
+                onClick={() => select(i)}
+                className={`group flex min-h-14 w-full items-start justify-between gap-4 border-b border-warm-gray/50 px-5 py-5 text-left transition-colors duration-200 sm:px-7 sm:py-6 ${
+                  selected
+                    ? "bg-charcoal text-warm-white"
+                    : "bg-transparent text-charcoal hover:bg-beige"
+                }`}
               >
-                ↗
-              </span>
-            </button>
+                <CategoryCopy service={service} selected={selected} />
+              </button>
+              {selected ? (
+                <div
+                  id={regionId}
+                  role="region"
+                  aria-labelledby={headingId}
+                  className="border-b border-warm-gray/50"
+                >
+                  <ServicePanel service={service} priority={i === 0} />
+                </div>
+              ) : null}
+            </Fragment>
           );
         })}
       </div>
 
-      {/* Right: sub-categories + image + CTA */}
-      <div
-        role="tabpanel"
-        id={panelId}
-        aria-labelledby={tabId(active)}
-        className="relative flex min-h-[22rem] flex-col sm:min-h-[28rem]"
-      >
-        <div className="relative flex-1 overflow-hidden bg-charcoal">
-          <Image
-            key={current.image}
-            src={current.image}
-            alt={current.imageAlt}
-            fill
-            sizes="(min-width: 1024px) 55vw, 100vw"
-            className="object-cover grayscale-[0.15] transition-opacity duration-300"
-            priority={active === 0}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-charcoal/75 via-charcoal/20 to-charcoal/35" />
-
-          {/* Sub-categories */}
-          <ul className="absolute inset-x-0 top-0 z-10 flex flex-wrap gap-2 p-4 sm:p-5">
-            {current.scope.map((tag) => (
-              <li
-                key={tag}
-                className="bg-warm-white/95 px-2.5 py-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-charcoal"
+      {/* Desktop: split pane */}
+      <div className="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
+        <div
+          role="tablist"
+          aria-label="Service categories"
+          aria-orientation="vertical"
+          onKeyDown={onListKeyDown}
+          className="flex flex-col border-r border-warm-gray/70"
+        >
+          {items.map((service, i) => {
+            const selected = i === active;
+            return (
+              <button
+                key={service.title}
+                type="button"
+                role="tab"
+                id={tabId(i)}
+                aria-selected={selected}
+                aria-controls={panelId(active)}
+                tabIndex={selected ? 0 : -1}
+                onClick={() => select(i)}
+                className={`group flex min-h-14 items-start justify-between gap-4 border-b border-warm-gray/50 px-7 py-6 text-left transition-colors duration-200 last:border-b-0 ${
+                  selected
+                    ? "bg-charcoal text-warm-white"
+                    : "bg-transparent text-charcoal hover:bg-beige"
+                }`}
               >
-                {tag}
-              </li>
-            ))}
-          </ul>
+                <CategoryCopy service={service} selected={selected} />
+              </button>
+            );
+          })}
+        </div>
 
-          <div className="absolute inset-x-0 bottom-0 z-10 flex items-end justify-between gap-4 p-4 sm:p-6">
-            <p className="max-w-xs font-heading text-lg font-semibold text-warm-white sm:text-xl">
-              {current.title}
-            </p>
-            <Link
-              href={current.href}
-              className="inline-flex min-h-11 shrink-0 cursor-pointer items-center border border-warm-white/90 bg-warm-white/10 px-5 py-2.5 font-heading text-xs font-semibold uppercase tracking-[0.18em] text-warm-white backdrop-blur-sm transition-colors hover:bg-warm-white hover:text-charcoal"
-            >
-              {current.ctaLabel}
-            </Link>
-          </div>
+        <div
+          role="tabpanel"
+          id={panelId(active)}
+          aria-labelledby={tabId(active)}
+          className="relative min-h-[28rem]"
+        >
+          <ServicePanel service={current} priority={active === 0} />
         </div>
       </div>
+    </div>
+  );
+}
+
+function CategoryCopy({
+  service,
+  selected,
+}: {
+  service: ServiceItem;
+  selected: boolean;
+}) {
+  return (
+    <>
+      <span className="min-w-0">
+        <span className="block font-heading text-sm font-semibold uppercase tracking-[0.12em] sm:text-[0.95rem]">
+          {service.title}
+        </span>
+        <span
+          className={`mt-1.5 block text-sm leading-snug ${
+            selected ? "text-warm-white/70" : "text-charcoal/60"
+          }`}
+        >
+          {service.blurb}
+        </span>
+      </span>
+      <span
+        aria-hidden
+        className={`mt-0.5 shrink-0 font-heading text-lg leading-none transition-transform duration-200 ${
+          selected ? "text-gold translate-x-0.5 -translate-y-0.5" : "text-charcoal/35 group-hover:text-chestnut"
+        }`}
+      >
+        ↗
+      </span>
+    </>
+  );
+}
+
+function ServicePanel({
+  service,
+  priority,
+}: {
+  service: ServiceItem;
+  priority?: boolean;
+}) {
+  return (
+    <div className="relative aspect-[4/3] min-h-[18rem] overflow-hidden bg-charcoal sm:min-h-[22rem] lg:absolute lg:inset-0 lg:aspect-auto lg:min-h-0">
+      <Image
+        key={service.image}
+        src={service.image}
+        alt={service.imageAlt}
+        fill
+        sizes="(min-width: 1024px) 55vw, 100vw"
+        className="object-cover grayscale-[0.15] transition-opacity duration-300"
+        priority={priority}
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/75 via-charcoal/20 to-charcoal/35" />
+
+      <ul className="absolute inset-x-0 top-0 z-10 flex flex-wrap gap-2 p-4 sm:p-5">
+        {service.scope.map((tag) => (
+          <li
+            key={tag}
+            className="bg-warm-white/95 px-2.5 py-1 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.14em] text-charcoal"
+          >
+            {tag}
+          </li>
+        ))}
+      </ul>
+
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center p-4">
+        <Link
+          href={service.href}
+          className="pointer-events-auto inline-flex min-h-14 cursor-pointer items-center border border-warm-white/90 bg-charcoal/35 px-8 py-4 font-heading text-sm font-semibold uppercase tracking-[0.2em] text-warm-white backdrop-blur-md transition-colors hover:bg-warm-white hover:text-charcoal focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-warm-white sm:min-h-16 sm:px-12 sm:py-5 sm:text-base"
+        >
+          {service.ctaLabel}
+        </Link>
+      </div>
+
+      <p className="absolute bottom-0 left-0 z-10 max-w-[min(100%,18rem)] p-4 font-heading text-lg font-semibold text-warm-white sm:max-w-xs sm:p-6 sm:text-xl">
+        {service.title}
+      </p>
     </div>
   );
 }
