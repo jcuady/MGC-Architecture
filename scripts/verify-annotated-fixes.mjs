@@ -56,8 +56,12 @@ ok("Blog slug: More to read shows excerpt", blogSlug.includes("p.excerpt"));
 
 const latest = read("src/components/sections/LatestArticles.tsx");
 ok("LatestArticles: excerpt under title", latest.includes("item.excerpt"));
-ok("LatestArticles: heading overflow-visible + fluid type", latest.includes("overflow-visible") && latest.includes("clamp(1.75rem"));
-ok("LatestArticles: safe-zone max-w-7xl wrapper on track", latest.includes("max-w-7xl") && latest.includes("lg:px-10"));
+ok("LatestArticles: fluid heading type", latest.includes("clamp(1.75rem"));
+ok("LatestArticles: safe-zone max-w-7xl", latest.includes("max-w-7xl") && latest.includes("lg:px-10"));
+ok("LatestArticles: responsive grid 1/2/4", latest.includes("grid-cols-1") && latest.includes("sm:grid-cols-2") && latest.includes("lg:grid-cols-4"));
+ok("LatestArticles: uniform aspect-ratio images", latest.includes("aspect-[3/4]") && latest.includes("object-cover") && !latest.includes("max-h-["));
+ok("LatestArticles: no horizontal pin scroll", !latest.includes("articles-horizontal") && !latest.includes("useGSAP"));
+ok("LatestArticles: heading above grid (z-10 header)", latest.includes('header className="relative z-10"'));
 
 const blogDefaults = read("src/lib/blog.ts");
 ok("Blog covers: blog-01", blogDefaults.includes("/blog/blog-01-before-you-build.png"));
