@@ -107,6 +107,6 @@ Standard Finish: A clean and practical home with tiled flooring, painted walls, 
 aluminum-framed windows, and a simple flat ceiling.
 Premium Finish: A refined home with large-format tiles or engineered wood flooring,
 decorative wall cladding, full-height glass windows, and detailed ceilings.
-Luxury Finish: A luxury home with natural stone or solid wood flooring,
+Luxury Finish: A premium customized home with natural stone or solid wood flooring,
 imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.
 Photos to be displayed per finish: 01 Type of Finish

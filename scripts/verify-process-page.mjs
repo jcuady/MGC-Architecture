@@ -50,11 +50,31 @@ for (const name of finishes) {
 check("estimator shows finish photos", estimatorSrc.includes("finishGuideMedia") && estimatorSrc.includes("Image"));
 check(
   "bare finish description",
-  calcSrc.includes("concrete flooring, unpainted concrete walls"),
+  calcSrc.includes(
+    "A basic bare home with concrete flooring, unpainted concrete walls, minimal windows, and an exposed ceiling.",
+  ) && pageSrc.includes(
+    "A basic bare home with concrete flooring, unpainted concrete walls, minimal windows, and an exposed ceiling.",
+  ),
+);
+check(
+  "standard finish description",
+  calcSrc.includes(
+    "A clean and practical home with tiled flooring, painted walls, standard aluminum-framed windows, and a simple flat ceiling.",
+  ),
+);
+check(
+  "premium finish description",
+  calcSrc.includes(
+    "A refined home with large-format tiles or engineered wood flooring, decorative wall cladding, full-height glass windows, and detailed ceilings.",
+  ),
 );
 check(
   "luxury finish description",
-  calcSrc.includes("A luxury home with natural stone or solid wood flooring"),
+  calcSrc.includes(
+    "A premium customized home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
+  ) && pageSrc.includes(
+    "A premium customized home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
+  ),
 );
 check(
   "estimator card image below copy",

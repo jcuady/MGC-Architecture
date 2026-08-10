@@ -108,7 +108,7 @@ export const defaultFinishRates: FinishRate[] = [
     name: "Luxury Finish",
     slug: "luxury",
     description:
-      "A luxury home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
+      "A premium customized home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
     rate_per_sqm: 80000,
     sort_order: 40,
     is_active: true,

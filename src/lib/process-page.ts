@@ -163,7 +163,7 @@ export const processPage = {
         slug: "luxury",
         name: "Luxury Finish",
         description:
-          "A luxury home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
+          "A premium customized home with natural stone or solid wood flooring, imported wall finishes, double-glazed windows, and custom wood or acoustic ceilings.",
         image: "/finishes/type-of-finish-luxury.png",
         imageAlt:
           "Luxury finish home — stone or wood floors, imported finishes, custom ceiling",
