@@ -212,7 +212,7 @@ export type SectionKey = keyof SiteContent;
 export const sectionMeta: Record<SectionKey, { label: string; description: string }> = {
   hero: { label: "Hero", description: "Full-bleed opening — background image, eyebrow, tagline, lede, and Start a project CTA" },
   studio: { label: "Studio statement", description: "Split statement — lead (top-left) and trail (bottom-right); Approach/Process/Promise removed" },
-  work: { label: "Selected works header", description: "Heading above the project grid" },
+  work: { label: "Selected works header", description: "Heading above the project grid (eyebrow/title/lede). Project cards are managed under Studio → Projects." },
   showcaseNoir: { label: "Showcase — The Noir", description: "First full-screen image interlude" },
   services: { label: "Inquire", description: "Homepage inquire section — split-pane service explorer into /inquire or /estimate" },
   inquire: {

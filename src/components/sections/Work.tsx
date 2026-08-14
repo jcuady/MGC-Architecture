@@ -2,21 +2,26 @@ import Link from "next/link";
 import Reveal from "../Reveal";
 import SectionHeader from "../SectionHeader";
 import ProjectCover from "../ProjectCover";
-import { projects } from "@/lib/content";
+import { getPublishedProjects } from "@/lib/projects-server";
+import type { Project } from "@/lib/projects";
 import { textStyle, type SiteContent } from "@/lib/cms";
 
 /**
  * Editorial grid: the first project is featured full-width; the rest alternate
  * in a two-column rhythm. Covers crossfade to a second render on hover.
  * heading="none" when the page already has an h1 hero (e.g. /work).
+ * Sync WorkView is for studio SectionPreview (client); async Work fetches DB.
  */
-export default function Work({
+export function WorkView({
   data,
   heading = "section",
+  projects,
 }: {
   data: SiteContent["work"];
   heading?: "section" | "none";
+  projects: Project[];
 }) {
+  if (!projects.length) return null;
   const [featured, ...rest] = projects;
 
   return (
@@ -32,7 +37,6 @@ export default function Work({
           />
         ) : null}
 
-        {/* Featured project */}
         <Reveal className={heading === "section" ? "mt-14" : undefined}>
           <Link href={`/work/${featured.slug}`} className="group block">
             <article>
@@ -46,7 +50,10 @@ export default function Work({
                 <div>
                   <h3 className="font-heading text-2xl font-semibold text-charcoal group-hover:text-chestnut">
                     {featured.name}
-                    <span aria-hidden className="ml-2 inline-block transition-transform group-hover:translate-x-1">
+                    <span
+                      aria-hidden
+                      className="ml-2 inline-block transition-transform group-hover:translate-x-1"
+                    >
                       →
                     </span>
                   </h3>
@@ -62,7 +69,6 @@ export default function Work({
           </Link>
         </Reveal>
 
-        {/* Remaining projects */}
         <div className="mt-12 grid gap-x-10 gap-y-14 sm:grid-cols-2">
           {rest.map((project, i) => (
             <Reveal key={project.slug} delay={(i % 2) * 90}>
@@ -77,7 +83,10 @@ export default function Work({
                     <div className="flex items-baseline justify-between gap-4">
                       <h3 className="font-heading text-xl font-semibold text-charcoal group-hover:text-chestnut">
                         {project.name}
-                        <span aria-hidden className="ml-2 inline-block transition-transform group-hover:translate-x-1">
+                        <span
+                          aria-hidden
+                          className="ml-2 inline-block transition-transform group-hover:translate-x-1"
+                        >
                           →
                         </span>
                       </h3>
@@ -100,4 +109,15 @@ export default function Work({
       </div>
     </section>
   );
+}
+
+export default async function Work({
+  data,
+  heading = "section",
+}: {
+  data: SiteContent["work"];
+  heading?: "section" | "none";
+}) {
+  const projects = await getPublishedProjects();
+  return <WorkView data={data} heading={heading} projects={projects} />;
 }

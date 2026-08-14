@@ -30,9 +30,11 @@ export async function POST(request: Request) {
 
   revalidatePath("/");
   revalidatePath("/work");
+  revalidatePath("/work", "layout");
   revalidatePath("/process");
   revalidatePath("/estimate");
   revalidatePath("/blog");
+  revalidatePath("/blog", "layout");
   revalidatePath("/inquire");
   revalidatePath("/faq");
   revalidatePath("/about");

@@ -64,6 +64,7 @@ export type CapstoneCaseStudy = {
 };
 
 export type Project = {
+  id?: string;
   slug: string;
   name: string;
   category: string;
@@ -81,6 +82,8 @@ export type Project = {
   pieces?: ProjectPiece[];
   /** When set, work page uses the Capstone image/diagram case-study layout */
   capstone?: CapstoneCaseStudy;
+  sort_order?: number;
+  is_published?: boolean;
 };
 
 export const projects: Project[] = [

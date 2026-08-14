@@ -18,6 +18,9 @@
     "test:annotated": "node scripts/verify-annotated-fixes.mjs",
     "test:annotated:runtime": "node scripts/verify-runtime-annotated.mjs",
     "test:annotated:prod": "node scripts/verify-prod-annotated.mjs",
+    "test:projects": "node scripts/verify-projects-crud.mjs",
+    "test:site-content": "node scripts/verify-site-content-cms.mjs",
+    "test:admin-ui": "node scripts/verify-admin-ui.mjs",
     "favicons": "node scripts/generate-favicons.mjs"
   },
   "dependencies": {

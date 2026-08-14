@@ -66,16 +66,36 @@ Do **not** use `onboarding@resend.dev` after the domain is verified — those se
 npm run test:inquiry-email   # branding + API wiring (server on :3847)
 ```
 
+## Studio CMS (Projects, Blog, Content)
+
+| Area | Studio route | Public |
+|---|---|---|
+| Projects | `/studio/projects` | `/work`, `/work/[slug]` |
+| Blog | `/studio/blog` | `/blog`, homepage Latest Articles |
+| Site Content | `/studio/content` | Landing sections (Work header copy only; cards under Projects) |
+| Finishes | `/studio/finishes` | `/estimate` |
+
+If `blog_posts` / `projects` are missing on Supabase project `nbdfkhzjmkppoohhjelg`, paste [`supabase/migrations/_pending_studio_apply.sql`](supabase/migrations/_pending_studio_apply.sql) into the project’s **SQL Editor** and run it. Public pages keep code fallbacks until those tables exist.
+
 ## Verification checks
 
-Two runnable end-to-end checks (dev server must be running; defaults to `http://localhost:3847`):
+Contract checks (no credentials):
+
+```bash
+npm run test:projects
+npm run test:site-content
+node scripts/probe-mgc-tables.mjs
+node scripts/probe-site-content.mjs
+```
+
+End-to-end (dev server on `:3847`; needs Auth user):
 
 ```bash
 # RLS, CMS write->render->reset, storage upload, inquiry management
 STUDIO_EMAIL=... STUDIO_PASSWORD=... node scripts/verify-e2e.mjs
 
-# Admin pages render behind the auth cookie
-STUDIO_EMAIL=... STUDIO_PASSWORD=... node scripts/verify-admin-ui.mjs
+# Admin pages render behind the auth cookie (includes /studio/projects)
+STUDIO_EMAIL=... STUDIO_PASSWORD=... npm run test:admin-ui
 ```
 
 ## Project docs

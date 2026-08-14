@@ -5,19 +5,22 @@ import { sectionMeta } from "@/lib/cms";
 export default async function DashboardPage() {
   const supabase = await createClient();
 
-  const [inquiriesRes, contentRes, finishesRes, blogRes] = await Promise.all([
-    supabase
-      .from("inquiries")
-      .select("id, created_at, name, service, status, preferred_date")
-      .order("created_at", { ascending: false }),
-    supabase.from("site_content").select("key"),
-    supabase.from("finish_rates").select("id, is_active"),
-    supabase.from("blog_posts").select("id, is_published"),
-  ]);
+  const [inquiriesRes, contentRes, finishesRes, blogRes, projectsRes] =
+    await Promise.all([
+      supabase
+        .from("inquiries")
+        .select("id, created_at, name, service, status, preferred_date")
+        .order("created_at", { ascending: false }),
+      supabase.from("site_content").select("key"),
+      supabase.from("finish_rates").select("id, is_active"),
+      supabase.from("blog_posts").select("id, is_published"),
+      supabase.from("projects").select("id, is_published"),
+    ]);
 
   const inquiries = inquiriesRes.data ?? [];
   const finishes = finishesRes.data ?? [];
   const posts = blogRes.data ?? [];
+  const projectRows = projectsRes.data ?? [];
   const stats = [
     {
       label: "New inquiries",
@@ -28,6 +31,11 @@ export default async function DashboardPage() {
       label: "Booked consultations",
       value: inquiries.filter((i) => i.status === "booked").length,
       href: "/studio/inquiries",
+    },
+    {
+      label: "Published projects",
+      value: projectRows.filter((p) => p.is_published).length,
+      href: "/studio/projects",
     },
     {
       label: "Published blog posts",
@@ -55,7 +63,7 @@ export default async function DashboardPage() {
         What&apos;s happening across inquiries and the website.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {stats.map((stat) => (
           <Link
             key={stat.label}

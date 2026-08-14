@@ -8,7 +8,8 @@ import Image from "next/image";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import Hero from "@/components/sections/Hero";
 import Studio from "@/components/sections/Studio";
-import Work from "@/components/sections/Work";
+import { WorkView } from "@/components/sections/Work";
+import { defaultProjects } from "@/lib/projects";
 import Services from "@/components/sections/Services";
 import About from "@/components/sections/About";
 import Process from "@/components/sections/Process";
@@ -57,7 +58,8 @@ function renderSection(sectionKey: SectionKey, data: never): ReactNode {
     case "studio":
       return <Studio data={data} />;
     case "work":
-      return <Work data={data} />;
+      // Preview uses code defaults; live cards are edited under Studio → Projects.
+      return <WorkView data={data} projects={defaultProjects} />;
     case "services":
       return <Services data={data} />;
     case "estimator":

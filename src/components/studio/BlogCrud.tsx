@@ -157,20 +157,25 @@ export default function BlogCrud({ initial }: { initial: BlogPost[] }) {
     setStatus("saving");
     const supabase = createClient();
     const slug = slugifyBlog(edit.title) || undefined;
+    const wasPublished = rows.find((r) => r.id === id)?.is_published;
+    const patch: Record<string, unknown> = {
+      title: edit.title.trim(),
+      slug,
+      excerpt: edit.excerpt.trim(),
+      body: edit.body.trim(),
+      cover_image: edit.cover_image.trim(),
+      cover_alt: edit.cover_alt.trim(),
+      read_mins: Number(edit.read_mins),
+      sort_order: Number(edit.sort_order),
+      is_published: edit.is_published,
+      updated_at: new Date().toISOString(),
+    };
+    if (edit.is_published && !wasPublished) {
+      patch.published_at = new Date().toISOString();
+    }
     const { error } = await supabase
       .from("blog_posts")
-      .update({
-        title: edit.title.trim(),
-        slug,
-        excerpt: edit.excerpt.trim(),
-        body: edit.body.trim(),
-        cover_image: edit.cover_image.trim(),
-        cover_alt: edit.cover_alt.trim(),
-        read_mins: Number(edit.read_mins),
-        sort_order: Number(edit.sort_order),
-        is_published: edit.is_published,
-        updated_at: new Date().toISOString(),
-      })
+      .update(patch)
       .eq("id", id);
     if (error) {
       setStatus("error");

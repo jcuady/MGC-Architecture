@@ -1,10 +1,13 @@
 import type { MetadataRoute } from "next";
 import { getPublishedPosts } from "@/lib/blog-server";
-import { projects } from "@/lib/content";
+import { getPublishedProjects } from "@/lib/projects-server";
 import { SITE_URL } from "@/lib/seo";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getPublishedPosts();
+  const [posts, projects] = await Promise.all([
+    getPublishedPosts(),
+    getPublishedProjects(),
+  ]);
   const now = new Date();
 
   return [

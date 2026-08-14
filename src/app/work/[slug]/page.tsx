@@ -6,11 +6,15 @@ import Header from "@/components/Header";
 import Footer from "@/components/sections/Footer";
 import Reveal from "@/components/Reveal";
 import CapstoneCaseStudy from "@/components/work/CapstoneCaseStudy";
-import { projects } from "@/lib/content";
+import {
+  getProjectBySlug,
+  getPublishedProjects,
+} from "@/lib/projects-server";
 
 type Params = { slug: string };
 
-export function generateStaticParams(): Params[] {
+export async function generateStaticParams(): Promise<Params[]> {
+  const projects = await getPublishedProjects();
   return projects.map((p) => ({ slug: p.slug }));
 }
 
@@ -20,7 +24,7 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const project = projects.find((p) => p.slug === slug);
+  const project = await getProjectBySlug(slug);
   if (!project) return {};
   return {
     title: `${project.name} — ${project.category}`,
@@ -41,6 +45,7 @@ export default async function ProjectPage({
   params: Promise<Params>;
 }) {
   const { slug } = await params;
+  const projects = await getPublishedProjects();
   const index = projects.findIndex((p) => p.slug === slug);
   if (index === -1) notFound();
 
