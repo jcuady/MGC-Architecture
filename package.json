@@ -11,6 +11,7 @@
     "test:insights": "node scripts/verify-insights-removed.mjs",
     "test:seo": "node scripts/verify-seo.mjs",
     "test:lcp": "node scripts/verify-mobile-lcp.mjs",
+    "test:hero-hd": "node scripts/verify-hero-hd-mobile.mjs",
     "test:forms": "node scripts/verify-form-validation.mjs",
     "test:trust": "node scripts/verify-customer-trust.mjs",
     "test:inquiry-email": "node scripts/verify-inquiry-email.mjs",

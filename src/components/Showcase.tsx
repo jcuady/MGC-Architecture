@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useRef, type CSSProperties } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
+import { portfolioHdSrc } from "@/lib/portfolio-hd";
 
 type ShowcaseProps = {
   src: string;
@@ -20,6 +21,7 @@ type ShowcaseProps = {
  */
 export default function Showcase({ src, alt, eyebrow, lines, lineStyle, cta }: ShowcaseProps) {
   const sectionRef = useRef<HTMLElement>(null);
+  const mediaSrc = portfolioHdSrc(src, src);
 
   useGSAP(
     () => {
@@ -90,10 +92,10 @@ export default function Showcase({ src, alt, eyebrow, lines, lineStyle, cta }: S
         className="absolute inset-x-0 -top-[10%] h-[120%] will-change-transform"
       >
         <Image
-          src={src}
+          src={mediaSrc}
           alt={alt}
           fill
-          quality={65}
+          quality={88}
           sizes="100vw"
           className="object-cover"
         />

@@ -57,7 +57,14 @@ ok("hero-lede still visible after GSAP", Number(after) > 0.5, `opacity=${after}`
 const jpgHero = await page.locator('img[alt*="featured project"]').first().getAttribute("src");
 ok(
   "hero uses optimized image pipeline",
-  Boolean(jpgHero && (jpgHero.includes("_next/image") || jpgHero.includes(".jpg"))),
+  Boolean(
+    jpgHero &&
+      (jpgHero.includes("_next/image") ||
+        jpgHero.includes(".jpg") ||
+        jpgHero.includes(".png") ||
+        jpgHero.includes(".webp") ||
+        jpgHero.includes(".avif")),
+  ),
   jpgHero?.slice(0, 80) ?? "none",
 );
 

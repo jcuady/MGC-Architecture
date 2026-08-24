@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRef } from "react";
 import { gsap, useGSAP } from "@/lib/gsap";
 import { textStyle, type SiteContent } from "@/lib/cms";
+import { portfolioHdSrc } from "@/lib/portfolio-hd";
 
 /**
  * Editorial full-bleed hero.
@@ -13,6 +14,10 @@ import { textStyle, type SiteContent } from "@/lib/cms";
  */
 export default function Hero({ data }: { data: SiteContent["hero"] }) {
   const sectionRef = useRef<HTMLElement>(null);
+  const heroSrc = portfolioHdSrc(
+    data.image,
+    "/portfolio/the-noir/the-noir-living-view-1.png",
+  );
 
   useGSAP(
     () => {
@@ -116,18 +121,20 @@ export default function Hero({ data }: { data: SiteContent["hero"] }) {
       <div className="absolute inset-0 z-0">
         <div data-hero-image className="relative h-[115%] w-full will-change-transform">
           <Image
-            src={data.image || "/portfolio/the-noir/the-noir-living-view-1.jpg"}
+            src={heroSrc}
             alt="MGC Architecture — featured project"
             fill
             priority
-            quality={68}
+            // Architecture hero: keep mobile retina crisp (was 68 + soft JPG).
+            quality={90}
             sizes="100vw"
             className="object-cover object-center"
           />
         </div>
-        <div className="absolute inset-0 bg-black/20" />
-        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/95 via-charcoal/40 to-transparent" />
-        <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/60 to-transparent" />
+        {/* Lighter mobile scrim so render detail reads HD; desktop keeps depth. */}
+        <div className="absolute inset-0 bg-black/10 sm:bg-black/20" />
+        <div className="absolute inset-0 bg-gradient-to-t from-charcoal/90 via-charcoal/30 to-transparent sm:from-charcoal/95 sm:via-charcoal/40" />
+        <div className="absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-black/45 to-transparent sm:h-40 sm:from-black/60" />
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-start justify-between gap-10 px-5 pb-12 pt-[var(--header-offset)] sm:px-8 sm:pb-16 lg:flex-row lg:items-end lg:pb-20">

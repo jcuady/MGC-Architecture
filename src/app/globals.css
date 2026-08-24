@@ -118,7 +118,8 @@ body {
 }
 
 .hero-lede {
-  font-size: clamp(0.8125rem, 0.75rem + 0.25vw, 0.9375rem);
+  /* ≥16px on mobile — avoids iOS input-zoom and keeps lede readable over photo */
+  font-size: clamp(1rem, 0.95rem + 0.35vw, 1.0625rem);
   line-height: 1.65;
 }
 
