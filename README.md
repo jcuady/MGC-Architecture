@@ -70,7 +70,7 @@ npm run test:inquiry-email   # branding + API wiring (server on :3847)
 
 | Area | Studio route | Public |
 |---|---|---|
-| Projects | `/studio/projects` | `/work`, `/work/[slug]` |
+| Projects | `/studio/projects` | `/work`, `/work/[slug]` (includes **Project credits** logos) |
 | Blog | `/studio/blog` | `/blog`, homepage Latest Articles |
 | Site Content | `/studio/content` | Landing sections (Work header copy only; cards under Projects) |
 | Finishes | `/studio/finishes` | `/estimate` |

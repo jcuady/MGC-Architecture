@@ -52,11 +52,7 @@ export default async function ProjectPage({
   const project = projects[index];
   const prev = projects[(index - 1 + projects.length) % projects.length];
   const next = projects[(index + 1) % projects.length];
-  const underRc = /RC LLaguno/i.test(project.role);
-  // RC-only credit strip: C House, Tile Co., Guest Quarter, Built-in Furnitures
-  const showMgcCredit = !["c-house", "tile-co", "guest-quarter", "built-in"].includes(
-    project.slug,
-  );
+  const credits = project.credits ?? [];
   const pieces = project.pieces ?? [];
   const capstone = project.capstone;
 
@@ -173,38 +169,44 @@ export default async function ProjectPage({
                       ))}
                     </dd>
                   </div>
-                  <div className="border-t border-warm-gray/60 pt-6">
-                    <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
-                      Project credits
-                    </p>
-                    <ul className="mt-4 flex flex-wrap items-center gap-6 sm:gap-8">
-                      {showMgcCredit ? (
-                        <li className="flex items-center gap-2.5">
-                          <Image
-                            src="/brand/monogram-chestnut.png"
-                            alt=""
-                            width={40}
-                            height={40}
-                            className="h-9 w-9 object-contain"
-                          />
-                          <span className="font-heading text-sm font-semibold tracking-[0.04em] text-charcoal">
-                            mgc architecture
-                          </span>
-                        </li>
-                      ) : null}
-                      {underRc ? (
-                        <li>
-                          <Image
-                            src="/brand/rclc-logo.png"
-                            alt="RC LLaguno Construction"
-                            width={200}
-                            height={72}
-                            className="h-12 w-auto object-contain sm:h-14"
-                          />
-                        </li>
-                      ) : null}
-                    </ul>
-                  </div>
+                  {credits.length > 0 ? (
+                    <div className="border-t border-warm-gray/60 pt-6">
+                      <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-terracotta">
+                        Project credits
+                      </p>
+                      <ul className="mt-4 flex flex-wrap items-center gap-6 sm:gap-8">
+                        {credits.map((credit) => (
+                          <li
+                            key={`${credit.logo}-${credit.name}`}
+                            className="flex items-center gap-2.5"
+                          >
+                            {credit.layout === "badge" ? (
+                              <>
+                                <Image
+                                  src={credit.logo}
+                                  alt=""
+                                  width={40}
+                                  height={40}
+                                  className="h-9 w-9 object-contain"
+                                />
+                                <span className="font-heading text-sm font-semibold tracking-[0.04em] text-charcoal">
+                                  {credit.name}
+                                </span>
+                              </>
+                            ) : (
+                              <Image
+                                src={credit.logo}
+                                alt={credit.logoAlt || credit.name}
+                                width={200}
+                                height={72}
+                                className="h-12 w-auto object-contain sm:h-14"
+                              />
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : null}
                 </dl>
               </Reveal>
             </div>

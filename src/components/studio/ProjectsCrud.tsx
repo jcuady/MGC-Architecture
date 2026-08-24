@@ -1,11 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useRef, useState, type RefObject } from "react";
 import { createClient } from "@/lib/supabase/client";
 import {
+  creditMgc,
+  creditRclc,
+  parseCredits,
   slugifyProject,
   type Project,
+  type ProjectCredit,
   type ProjectImage,
 } from "@/lib/projects";
 
@@ -28,6 +33,7 @@ type Draft = {
   imagesJson: string;
   piecesJson: string;
   capstoneJson: string;
+  credits: ProjectCredit[];
   sort_order: string;
   is_published: boolean;
 };
@@ -48,6 +54,7 @@ const emptyDraft = (): Draft => ({
   imagesJson: "[]",
   piecesJson: "",
   capstoneJson: "",
+  credits: [{ ...creditMgc }],
   sort_order: "50",
   is_published: true,
 });
@@ -69,6 +76,7 @@ function draftFromProject(p: Project): Draft {
     imagesJson: JSON.stringify(p.images ?? [], null, 2),
     piecesJson: p.pieces ? JSON.stringify(p.pieces, null, 2) : "",
     capstoneJson: p.capstone ? JSON.stringify(p.capstone, null, 2) : "",
+    credits: p.credits?.length ? p.credits.map((c) => ({ ...c })) : [],
     sort_order: String(p.sort_order ?? 50),
     is_published: p.is_published ?? true,
   };
@@ -121,6 +129,7 @@ function toPayload(d: Draft):
         images: ProjectImage[];
         pieces: unknown;
         capstone: unknown;
+        credits: ProjectCredit[];
         sort_order: number;
         is_published: boolean;
         updated_at: string;
@@ -132,6 +141,11 @@ function toPayload(d: Draft):
   if (images === null) return { error: "Gallery JSON is invalid." };
   if (pieces === false) return { error: "Pieces JSON is invalid." };
   if (capstone === false) return { error: "Capstone JSON is invalid." };
+  for (const credit of d.credits) {
+    if (!credit.logo.trim()) {
+      return { error: "Each credit needs a logo image." };
+    }
+  }
   const sort = Number(d.sort_order);
   if (!d.name.trim() || !Number.isFinite(sort)) {
     return { error: "Name and a numeric sort order are required." };
@@ -161,6 +175,12 @@ function toPayload(d: Draft):
       images,
       pieces,
       capstone,
+      credits: d.credits.map((c) => ({
+        name: c.name.trim(),
+        logo: c.logo.trim(),
+        logoAlt: (c.logoAlt || c.name).trim(),
+        layout: c.layout === "logo" ? "logo" : "badge",
+      })),
       sort_order: sort,
       is_published: d.is_published,
       updated_at: new Date().toISOString(),
@@ -186,13 +206,14 @@ function mapDbToProject(data: Record<string, unknown>): Project {
     images: Array.isArray(data.images) ? (data.images as ProjectImage[]) : [],
     pieces: (data.pieces as Project["pieces"]) ?? undefined,
     capstone: (data.capstone as Project["capstone"]) ?? undefined,
+    credits: parseCredits(data.credits),
     sort_order: Number(data.sort_order) || 0,
     is_published: Boolean(data.is_published),
   };
 }
 
 const SELECT =
-  "id, slug, name, category, year, status, location, role, description, story, scope, hero, hero_alt, images, pieces, capstone, sort_order, is_published";
+  "id, slug, name, category, year, status, location, role, description, story, scope, hero, hero_alt, images, pieces, capstone, credits, sort_order, is_published";
 
 export default function ProjectsCrud({ initial }: { initial: Project[] }) {
   const router = useRouter();
@@ -256,6 +277,8 @@ export default function ProjectsCrud({ initial }: { initial: Project[] }) {
           : error?.message?.includes("schema cache") ||
               error?.code === "PGRST205"
             ? "Projects table missing — run supabase/migrations/0006_projects.sql in the SQL editor."
+            : error?.message?.includes("credits")
+              ? "Credits column missing — run supabase/migrations/0008_project_credits.sql (or _pending_credits_apply.sql)."
             : "Couldn't create the project. Try again.",
       );
       return;
@@ -365,8 +388,8 @@ export default function ProjectsCrud({ initial }: { initial: Project[] }) {
           New project
         </h2>
         <p className="mt-1 text-sm text-charcoal/65">
-          Core fields plus gallery JSON. Optional pieces / capstone JSON keep
-          Built-in and Capstone layouts working.
+          Core fields, project credits, and gallery. Optional pieces / capstone
+          JSON keep Built-in and Capstone layouts working.
         </p>
         <ProjectForm
           value={draft}
@@ -401,6 +424,16 @@ export default function ProjectsCrud({ initial }: { initial: Project[] }) {
                   imagesJson: JSON.stringify(images, null, 2),
                   hero: d.hero || url,
                 };
+              });
+            });
+          }}
+          onCreditLogoUpload={async (index, file) => {
+            await uploadFile(file, `${draft.slug || "new"}/credits`, (url) => {
+              setDraft((d) => {
+                const credits = d.credits.map((c, i) =>
+                  i === index ? { ...c, logo: url } : c,
+                );
+                return { ...d, credits };
               });
             });
           }}
@@ -449,6 +482,21 @@ export default function ProjectsCrud({ initial }: { initial: Project[] }) {
                         };
                       });
                     });
+                  }}
+                  onCreditLogoUpload={async (index, file) => {
+                    await uploadFile(
+                      file,
+                      `${edit.slug || row.slug}/credits`,
+                      (url) => {
+                        setEdit((d) => {
+                          if (!d) return d;
+                          const credits = d.credits.map((c, i) =>
+                            i === index ? { ...c, logo: url } : c,
+                          );
+                          return { ...d, credits };
+                        });
+                      },
+                    );
                   }}
                 />
                 <div className="mt-4 flex flex-wrap gap-2">
@@ -547,6 +595,7 @@ function ProjectForm({
   galleryFileRef,
   onHeroUpload,
   onGalleryUpload,
+  onCreditLogoUpload,
 }: {
   value: Draft;
   onChange: (d: Draft) => void;
@@ -554,9 +603,38 @@ function ProjectForm({
   galleryFileRef: RefObject<HTMLInputElement | null>;
   onHeroUpload: (file: File) => Promise<void>;
   onGalleryUpload: (file: File) => Promise<void>;
+  onCreditLogoUpload: (index: number, file: File) => Promise<void>;
 }) {
   function set<K extends keyof Draft>(key: K, v: Draft[K]) {
     onChange({ ...value, [key]: v });
+  }
+
+  function updateCredit(index: number, patch: Partial<ProjectCredit>) {
+    set(
+      "credits",
+      value.credits.map((c, i) => (i === index ? { ...c, ...patch } : c)),
+    );
+  }
+
+  function removeCredit(index: number) {
+    set(
+      "credits",
+      value.credits.filter((_, i) => i !== index),
+    );
+  }
+
+  function addCredit(preset?: ProjectCredit) {
+    set("credits", [
+      ...value.credits,
+      preset
+        ? { ...preset }
+        : {
+            name: "",
+            logo: "",
+            logoAlt: "",
+            layout: "badge" as const,
+          },
+    ]);
   }
 
   return (
@@ -680,6 +758,147 @@ function ProjectForm({
           onChange={(e) => set("scope", e.target.value)}
         />
       </label>
+
+      <div className="sm:col-span-2 border border-warm-gray/70 bg-beige/30 p-4">
+        <div className="flex flex-wrap items-baseline justify-between gap-3">
+          <div>
+            <p className="font-heading text-xs font-semibold uppercase tracking-[0.12em] text-charcoal/70">
+              Project credits
+            </p>
+            <p className="mt-1 text-sm text-charcoal/60">
+              Logos under Scope on the public project page. Remove all to hide
+              the strip.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => addCredit(creditMgc)}
+              className="inline-flex min-h-10 cursor-pointer items-center border border-warm-gray bg-white px-3 py-1.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-charcoal"
+            >
+              Add MGC
+            </button>
+            <button
+              type="button"
+              onClick={() => addCredit(creditRclc)}
+              className="inline-flex min-h-10 cursor-pointer items-center border border-warm-gray bg-white px-3 py-1.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-charcoal"
+            >
+              Add RCLC
+            </button>
+            <button
+              type="button"
+              onClick={() => addCredit()}
+              className="inline-flex min-h-10 cursor-pointer items-center border border-warm-gray bg-white px-3 py-1.5 font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-charcoal"
+            >
+              Add custom
+            </button>
+          </div>
+        </div>
+
+        {value.credits.length === 0 ? (
+          <p className="mt-4 border border-dashed border-warm-gray bg-white p-4 text-sm text-charcoal/55">
+            No credits — the public page will hide this section.
+          </p>
+        ) : (
+          <ul className="mt-4 space-y-4">
+            {value.credits.map((credit, index) => (
+              <li
+                key={`credit-${index}`}
+                className="grid gap-3 border border-warm-gray/60 bg-white p-3 sm:grid-cols-[auto_1fr_auto]"
+              >
+                <div className="flex h-16 w-24 items-center justify-center bg-beige/50">
+                  {credit.logo ? (
+                    <Image
+                      src={credit.logo}
+                      alt=""
+                      width={96}
+                      height={48}
+                      className="max-h-14 w-auto object-contain"
+                    />
+                  ) : (
+                    <span className="font-heading text-[0.65rem] uppercase tracking-[0.12em] text-charcoal/40">
+                      No logo
+                    </span>
+                  )}
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <label className="block sm:col-span-2">
+                    <span className="mb-1 block font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-charcoal/60">
+                      Name
+                    </span>
+                    <input
+                      className={inputClass}
+                      value={credit.name}
+                      onChange={(e) =>
+                        updateCredit(index, { name: e.target.value })
+                      }
+                    />
+                  </label>
+                  <label className="block sm:col-span-2">
+                    <span className="mb-1 block font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-charcoal/60">
+                      Logo URL
+                    </span>
+                    <input
+                      className={inputClass}
+                      value={credit.logo}
+                      onChange={(e) =>
+                        updateCredit(index, { logo: e.target.value })
+                      }
+                    />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="mt-2 block w-full text-sm text-charcoal/70"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) void onCreditLogoUpload(index, file);
+                      }}
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-1 block font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-charcoal/60">
+                      Logo alt
+                    </span>
+                    <input
+                      className={inputClass}
+                      value={credit.logoAlt}
+                      onChange={(e) =>
+                        updateCredit(index, { logoAlt: e.target.value })
+                      }
+                    />
+                  </label>
+                  <label className="block">
+                    <span className="mb-1 block font-heading text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-charcoal/60">
+                      Layout
+                    </span>
+                    <select
+                      className={inputClass}
+                      value={credit.layout}
+                      onChange={(e) =>
+                        updateCredit(index, {
+                          layout:
+                            e.target.value === "logo" ? "logo" : "badge",
+                        })
+                      }
+                    >
+                      <option value="badge">Badge (logo + name)</option>
+                      <option value="logo">Logo only</option>
+                    </select>
+                  </label>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => removeCredit(index)}
+                  className="h-fit cursor-pointer font-heading text-xs font-semibold uppercase tracking-[0.12em] text-terracotta"
+                >
+                  Remove
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       <label className="block sm:col-span-2">
         <span className="mb-1.5 block font-heading text-xs font-semibold uppercase tracking-[0.12em] text-charcoal/70">
           Hero image URL

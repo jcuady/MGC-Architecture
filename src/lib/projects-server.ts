@@ -1,7 +1,9 @@
 import { cache } from "react";
 import { createClient } from "@supabase/supabase-js";
 import {
+  defaultCreditsForSlug,
   defaultProjects,
+  parseCredits,
   type CapstoneCaseStudy,
   type Project,
   type ProjectImage,
@@ -25,6 +27,7 @@ type ProjectRow = {
   images: unknown;
   pieces: unknown;
   capstone: unknown;
+  credits: unknown;
   sort_order: number;
   is_published: boolean;
 };
@@ -94,13 +97,18 @@ function mapRow(row: ProjectRow): Project {
     images: asImages(row.images),
     pieces: asPieces(row.pieces),
     capstone: asCapstone(row.capstone),
+    credits: (() => {
+      const parsed = parseCredits(row.credits);
+      return parsed.length ? parsed : defaultCreditsForSlug(row.slug);
+    })(),
     sort_order: row.sort_order,
     is_published: row.is_published,
   };
 }
 
-const SELECT =
+const SELECT_BASE =
   "id, slug, name, category, year, status, location, role, description, story, scope, hero, hero_alt, images, pieces, capstone, sort_order, is_published";
+const SELECT = `${SELECT_BASE}, credits`;
 
 function withFallbackIds(list: Project[]): Project[] {
   return list.map((p, i) => ({
@@ -108,19 +116,40 @@ function withFallbackIds(list: Project[]): Project[] {
     id: p.id ?? `default-${p.slug}`,
     sort_order: p.sort_order ?? (i + 1) * 10,
     is_published: p.is_published ?? true,
+    credits: p.credits?.length ? p.credits : defaultCreditsForSlug(p.slug),
   }));
+}
+
+function creditsColumnMissing(error: { message?: string; code?: string } | null) {
+  if (!error) return false;
+  const msg = error.message ?? "";
+  return (
+    error.code === "42703" ||
+    msg.includes("credits") ||
+    msg.includes("schema cache")
+  );
 }
 
 /** Published projects for public pages. Falls back to content.ts seeds. */
 export const getPublishedProjects = cache(async (): Promise<Project[]> => {
   try {
-    const { data, error } = await anonClient()
+    const client = anonClient();
+    const primary = await client
       .from("projects")
       .select(SELECT)
       .eq("is_published", true)
       .order("sort_order", { ascending: true });
+    const fallback = creditsColumnMissing(primary.error)
+      ? await client
+          .from("projects")
+          .select(SELECT_BASE)
+          .eq("is_published", true)
+          .order("sort_order", { ascending: true })
+      : null;
+    const data = (fallback ?? primary).data as ProjectRow[] | null;
+    const error = (fallback ?? primary).error;
     if (error || !data?.length) return withFallbackIds(defaultProjects);
-    return data.map((row) => mapRow(row as ProjectRow));
+    return data.map((row) => mapRow(row));
   } catch {
     return withFallbackIds(defaultProjects);
   }
@@ -129,13 +158,24 @@ export const getPublishedProjects = cache(async (): Promise<Project[]> => {
 export const getProjectBySlug = cache(
   async (slug: string): Promise<Project | null> => {
     try {
-      const { data, error } = await anonClient()
+      const client = anonClient();
+      const primary = await client
         .from("projects")
         .select(SELECT)
         .eq("slug", slug)
         .eq("is_published", true)
         .maybeSingle();
-      if (!error && data) return mapRow(data as ProjectRow);
+      const fallback = creditsColumnMissing(primary.error)
+        ? await client
+            .from("projects")
+            .select(SELECT_BASE)
+            .eq("slug", slug)
+            .eq("is_published", true)
+            .maybeSingle()
+        : null;
+      const data = (fallback ?? primary).data as ProjectRow | null;
+      const error = (fallback ?? primary).error;
+      if (!error && data) return mapRow(data);
     } catch {
       /* fall through */
     }

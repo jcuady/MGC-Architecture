@@ -82,9 +82,46 @@ export type Project = {
   pieces?: ProjectPiece[];
   /** When set, work page uses the Capstone image/diagram case-study layout */
   capstone?: CapstoneCaseStudy;
+  /** Project credits strip (logos / names). Editable in Studio → Projects. */
+  credits?: ProjectCredit[];
   sort_order?: number;
   is_published?: boolean;
 };
+
+/** Credit mark under Scope on /work/[slug]. */
+export type ProjectCredit = {
+  name: string;
+  logo: string;
+  logoAlt: string;
+  /** badge = monogram + name; logo = wide mark only (e.g. RCLC) */
+  layout: "badge" | "logo";
+};
+
+export const creditMgc: ProjectCredit = {
+  name: "mgc architecture",
+  logo: "/brand/monogram-chestnut.png",
+  logoAlt: "MGC Architecture",
+  layout: "badge",
+};
+
+export const creditRclc: ProjectCredit = {
+  name: "RC LLaguno Construction",
+  logo: "/brand/rclc-logo.png",
+  logoAlt: "RC LLaguno Construction",
+  layout: "logo",
+};
+
+/** Matches prior hard-coded credit rules on the work page. */
+export function defaultCreditsForSlug(slug: string): ProjectCredit[] {
+  const rcOnly = new Set([
+    "c-house",
+    "tile-co",
+    "guest-quarter",
+    "built-in",
+  ]);
+  if (rcOnly.has(slug)) return [{ ...creditRclc }];
+  return [{ ...creditMgc }];
+}
 
 export const projects: Project[] = [
   {
